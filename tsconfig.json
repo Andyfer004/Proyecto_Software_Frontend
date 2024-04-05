@@ -5,6 +5,7 @@
     "esModuleInterop": true,
     "moduleResolution": "node",
     "baseUrl": "./",
+    "jsx": "react",
     "paths": {
       // Ejemplo de configuración de paths
       "@components/*": ["src/components/*"],
