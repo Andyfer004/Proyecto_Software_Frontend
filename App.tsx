@@ -5,6 +5,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import LoginScreen from 'src/views/Login';
 import Header from 'src/common/Header';
 import Footer from 'src/common/Footer';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 
