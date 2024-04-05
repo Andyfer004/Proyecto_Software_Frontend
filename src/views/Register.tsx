@@ -1,6 +1,14 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Button, TextInput } from "react-native-paper";
+import TextField from '@mui/material/TextField';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import Link from '@mui/material/Link';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import GoogleIcon from '@mui/icons-material/Google';
+import Box from '@mui/material/Box';
 
 const RegisterScreen: React.FC = () => {
     const [name, setName] = useState('');
@@ -15,16 +23,31 @@ const RegisterScreen: React.FC = () => {
     };
 
     return (
-        <View style={styles.container}>
-            <Text>Register</Text>
-            <TextInput label="Name" value={name} onChangeText={setName} />
-            <TextInput label="Lastname" value={lastname} onChangeText={setLastname} />
-            <TextInput label="Email" value={email} onChangeText={setEmail} />
-            <TextInput label="Password" secureTextEntry value={password} onChangeText={setPassword} />
-            <TextInput label="Confirm Password" secureTextEntry value={passwordConfirmation} onChangeText={setPasswordConfirmation} />
-            <TextInput label="Phone" value={phone} onChangeText={setPhone} keyboardType="phone-pad" />
-            <Button mode="contained" onPress={handleRegister}>Register</Button>
-        </View>
+        <form>
+            <Box sx={{ '& > :not(style)': { m: 1 } }}>
+                <Grid container spacing={2} justifyContent="center">
+                    <Grid item xs={12} sm={6} sx={{paddingLeft:'0px !important'}}>
+                        <TextField fullWidth label="Name" id="nameuser" variant="standard" />
+                    </Grid>
+                    <Grid item xs={12} sm={6} sx={{paddingRight:'16px !important'}}>
+                        <TextField fullWidth label="lastname" id="lastname"  variant="standard" />
+                    </Grid>
+                </Grid>
+                <TextField fullWidth label="Email address" id="form2Example1" variant="standard" />
+                <TextField fullWidth label="Password" id="form2Example2" type="password" variant="standard" />
+                <TextField fullWidth label="Phone" id="phone" type="number" variant="standard" />
+            </Box>
+
+            <Button fullWidth variant="contained" color="primary" sx={{ mt: 3, mb: 2 }}>
+            Sign on
+            </Button>
+
+            <Box textAlign="center">    
+                <p>or sign on with:</p>
+                <Button variant="outlined" startIcon={<FacebookIcon />} sx={{ mx: 1 }} className='text-center' />
+                <Button variant="outlined" startIcon={<GoogleIcon />} sx={{ mx: 1 }} />
+            </Box>
+        </form>
     );
 };
 
