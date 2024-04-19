@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Button, TextField } from "@mui/material";
+import { Header } from "react-native/Libraries/NewAppScreen";
 
 const UpdateAccountScreen: React.FC = () => {
   const [name, setName] = useState('');
