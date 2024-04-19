@@ -8,6 +8,7 @@ import SidebarGeneral from 'src/common/SidebarGeneral';
 import Box from '@mui/material/Box';
 import DashboardScreen from 'src/views/Dashboard';
 import UpdateAccountScreen from 'src/views/UpdateAccount';
+import { ToastContainer } from 'react-toastify';
 
 const Stack = createNativeStackNavigator();
 
@@ -19,6 +20,7 @@ export default function App() {
   return (
     <>
       <StatusBar style="auto" />
+      <ToastContainer />
       <NavigationContainer>
           <SidebarGeneral/>
           <Stack.Navigator initialRouteName="Login">
