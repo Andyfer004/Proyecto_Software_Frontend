@@ -14,3 +14,14 @@ export const login = (credentials: { email: string; password: string }) => async
       // Manejar error
     }
 };
+
+export const register = (credentials: { name: string; lastname: string; email: string; password: string; phone: string }) => async (dispatch: Dispatch) => {
+    try {
+      const response = await api.post('/register', credentials);
+      dispatch({ type: REGISTER_SUCCESS, payload: response.data });
+      // Guardar token en almacenamiento local o manejar como prefieras
+    } catch (error) {
+      console.error(error);
+      // Manejar error
+    }
+};
