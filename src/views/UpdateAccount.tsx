@@ -10,8 +10,18 @@ const UpdateAccountScreen: React.FC = () => {
   const [phone, setPhone] = useState('');
 
   const handleUpdate = () => {
-    // Aquí puedes implementar la lógica para enviar la información actualizada a tu servidor o almacenarla localmente.
-    console.log(name, email, password, phone);
+    
+    const id = 'id'; 
+  
+    const userData = {
+      name: name,
+      email: email,
+      password: password,
+      phone: phone,
+      id: id
+    };
+  
+    console.log(userData);  
   };
 
   return (
