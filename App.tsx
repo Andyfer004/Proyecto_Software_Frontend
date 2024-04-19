@@ -10,6 +10,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Box from '@mui/material/Box';
 import DashboardScreen from 'src/views/Dashboard';
+import RegisterScreen from 'src/views/Register';
 
 const Stack = createNativeStackNavigator();
 
