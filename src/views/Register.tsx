@@ -30,28 +30,37 @@ const RegisterScreen: React.FC = () => {
         <Container sx={{ width: '63%' }} >
             <form>
                 <Box sx={{ '& > :not(style)': { m: 1 }}}>
-                    <Grid container spacing={2} justifyContent="center" width="center">
-                        <Grid item xs={12} sm={6} sx={{paddingLeft:'0px !important'}}>
-                            <TextField fullWidth label="Name" id="nameuser" variant="standard" />
-                        </Grid>
-                        <Grid item xs={12} sm={6} sx={{paddingRight:'16px !important'}}>
-                            <TextField fullWidth label="lastname" id="lastname"  variant="standard" />
-                        </Grid>
+                <Grid container spacing={2} justifyContent="center">
+                    <Grid item xs={12} sm={6} sx={{paddingLeft: { xs: '0 !important', sm: '0 8px !important' }}}>
+                    <TextField fullWidth label="Name" id="nameuser" variant="standard" />
                     </Grid>
-                    <TextField fullWidth label="Email address" id="form2Example1" variant="standard" />
-                    <TextField fullWidth label="Password" id="form2Example2" type="password" variant="standard" />
-                    <TextField fullWidth label="Password Confirmation" id="form2Example2" type="password" variant="standard" />
-                    <TextField fullWidth label="Phone" id="phone" type="number" variant="standard" />
+                    <Grid item xs={12} sm={6} sx={{paddingRight: { xs: '0 !important', sm: '0 8px !important' }}}>
+                    <TextField fullWidth label="Lastname" id="lastname"  variant="standard" />
+                    </Grid>
+                </Grid>
+                <TextField fullWidth label="Email address" id="form2Example1" variant="standard" />
+                <TextField fullWidth label="Password" id="form2Example2" type="password" variant="standard" />
+                <TextField fullWidth label="Password Confirmation" id="form2Example2" type="password" variant="standard" />
+                <TextField fullWidth label="Phone" id="phone" type="number" variant="standard" />
                 </Box>
-                <Button fullWidth variant="contained" color="primary" sx={{ mt: 3, mb: 2 }}>
-                Sign on
-                </Button>
 
-                <Box textAlign="center">    
-                    <p>or sign on with:</p>
-                    <Button variant="outlined" startIcon={<FacebookIcon />} sx={{ mx: 1 }} className='text-center' />
-                    <Button variant="outlined" startIcon={<GoogleIcon />} sx={{ mx: 1 }} />
-                </Box>
+                    <Button fullWidth variant="contained" color="primary" sx={{ mt: 3, mb: { xs: 2, sm: 0 } }}>
+                    Sign on
+                    </Button>
+
+
+                    <Box textAlign="center">    
+                        <p>or sign on with:</p>
+                        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                            <Button variant="outlined" startIcon={<FacebookIcon />} sx={{ mx: 1 }}>
+                            Facebook
+                            </Button>
+                            <Button variant="outlined" startIcon={<GoogleIcon />} sx={{ mx: 1 }}>
+                            Google
+                            </Button>
+                        </Box>
+                        </Box>
+
             </form>
         </Container>
     );
