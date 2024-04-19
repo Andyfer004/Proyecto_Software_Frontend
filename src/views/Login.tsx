@@ -1,4 +1,5 @@
 import React from 'react';
+import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
@@ -15,11 +16,27 @@ import Tab from '@mui/material/Tab';
 import GlobalLayout from 'src/common/GlobalLayout';
 import RegisterScreen from './Register';
 
+
+
+const client_id = '85916301134-bo9muens74h0idca344gj0i3jq1tf5ep.apps.googleusercontent.com';
+
 const Login: React.FC = () => {
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
+  };
+
+  const handleLoginSuccess = (response: GoogleLoginResponse | GoogleLoginResponseOffline) => {
+    if ('profileObj' in response) {
+      console.log('Login Success:', response.profileObj);
+      // Manejo del acceso a los datos del usuario, response.profileObj contiene la información del perfil
+    }
+  };
+
+  const handleLoginFailure = (response: any) => {
+    console.error('Login Failed:', response);
+    // Manejo del error de inicio de sesión
   };
 
   return (
@@ -104,6 +121,22 @@ const Login: React.FC = () => {
                 </Box>
               </Box>
 
+            <Box textAlign="center">
+              <p>Not a member? <Link href="#!">Register</Link></p>
+              <p>or sign up with:</p>
+              <Button variant="outlined" startIcon={<FacebookIcon />} sx={{ mx: 1 }} className='text-center' />
+              <GoogleLogin
+                clientId={client_id}
+                buttonText="Login with Google"
+                onSuccess={handleLoginSuccess}
+                onFailure={handleLoginFailure}
+                cookiePolicy={'single_host_origin'}
+                render={renderProps => (
+                  <Button variant="outlined" startIcon={<GoogleIcon />} sx={{ mx: 1 }} onClick={renderProps.onClick} disabled={renderProps.disabled}>
+                  </Button>
+                )}
+              />
+            </Box>
           </form>
         ) : (
           <RegisterScreen />
