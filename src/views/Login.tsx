@@ -10,7 +10,6 @@ import GoogleIcon from '@mui/icons-material/Google';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import Box from '@mui/material/Box';
-
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import GlobalLayout from 'src/common/GlobalLayout';
@@ -26,7 +25,7 @@ const Login: React.FC = () => {
   return (
     <GlobalLayout>
       <Box sx={{ height:"100vh"}} className="row justify-content-center align-items-center">
-          <Box sx={{ width: '100%' }}>
+          <Box sx={{ width: '100%',borderBottom: 1, borderColor: 'divider' }}>
             <Tabs
               value={value}
               onChange={handleChange}
@@ -34,9 +33,9 @@ const Login: React.FC = () => {
               aria-label="nav tabs example"
             >
               <Tab label="Login" />
-              <Tab label="Register" />
+              <Tab label="Sign Up" />
             </Tabs>
-        </Box>
+          </Box>
         {value === 0 ? (
           <form>
             <Box sx={{ '& > :not(style)': { m: 1 } }}>
@@ -71,7 +70,7 @@ const Login: React.FC = () => {
             </Box>
           </form>
         ) : (
-          <RegisterScreen/>
+          <RegisterScreen />
         )}
       </Box>
     </GlobalLayout>
