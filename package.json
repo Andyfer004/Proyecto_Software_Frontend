@@ -22,6 +22,7 @@
     "bootstrap": "^5.3.3",
     "expo": "~50.0.14",
     "expo-status-bar": "~1.11.1",
+    "lightningcss": "^1.24.1",
     "react": "18.2.0",
     "react-bootstrap": "^2.10.2",
     "react-dom": "18.2.0",
