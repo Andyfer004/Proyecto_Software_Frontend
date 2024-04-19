@@ -9,42 +9,18 @@ const UpdateAccountScreen: React.FC = () => {
   const [phone, setPhone] = useState('');
 
   const handleUpdate = () => {
-    // ID del usuario que se desea actualizar
-    const id = 'id'; // Este valor debe ser obtenido o almacenado en algún lugar
+    
+    const id = 'id'; 
   
-    // Usando template literals para insertar el ID del usuario en la URL
-    const apiUrl = `http://localhost:8000/api/users/${id}`;
-  
-    // Objeto con los datos del formulario
     const userData = {
       name: name,
       email: email,
       password: password,
       phone: phone,
+      id: id
     };
   
-    // Opciones para la petición fetch
-    const fetchOptions = {
-      method: 'PUT', // Método HTTP adecuado para actualizaciones
-      headers: {
-        'Content-Type': 'application/json',
-        // Añade más headers aquí si es necesario, como tokens de autenticación
-      },
-      body: JSON.stringify(userData), // Convertimos los datos del usuario a JSON
-    };
-  
-    // Realizamos la petición
-    fetch(apiUrl, fetchOptions)
-      .then(response => response.json())
-      .then(data => {
-        // Manejo de la respuesta del servidor
-        console.log('Success:', data);
-        alert(data.message); // Muestra un mensaje con la respuesta del servidor
-      })
-      .catch((error) => {
-        // Manejo de errores
-        console.error('Error:', error);
-      });
+    console.log(userData);  
   };
 
   return (

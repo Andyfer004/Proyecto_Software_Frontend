@@ -1,4 +1,4 @@
-import { LOGIN_SUCCESS, REGISTER_SUCCESS } from './authTypes';
+import { LOGIN_SUCCESS, REGISTER_SUCCESS, UPDATE_ACCOUNT_SUCESS } from './authTypes';
 
 const initialState = {
   user: null,
@@ -17,6 +17,12 @@ const authReducer = (state = initialState, action: any) => {
         ...state,
         user: action.payload,
       };
+    
+    case UPDATE_ACCOUNT_SUCESS:
+        return {
+          ...state,
+          user: action.payload,
+        };
     // Manejar otros casos
     default:
       return state;
