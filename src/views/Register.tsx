@@ -27,7 +27,7 @@ const RegisterScreen: React.FC = () => {
     
 
     return (
-        <Container sx={{ width: '78%' }} >
+        <Container sx={{ width: '63%' }} >
             <form>
                 <Box sx={{ '& > :not(style)': { m: 1 }}}>
                     <Grid container spacing={2} justifyContent="center" width="center">
@@ -40,6 +40,7 @@ const RegisterScreen: React.FC = () => {
                     </Grid>
                     <TextField fullWidth label="Email address" id="form2Example1" variant="standard" />
                     <TextField fullWidth label="Password" id="form2Example2" type="password" variant="standard" />
+                    <TextField fullWidth label="Password Confirmation" id="form2Example2" type="password" variant="standard" />
                     <TextField fullWidth label="Phone" id="phone" type="number" variant="standard" />
                 </Box>
                 <Button fullWidth variant="contained" color="primary" sx={{ mt: 3, mb: 2 }}>
