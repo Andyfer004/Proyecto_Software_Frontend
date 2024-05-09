@@ -1,55 +1,47 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { Button, Grid, Paper } from "@mui/material";
+import React from 'react';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import '@mui/material/styles';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 
-const DashboardScreen: React.FC = () => {
+
+const BasicDateCalendar = () => {
   return (
-    <View style={styles.container}>
-      <Text style={styles.heading}>Dashboard</Text>
-      <Grid container spacing={2}>
-        <Grid item xs={6}>
-          <Paper elevation={3} style={styles.paper}>
-            <Text style={styles.paperText}>Total Users: 100</Text>
-          </Paper>
-        </Grid>
-        <Grid item xs={6}>
-          <Paper elevation={3} style={styles.paper}>
-            <Text style={styles.paperText}>Total Orders: 50</Text>
-          </Paper>
-        </Grid>
-        {/* Add more Grid items for additional dashboard elements */}
-      </Grid>
-      <Button variant="contained" color="primary" style={styles.button}>
-        Create New
-      </Button>
-    </View>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <DateCalendar />
+    </LocalizationProvider>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
-  },
-  heading: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
-  paper: {
-    padding: 20,
-    textAlign: "center",
-    height: 100,
-    justifyContent: "center",
-  },
-  paperText: {
-    fontSize: 18,
-  },
-  button: {
-    marginTop: 20,
-  },
-});
+const Dashboard = () => {
+  const styles = {
+    container: {
+      display: 'flex',
+      justifyContent: 'flex-end',
+      alignItems: 'center', 
+      height: '100vh', 
+      backgroundColor: '#00000' 
+    },
+    calendarContainer: {
+      margin: '8%',
+      maxWidth: '40%', 
+      width:'40%',
+      backgroundColor: 'rgba(70, 117, 206, 0.8)', 
+      color: 'white', // Color de texto para el calendario
+      padding: '20px', // Espacio interior alrededor del calendario
+      borderRadius: '5px', // Bordes redondeados
+      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' // Sombra suave para destacarlo
+    }
+  };
 
-export default DashboardScreen;
+  return (
+    <div style={styles.container}>
+      <div style={styles.calendarContainer}>
+        <BasicDateCalendar />
+      </div>
+    </div>
+  );
+};
+
+export default Dashboard;
