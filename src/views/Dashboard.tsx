@@ -1,12 +1,32 @@
 import React from 'react';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import '@mui/material/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
-import { Card, CardBody, CardFooter, CircularProgress, Chip, progress } from '@nextui-org/react';
-
 import  {FunctionComponent, ReactNode, useEffect, useState} from 'react'
+
+
+const DaySelector = () => {
+  return (
+    <div style={{ marginBottom: '20px' }}> {/* Espacio inferior para separarlo del ProgressBar */}
+      <select style={selectStyle}>
+        <option value="Monday">Today</option>
+      </select>
+    </div>
+  );
+};
+
+const selectStyle = {
+  padding: '8px',
+  fontSize: '16px',
+  border: '1px solid #ccc',
+  borderRadius: '4px',
+  backgroundColor: '#f9f9f9',
+  boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.1)',
+  width: '200px', // Ajusta el ancho según sea necesario
+};
+
+
 
 export const ModalNewTask = () => {
   return (
@@ -265,6 +285,7 @@ const BasicDateCalendar = () => {
 };
 
 const Dashboard = () => {
+  
   const styles = {
     containermain: {
       display: 'flex',
@@ -291,16 +312,17 @@ const Dashboard = () => {
       maxWidth: '40%', 
       width:'40%',
       backgroundColor: 'rgba(70, 117, 206, 0.8)', 
-      color: 'white', // Color de texto para el calendario
-      padding: '20px', // Espacio interior alrededor del calendario
-      borderRadius: '5px', // Bordes redondeados
-      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' // Sombra suave para destacarlo
+      color: 'white', 
+      padding: '20px',
+      borderRadius: '5px', 
+      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' 
     }
   };
 
   return (
     <div style={styles.containermain}>
       <div style={styles.container}>
+        <DaySelector />
        <ReactCustomizableProgressbar
           radius={100}
           progress={39}
@@ -317,23 +339,23 @@ const Dashboard = () => {
           initialAnimation={true}
           initialAnimationDelay={500}
         >
-          {/* Contenedor del texto para el porcentaje */}
+          
           <div style={{
-            position: 'absolute',  // Posicionamiento absoluto para superponer sobre el círculo
-            top: 0,  // Inicia en la parte superior del contenedor
-            left: 0,  // Inicia en el lado izquierdo del contenedor
-            width: '100%',  // Ocupa todo el ancho del contenedor
-            height: '100%',  // Ocupa toda la altura del contenedor
-            display: 'flex',  // Usa flexbox para facilitar el centrado
-            justifyContent: 'center',  // Centra horizontalmente
-            alignItems: 'center',  // Centra verticalmente
-            fontSize: '20px',  // Tamaño de fuente, ajustable según necesidad
-            color: '#FFC107'  // Color del texto, igual que la barra de progreso
+            position: 'absolute',  
+            top: 0,  
+            left: 0,  
+            width: '100%', 
+            height: '100%',  
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center',  
+            fontSize: '20px', 
+            color: '#FFC107'  
           }}>
-            {`${39}%`}  {/* Este valor debe ser dinámico basado en el estado o props */}
+            {`${39}%`} 
           </div>
                   </ReactCustomizableProgressbar>
-                  <div style={{margin: '0 0 20px 0'}}>
+                  <div style={{margin: '0 0 30% 0'}}>
           <ModalNewTask  />
           </div>
       </div>
