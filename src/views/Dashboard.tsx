@@ -8,6 +8,22 @@ import { Card, CardBody, CardFooter, CircularProgress, Chip, progress } from '@n
 
 import  {FunctionComponent, ReactNode, useEffect, useState} from 'react'
 
+export const ModalNewTask = () => {
+  return (
+    <div>
+     <button type="button" className="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">New task +</button>
+
+<div className="modal fade bd-example-modal-lg" tabIndex={-1} role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div className="modal-dialog modal-lg">
+    <div className="modal-content">
+      ...
+    </div>
+  </div>
+</div>
+    </div>
+  );
+};
+
 export type ReactCustomizableProgressbarProps = {
   radius: number,
   progress: number,
@@ -250,12 +266,25 @@ const BasicDateCalendar = () => {
 
 const Dashboard = () => {
   const styles = {
+    containermain: {
+      display: 'flex',
+      flexDirection: 'row'as 'row',
+      top: 0,
+      flex: 1, 
+      margin : '0',
+      justifyContent: 'center',
+      alignItems: 'center', 
+      height: '100vh', 
+      backgroundColor: 'transparent' // Corregido a transparente para visibilidad
+    },
     container: {
       display: 'flex',
+      flexDirection: 'column' as 'column',
+      flex: 1, 
       justifyContent: 'flex-end',
       alignItems: 'center', 
       height: '100vh', 
-      backgroundColor: '#00000' 
+      backgroundColor: '#0000' 
     },
     calendarContainer: {
       margin: '8%',
@@ -270,41 +299,44 @@ const Dashboard = () => {
   };
 
   return (
-    <div style={styles.container}>
+    <div style={styles.containermain}>
+      <div style={styles.container}>
        <ReactCustomizableProgressbar
-  radius={100}
-  progress={39}
-  strokeWidth={20}
-  strokeColor="#FFC107"
-  fillColor="none"
-  strokeLinecap="round"
-  transition="1s ease-out"
-  pointerRadius={0}
-  trackStrokeColor="#e0e0e0"
-  trackStrokeWidth={10}
-  rotate={150}
-  cut={120}
-  initialAnimation={true}
-  initialAnimationDelay={500}
->
-  {/* Contenedor del texto para el porcentaje */}
-  <div style={{
-    position: 'absolute',  // Posicionamiento absoluto para superponer sobre el círculo
-    top: 0,  // Inicia en la parte superior del contenedor
-    left: 0,  // Inicia en el lado izquierdo del contenedor
-    width: '100%',  // Ocupa todo el ancho del contenedor
-    height: '100%',  // Ocupa toda la altura del contenedor
-    display: 'flex',  // Usa flexbox para facilitar el centrado
-    justifyContent: 'center',  // Centra horizontalmente
-    alignItems: 'center',  // Centra verticalmente
-    fontSize: '20px',  // Tamaño de fuente, ajustable según necesidad
-    color: '#FFC107'  // Color del texto, igual que la barra de progreso
-  }}>
-    {`${39}%`}  {/* Este valor debe ser dinámico basado en el estado o props */}
-  </div>
-</ReactCustomizableProgressbar>
-
-
+          radius={100}
+          progress={39}
+          strokeWidth={20}
+          strokeColor="#FFC107"
+          fillColor="none"
+          strokeLinecap="round"
+          transition="1s ease-out"
+          pointerRadius={0}
+          trackStrokeColor="#e0e0e0"
+          trackStrokeWidth={10}
+          rotate={150}
+          cut={120}
+          initialAnimation={true}
+          initialAnimationDelay={500}
+        >
+          {/* Contenedor del texto para el porcentaje */}
+          <div style={{
+            position: 'absolute',  // Posicionamiento absoluto para superponer sobre el círculo
+            top: 0,  // Inicia en la parte superior del contenedor
+            left: 0,  // Inicia en el lado izquierdo del contenedor
+            width: '100%',  // Ocupa todo el ancho del contenedor
+            height: '100%',  // Ocupa toda la altura del contenedor
+            display: 'flex',  // Usa flexbox para facilitar el centrado
+            justifyContent: 'center',  // Centra horizontalmente
+            alignItems: 'center',  // Centra verticalmente
+            fontSize: '20px',  // Tamaño de fuente, ajustable según necesidad
+            color: '#FFC107'  // Color del texto, igual que la barra de progreso
+          }}>
+            {`${39}%`}  {/* Este valor debe ser dinámico basado en el estado o props */}
+          </div>
+                  </ReactCustomizableProgressbar>
+                  <div style={{margin: '0 0 20px 0'}}>
+          <ModalNewTask  />
+          </div>
+      </div>
       <div style={styles.calendarContainer}>
         <BasicDateCalendar />
       </div>
