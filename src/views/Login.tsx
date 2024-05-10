@@ -15,13 +15,33 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import GlobalLayout from 'src/common/GlobalLayout';
 import RegisterScreen from './Register';
-
+import api from '../api';
 
 
 const client_id = '85916301134-bo9muens74h0idca344gj0i3jq1tf5ep.apps.googleusercontent.com';
 
 const Login: React.FC = () => {
   const [value, setValue] = React.useState(0);
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+
+  const handleLogin = async () => {
+    try {
+      const credentials = {
+        email,
+        password
+      };
+      const response = await api.post("/login", credentials);  
+      console.log('Respuesta del backend:', response);
+      let data = JSON.parse(response.data);
+      if (data.user) {
+        console.log('Login successful', response.data.message);
+      }
+    } catch (error: any) {
+      console.error('Error en el login:', error.response);
+      // Aquí manejas los errores
+    }
+  };
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -104,7 +124,7 @@ const Login: React.FC = () => {
 
 
 
-            <Button fullWidth variant="contained" color="primary" sx={{ mt: 3, mb: 2 }}>
+            <Button fullWidth variant="contained" color="primary" sx={{ mt: 3, mb: 2 }} onClick={handleLogin}>
               Sign in
             </Button>
             
