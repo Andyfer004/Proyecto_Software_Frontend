@@ -9,6 +9,7 @@ import Box from '@mui/material/Box';
 import DashboardScreen from 'src/views/Dashboard';
 import UpdateAccountScreen from 'src/views/UpdateAccount';
 import { ToastContainer } from 'react-toastify';
+import Dashboard from 'src/views/Dashboard';
 
 const Stack = createNativeStackNavigator();
 
@@ -26,6 +27,7 @@ export default function App() {
           <Stack.Navigator initialRouteName="Login">
             <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
             <Stack.Screen name="UpdateAccount" component={UpdateAccountScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="home" component={Dashboard} options={{ headerShown: false }} />
           </Stack.Navigator>
       </NavigationContainer>
     </>

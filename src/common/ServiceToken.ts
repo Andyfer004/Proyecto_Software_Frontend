@@ -14,3 +14,5 @@ class ServiceToken{
     };
   
 }
+
+export default ServiceToken;

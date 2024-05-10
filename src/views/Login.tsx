@@ -16,6 +16,9 @@ import Tab from '@mui/material/Tab';
 import GlobalLayout from 'src/common/GlobalLayout';
 import RegisterScreen from './Register';
 import api from '../api';
+import NotificationService from 'src/common/AlertNotification';
+import ServiceToken from 'src/common/ServiceToken';
+import { useNavigation } from '@react-navigation/native';
 
 
 const client_id = '85916301134-bo9muens74h0idca344gj0i3jq1tf5ep.apps.googleusercontent.com';
@@ -24,22 +27,30 @@ const Login: React.FC = () => {
   const [value, setValue] = React.useState(0);
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const navigation = useNavigation();
 
   const handleLogin = async () => {
+
+
+
     try {
       const credentials = {
         email,
         password
       };
       const response = await api.post("/login", credentials);  
-      console.log('Respuesta del backend:', response);
-      let data = JSON.parse(response.data);
-      if (data.user) {
-        console.log('Login successful', response.data.message);
+      
+      
+      if (response.data.user) {
+        NotificationService.success(response.data.message)
+        ServiceToken.saveToken(response.data.token);
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+        navigation.navigate("home" as never)
+        
       }
     } catch (error: any) {
-      console.error('Error en el login:', error.response);
-      // Aquí manejas los errores
+      console.error('Error en el login:', error);
+      NotificationService.handleErrors(error.response);
     }
   };
 
@@ -101,20 +112,13 @@ const Login: React.FC = () => {
                 },
               }}
             >
-              <TextField fullWidth label="Email address" id="form2Example1" variant="standard" />
-              <TextField fullWidth label="Password" id="form2Example2" type="password" variant="standard" />
+              <TextField fullWidth value={email}  onChange={(e) => setEmail(e.target.value)} label="Email address" id="form2Example1" variant="standard" />
+              <TextField fullWidth value={password}  onChange={(e) => setPassword(e.target.value)} label="Password" id="form2Example2" type="password" variant="standard" />
             </Box>
 
 
-          <Grid container spacing={2} alignItems="center" justifyContent="center" sx={{ flexDirection: { xs: 'column', sm: 'row' } }}>
-            <Grid item xs={12} sm={6}>
-              <FormControlLabel
-                control={<Checkbox defaultChecked />}
-                label="Remember me"
-                id="form2Example31"
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
+          <Grid container  justifyContent="left" sx={{ flexDirection: { xs: 'column', sm: 'row' } }}>
+            <Grid >
               <Link href="#!" variant="body2">
                 Forgot password?
               </Link>

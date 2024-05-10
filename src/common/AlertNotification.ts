@@ -35,9 +35,13 @@ class NotificationService{
             toast.error(error.data.errors[key][0], this.options);
           }
         } else { 
+          if(error.status === 401){
+            toast.error(error.data.message, this.options);
+          }else{
+            toast.error("Server error occurred. "+ error.message, this.options);
+          }
           
           
-          toast.error("Server error occurred. "+ error.message, this.options);
         }
     }
 }
