@@ -27,6 +27,19 @@ class NotificationService{
     static error(message: string) {
         toast.error(message, this.options);
     }
+
+    static handleErrors(error: any) {
+        
+        if (error.status === 400) { 
+          for (let key in error.data.errors) {
+            toast.error(error.data.errors[key][0], this.options);
+          }
+        } else { 
+          
+          
+          toast.error("Server error occurred. "+ error.message, this.options);
+        }
+    }
 }
 
 export default NotificationService;

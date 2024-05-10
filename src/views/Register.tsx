@@ -40,13 +40,13 @@ const RegisterScreen: React.FC = () => {
             if(data.user){
                 NotificationService.success(response.data.message)
             }
-            // Manejar respuesta
-          } catch (error) {
-            console.error('Error al registrar:', error);
-            NotificationService.error("Error al registrar");
-            // Manejar error
+        
+          } catch (error:any) {
+            console.error('Error al registrar:', error.response);
+            NotificationService.handleErrors(error.response);
+        
         }
-        console.log(name, lastname, email, password, passwordConfirmation, phone);
+        
     };
     
 
