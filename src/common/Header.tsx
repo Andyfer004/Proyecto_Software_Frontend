@@ -15,6 +15,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
+import EditIcon from '@mui/icons-material/Edit';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -198,7 +199,7 @@ export default function Header() {
               color="inherit"
               onClick={handleUpdateAccount}
             >
-              <SettingsIcon /> 
+              <EditIcon /> 
             </IconButton>
             
             <IconButton
