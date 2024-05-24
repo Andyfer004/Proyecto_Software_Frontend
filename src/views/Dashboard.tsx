@@ -14,16 +14,8 @@ import ModalNewTask from './Dashboard/ModalNewTask';
 
 
 
-
-
-
-
-
-
 const Dashboard = () => {
   
-  
-
   return (
     <GlobalLayout>
       <Box  className='row w-100 h-100 justify-content-center mt-5'>
