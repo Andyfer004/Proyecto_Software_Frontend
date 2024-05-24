@@ -4,6 +4,9 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import  {FunctionComponent, ReactNode, useEffect, useState} from 'react'
+import Calendar from './Dashboard/Calendar';
+import GlobalLayout from 'src/common/GlobalLayout';
+import { Box } from '@mui/material';
 
 
 const DaySelector = () => {
@@ -276,93 +279,59 @@ ReactCustomizableProgressbar.defaultProps = {
 
 
 
-const BasicDateCalendar = () => {
-  return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <DateCalendar />
-    </LocalizationProvider>
-  );
-};
 
 const Dashboard = () => {
   
-  const styles = {
-    containermain: {
-      display: 'flex',
-      flexDirection: 'row'as 'row',
-      top: 0,
-      flex: 1, 
-      margin : '0',
-      justifyContent: 'center',
-      alignItems: 'center', 
-      height: '100vh', 
-      backgroundColor: 'transparent' // Corregido a transparente para visibilidad
-    },
-    container: {
-      display: 'flex',
-      flexDirection: 'column' as 'column',
-      flex: 1, 
-      justifyContent: 'flex-end',
-      alignItems: 'center', 
-      height: '100vh', 
-      backgroundColor: '#0000' 
-    },
-    calendarContainer: {
-      margin: '8%',
-      maxWidth: '40%', 
-      width:'40%',
-      backgroundColor: 'rgba(70, 117, 206, 0.8)', 
-      color: 'white', 
-      padding: '20px',
-      borderRadius: '5px', 
-      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' 
-    }
-  };
+  
 
   return (
-    <div style={styles.containermain}>
-      <div style={styles.container}>
-        <DaySelector />
-       <ReactCustomizableProgressbar
-          radius={100}
-          progress={39}
-          strokeWidth={20}
-          strokeColor="#FFC107"
-          fillColor="none"
-          strokeLinecap="round"
-          transition="1s ease-out"
-          pointerRadius={0}
-          trackStrokeColor="#e0e0e0"
-          trackStrokeWidth={10}
-          rotate={150}
-          cut={120}
-          initialAnimation={true}
-          initialAnimationDelay={500}
-        >
-          
-          <div style={{
-            position: 'absolute',  
-            top: 0,  
-            left: 0,  
-            width: '100%', 
-            height: '100%',  
-            display: 'flex', 
-            justifyContent: 'center', 
-            alignItems: 'center',  
-            fontSize: '20px', 
-            color: '#FFC107'  
-          }}>
-            {`${39}%`} 
-          </div>
-                  </ReactCustomizableProgressbar>
-                  <div style={{margin: '0 0 30% 0'}}>
-          <ModalNewTask  />
-          </div>
-      </div>
-      <div style={styles.calendarContainer}>
-        <BasicDateCalendar />
-      </div>
-    </div>
+    <GlobalLayout>
+      <Box  className='row w-100 h-100 justify-content-center mt-5'>
+        <Box  className='col-md-3 align-items-center row'>
+          <Box>
+            <DaySelector />
+            <ReactCustomizableProgressbar
+                radius={100}
+                progress={39}
+                strokeWidth={20}
+                strokeColor="#FFC107"
+                fillColor="none"
+                strokeLinecap="round"
+                transition="1s ease-out"
+                pointerRadius={0}
+                trackStrokeColor="#e0e0e0"
+                trackStrokeWidth={10}
+                rotate={150}
+                cut={120}
+                initialAnimation={true}
+                initialAnimationDelay={500}
+              >
+                
+                  <div style={{
+                    position: 'absolute',  
+                    top: 0,  
+                    left: 0,  
+                    width: '100%', 
+                    height: '100%',  
+                    display: 'flex', 
+                    justifyContent: 'center', 
+                    alignItems: 'center',  
+                    fontSize: '20px', 
+                    color: '#FFC107'  
+                  }}>
+                    {`${39}%`} 
+                  </div>
+            </ReactCustomizableProgressbar>
+            <div style={{margin: '0 0 30% 0'}}>
+              <ModalNewTask  />
+            </div>
+          </Box>
+        </Box>
+        <Box className='col-md-8'>
+            <Calendar/>
+        </Box>
+      </Box>
+    </GlobalLayout>
   );
 };
 

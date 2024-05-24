@@ -46,7 +46,7 @@ const drawerItems = [
 ];
 
 const SidebarGeneral = () => {
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
   const handleDrawerOpen = () => {
     setOpen(true);
   };

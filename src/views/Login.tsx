@@ -1,5 +1,5 @@
 import React from 'react';
-import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
+//import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
@@ -58,12 +58,12 @@ const Login: React.FC = () => {
     setValue(newValue);
   };
 
-  const handleLoginSuccess = (response: GoogleLoginResponse | GoogleLoginResponseOffline) => {
-    if ('profileObj' in response) {
-      console.log('Login Success:', response.profileObj);
-      // Manejo del acceso a los datos del usuario, response.profileObj contiene la información del perfil
-    }
-  };
+  // const handleLoginSuccess = (response: GoogleLoginResponse | GoogleLoginResponseOffline) => {
+  //   if ('profileObj' in response) {
+  //     console.log('Login Success:', response.profileObj);
+  //     // Manejo del acceso a los datos del usuario, response.profileObj contiene la información del perfil
+  //   }
+  // };
 
   const handleLoginFailure = (response: any) => {
     console.error('Login Failed:', response);
@@ -149,7 +149,7 @@ const Login: React.FC = () => {
               <p>Not a member? <Link href="#!">Register</Link></p>
               <p>or sign up with:</p>
               <Button variant="outlined" startIcon={<FacebookIcon />} sx={{ mx: 1 }} className='text-center' />
-              <GoogleLogin
+              {/* <GoogleLogin
                 clientId={client_id}
                 buttonText="Login with Google"
                 onSuccess={handleLoginSuccess}
@@ -159,7 +159,7 @@ const Login: React.FC = () => {
                   <Button variant="outlined" startIcon={<GoogleIcon />} sx={{ mx: 1 }} onClick={renderProps.onClick} disabled={renderProps.disabled}>
                   </Button>
                 )}
-              />
+              /> */}
             </Box>
           </form>
         ) : (

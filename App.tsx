@@ -24,7 +24,7 @@ export default function App() {
       <ToastContainer />
       <NavigationContainer>
           <SidebarGeneral/>
-          <Stack.Navigator initialRouteName="Login">
+          <Stack.Navigator initialRouteName="home">
             <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
             <Stack.Screen name="UpdateAccount" component={UpdateAccountScreen} options={{ headerShown: false }} />
             <Stack.Screen name="home" component={Dashboard} options={{ headerShown: false }} />

@@ -28,6 +28,8 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    width:"100%",
+    height:"100%"
   },
   scrollView: {
     width: '100%',
