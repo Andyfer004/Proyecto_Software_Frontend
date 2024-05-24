@@ -20,7 +20,7 @@ const DaySelector = () => {
     borderRadius: '4px',
     backgroundColor: '#f9f9f9',
     boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.1)',
-    width: '200px', // Ajusta el ancho según sea necesario
+    width: '100%', // Ajusta el ancho según sea necesario
   };
 
   

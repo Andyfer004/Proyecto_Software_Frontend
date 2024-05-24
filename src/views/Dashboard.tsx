@@ -10,6 +10,7 @@ import { Box } from '@mui/material';
 import DaySelector from './Dashboard/DaySelector';
 import ReactCustomizableProgressbar from './Dashboard/ReactCustomizableProgressbar';
 import ModalNewTask from './Dashboard/ModalNewTask';
+import Reminders from './Dashboard/Reminders';
 
 
 
@@ -23,6 +24,9 @@ const Dashboard = () => {
           <Box>
             <div className='w-100 text-center'>
               <DaySelector />
+            </div>
+            <div className='w-100 justify-content-center row m-0'>
+              <Reminders/>
             </div>
             <div className='w-100 justify-content-center row'>
               <ReactCustomizableProgressbar
