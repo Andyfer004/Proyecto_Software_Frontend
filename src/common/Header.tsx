@@ -10,10 +10,12 @@ import Badge from '@mui/material/Badge';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
+import SettingsIcon from '@mui/icons-material/Settings';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
+import EditIcon from '@mui/icons-material/Edit';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -83,6 +85,11 @@ export default function Header() {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
+  const handleUpdateAccount = () => {
+    console.log("Actualizar cuenta"); 
+    handleMenuClose(); 
+  };
+
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
     <Menu
@@ -103,6 +110,7 @@ export default function Header() {
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem onClick={handleUpdateAccount}>Update account</MenuItem>
     </Menu>
   );
 
@@ -148,6 +156,16 @@ export default function Header() {
         </IconButton>
         <p>Profile</p>
       </MenuItem>
+      <MenuItem onClick={handleUpdateAccount}> // Opción nueva
+      <IconButton
+        size="large"
+        aria-label="update account"
+        color="inherit"
+      >
+        <AccountCircle />
+      </IconButton>
+      <p>Update Account</p>
+    </MenuItem>
     </Menu>
   );
 
@@ -175,6 +193,14 @@ export default function Header() {
           </Search>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+          <IconButton
+              size="large"
+              aria-label="update account"
+              color="inherit"
+              onClick={handleUpdateAccount}
+            >
+              <EditIcon /> 
+            </IconButton>
             
             <IconButton
               size="large"
