@@ -1,3 +1,4 @@
+// src/common/hooks/useNotes.ts
 import { useState, useEffect } from 'react';
 import { getNotes, addNote, updateNote, deleteNote } from '../../api/notesApi';
 
@@ -15,18 +16,37 @@ const useNotes = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const notes = await getNotes();
-        setData(notes);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const notes = await getNotes();
+      setData(notes);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchData();
-  });
+  }, []);
+
+  const createNote = async (newNote: Omit<Note, 'id' | 'created_at' | 'updated_at'>) => {
+    setLoading(true);
+    try {
+      await addNote(newNote);
+      await fetchData(); // Refrescar la lista de notas
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+
+  return { data, loading, error, createNote};
 };
+
+export default useNotes;
