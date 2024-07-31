@@ -1,4 +1,3 @@
-// src/common/hooks/useNotes.ts
 import { useState, useEffect } from 'react';
 import { getNotes, addNote, updateNote, deleteNote } from '../../api/notesApi';
 

@@ -1,5 +1,4 @@
-// src/api/notesApi.ts
-const BASE_URL = 'http://localhost:8000/api';
+const BASE_URL = 'http://localhost:8000';
 
 export const getNotes = async () => {
   const response = await fetch(`${BASE_URL}/notes`);
