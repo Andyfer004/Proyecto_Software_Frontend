@@ -44,9 +44,20 @@ const useNotes = () => {
     }
   };
 
+  const modifyNote = async (id: number, updatedNote: Partial<Omit<Note, 'id'>>) => {
+    setLoading(true);
+    try {
+      await updateNote(id, updatedNote);
+      await fetchData(); // Refrescar la lista de notas
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
 
-  return { data, loading, error, createNote};
+  return { data, loading, error, createNote, modifyNote};
 };
 
 export default useNotes;
