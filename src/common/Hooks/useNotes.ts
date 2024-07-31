@@ -56,8 +56,19 @@ const useNotes = () => {
     }
   };
 
+  const removeNote = async (id: number) => {
+    setLoading(true);
+    try {
+      await deleteNote(id);
+      await fetchData(); // Refrescar la lista de notas
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  return { data, loading, error, createNote, modifyNote};
+  return { data, loading, error, createNote, modifyNote, removeNote };
 };
 
 export default useNotes;
