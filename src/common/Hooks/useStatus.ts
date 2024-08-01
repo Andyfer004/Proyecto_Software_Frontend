@@ -25,47 +25,8 @@ const useStatus = () => {
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
 
-  const createStatus = async (newStatus: Omit<Status, 'id' | 'created_at' | 'updated_at'>) => {
-    setLoading(true);
-    try {
-      await addStatus(newStatus);
-      await fetchData(); // Refrescar la lista de status
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const modifyStatus = async (id: number, updatedStatus: Partial<Omit<Status, 'id'>>) => {
-    setLoading(true);
-    try {
-      await updateStatus(id, updatedStatus);
-      await fetchData(); // Refrescar la lista de status
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const removeStatus = async (id: number) => {
-    setLoading(true);
-    try {
-      await deleteStatus(id);
-      await fetchData(); // Refrescar la lista de status
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return { data, loading, error, createStatus, modifyStatus, removeStatus };
+  return { data, loading, error};
 };
 
 export default useStatus;
