@@ -12,12 +12,13 @@ import {
   MenuItem,
   IconButton,
   Grid,
+  Popover,
 } from '@mui/material';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import './Calendar.css'; // Importa el archivo CSS
+import './Calendar.css';
 
 // Define the task interface
 interface Task {
@@ -38,12 +39,13 @@ const Calendar: React.FC = () => {
   const [statusId, setStatusId] = useState<number | string>('');
   const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]); // Estado para almacenar las tareas
-
-  const priorities = [
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [newPriorityName, setNewPriorityName] = useState<string>('');
+  const [priorities, setPriorities] = useState([
     { id: 1, name: 'Low' },
     { id: 2, name: 'Medium' },
     { id: 3, name: 'High' },
-  ];
+  ]);
 
   const statuses = [
     { id: 1, name: 'To Do' },
@@ -96,13 +98,33 @@ const Calendar: React.FC = () => {
       setTasks([...tasks, newTask]);
     }
     
-    // Resetear campos y cerrar diálogo
+    // Reset fields and close dialog
     setTaskName('');
     setDescription('');
     setPriorityId('');
     setStatusId('');
     setSelectedTaskId(null);
     setOpenDialog(false);
+  };
+
+  const handleOpenPopover = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClosePopover = () => {
+    setAnchorEl(null);
+    setNewPriorityName(''); // Reset new priority name
+  };
+
+  const handleAddPriority = () => {
+    if (newPriorityName.trim()) {
+      const newPriority = {
+        id: priorities.length + 1,
+        name: newPriorityName,
+      };
+      setPriorities([...priorities, newPriority]);
+      handleClosePopover();
+    }
   };
 
   // Transform tasks into events for FullCalendar
@@ -123,11 +145,10 @@ const Calendar: React.FC = () => {
         initialView="dayGridMonth"
         weekends={true}
         dateClick={handleDateClick}
-        eventClick={handleEventClick} // Evento de clic en un evento
-        events={calendarEvents} // Pasar los eventos al calendario
+        eventClick={handleEventClick}
+        events={calendarEvents}
         eventClassNames={(arg) => {
-          // Apply the class based on status
-          if (arg.event.extendedProps.statusId === 3) { // Assuming 3 is 'Completed'
+          if (arg.event.extendedProps.statusId === 3) {
             return 'completed-event';
           }
           return '';
@@ -176,7 +197,7 @@ const Calendar: React.FC = () => {
                   ))}
                 </Select>
               </FormControl>
-              <IconButton>
+              <IconButton onClick={handleOpenPopover}>
                 <AddCircleIcon />
               </IconButton>
             </Grid>
@@ -210,6 +231,41 @@ const Calendar: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Popover
+        open={Boolean(anchorEl)}
+        anchorEl={anchorEl}
+        onClose={handleClosePopover}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+      >
+        <DialogTitle>Add New Priority</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Priority Name"
+            type="text"
+            fullWidth
+            value={newPriorityName}
+            onChange={(e) => setNewPriorityName(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClosePopover} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleAddPriority} color="primary">
+            Add
+          </Button>
+        </DialogActions>
+      </Popover>
     </>
   );
 };
