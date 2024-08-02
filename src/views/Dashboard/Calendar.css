@@ -1,0 +1,5 @@
+.completed-event {
+    text-decoration: line-through; /* Subraya el texto */
+    background-color: #d1c4e9 !important; /* O cualquier color que desees */
+    color: #4a148c !important;
+}

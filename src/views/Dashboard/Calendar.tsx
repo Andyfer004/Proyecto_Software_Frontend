@@ -1,73 +1,217 @@
-import React, { useState } from "react";
-import NotificationService from "src/common/AlertNotification";
-import moment from "moment";
+import React, { useState } from 'react';
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Button,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  IconButton,
+  Grid,
+} from '@mui/material';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
+import interactionPlugin from '@fullcalendar/interaction';
+import './Calendar.css'; // Importa el archivo CSS
 
-// Definición de los eventos que se mostrarán en el calendario
-const events = [
-    {
-        'title': 'All Day Event very long title', // Título del evento
-        'allDay': true, // Indica que es un evento de todo el día
-        'start': new Date(2024, 3, 0), // Fecha de inicio
-        'end': new Date(2024, 3, 1) // Fecha de finalización
-    },
-    {
-        'title': 'Long Event',
-        'start': new Date(2024, 3, 7),
-        'end': new Date(2024, 3, 10)
-    },
-    {
-        'title': 'Some Event',
-        'start': new Date(2024, 3, 9, 0, 0, 0),
-        'end': new Date(2024, 3, 9, 0, 0, 0)
-    },
-    {
-        'title': 'Conference',
-        'start': new Date(2024, 3, 11),
-        'end': new Date(2024, 3, 13),
-        desc: 'Big conference for important people' // Descripción del evento
-    },
-    {
-        'title': 'Meeting',
-        'start': new Date(2024, 3, 12, 10, 30, 0, 0),
-        'end': new Date(2024, 3, 12, 12, 30, 0, 0),
-        desc: 'Pre-meeting meeting, to prepare for the meeting'
-    },
-    {
-        'title': 'Lunch',
-        'start': new Date(2024, 3, 12, 12, 0, 0, 0),
-        'end': new Date(2024, 3, 12, 13, 0, 0, 0),
-        desc: 'Power lunch'
-    },
-    {
-        'title': 'Meeting',
-        'start': new Date(2024, 3, 12, 14, 0, 0, 0),
-        'end': new Date(2024, 3, 12, 15, 0, 0, 0)
-    },
-   
-]
+// Define the task interface
+interface Task {
+  id: number;
+  taskName: string;
+  description: string;
+  priorityId: number | string;
+  statusId: number | string;
+  dueDate: string;
+}
 
-// Componente de calendario responsive
 const Calendar: React.FC = () => {
-    return (
-        <>
-            <FullCalendar
-                plugins={[ dayGridPlugin ]} // Plugins a utilizar en FullCalendar
-                initialView="dayGridMonth" // Vista inicial del calendario
-                weekends={false} // No mostrar los fines de semana
-                events={[
-                    { title: 'event 1', date: '2024-05-01' },
-                    { title: 'event 2', date: '2024-05-22' },
-                    {
-                        title  : 'event3',
-                        start  : '2024-05-07',
-                        end    : '2024-05-08'
-                    },
-                ]}
-            />
-        </>
-    )
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<string>('');
+  const [taskName, setTaskName] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
+  const [priorityId, setPriorityId] = useState<number | string>('');
+  const [statusId, setStatusId] = useState<number | string>('');
+  const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
+  const [tasks, setTasks] = useState<Task[]>([]); // Estado para almacenar las tareas
+
+  const priorities = [
+    { id: 1, name: 'Low' },
+    { id: 2, name: 'Medium' },
+    { id: 3, name: 'High' },
+  ];
+
+  const statuses = [
+    { id: 1, name: 'To Do' },
+    { id: 2, name: 'In Progress' },
+    { id: 3, name: 'Completed' },
+  ];
+
+  const handleDateClick = (arg: any) => {
+    setSelectedDate(arg.dateStr);
+    setSelectedTaskId(null); // Clear selected task for new entry
+    setTaskName('');
+    setDescription('');
+    setPriorityId('');
+    setStatusId('');
+    setOpenDialog(true);
+  };
+
+  const handleEventClick = (clickInfo: any) => {
+    const clickedTask = tasks.find((task) => task.id === parseInt(clickInfo.event.id, 10));
+
+    if (clickedTask) {
+      setSelectedTaskId(clickedTask.id);
+      setTaskName(clickedTask.taskName);
+      setDescription(clickedTask.description);
+      setPriorityId(clickedTask.priorityId);
+      setStatusId(clickedTask.statusId);
+      setSelectedDate(clickedTask.dueDate);
+      setOpenDialog(true);
+    }
+  };
+
+  const handleSaveTask = () => {
+    if (selectedTaskId !== null) {
+      // Update existing task
+      setTasks(tasks.map(task => 
+        task.id === selectedTaskId
+          ? { ...task, taskName, description, priorityId, statusId, dueDate: selectedDate }
+          : task
+      ));
+    } else {
+      // Add new task
+      const newTask: Task = {
+        id: tasks.length + 1, // Simple way to generate an ID, use better approach in production
+        taskName,
+        description,
+        priorityId,
+        statusId,
+        dueDate: selectedDate,
+      };
+      setTasks([...tasks, newTask]);
+    }
+    
+    // Resetear campos y cerrar diálogo
+    setTaskName('');
+    setDescription('');
+    setPriorityId('');
+    setStatusId('');
+    setSelectedTaskId(null);
+    setOpenDialog(false);
+  };
+
+  // Transform tasks into events for FullCalendar
+  const calendarEvents = tasks.map((task) => ({
+    id: task.id.toString(),
+    title: task.taskName,
+    start: task.dueDate,
+    description: task.description,
+    extendedProps: {
+      statusId: task.statusId, // Pass statusId for class name logic
+    },
+  }));
+
+  return (
+    <>
+      <FullCalendar
+        plugins={[dayGridPlugin, interactionPlugin]}
+        initialView="dayGridMonth"
+        weekends={true}
+        dateClick={handleDateClick}
+        eventClick={handleEventClick} // Evento de clic en un evento
+        events={calendarEvents} // Pasar los eventos al calendario
+        eventClassNames={(arg) => {
+          // Apply the class based on status
+          if (arg.event.extendedProps.statusId === 3) { // Assuming 3 is 'Completed'
+            return 'completed-event';
+          }
+          return '';
+        }}
+      />
+
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+        <DialogTitle>{selectedTaskId !== null ? 'Edit Task' : 'Create Task'}</DialogTitle>
+        <DialogContent>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                autoFocus
+                margin="dense"
+                label="Task Name"
+                type="text"
+                fullWidth
+                value={taskName}
+                onChange={(e) => setTaskName(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                margin="dense"
+                label="Description"
+                type="text"
+                fullWidth
+                multiline
+                rows={4}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <FormControl fullWidth margin="dense">
+                <InputLabel>Priority</InputLabel>
+                <Select
+                  value={priorityId}
+                  onChange={(e) => setPriorityId(e.target.value as number)}
+                  label="Priority"
+                >
+                  {priorities.map((priority) => (
+                    <MenuItem key={priority.id} value={priority.id}>
+                      {priority.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <IconButton>
+                <AddCircleIcon />
+              </IconButton>
+            </Grid>
+            <Grid item xs={6}>
+              <FormControl fullWidth margin="dense">
+                <InputLabel>Status</InputLabel>
+                <Select
+                  value={statusId}
+                  onChange={(e) => setStatusId(e.target.value as number)}
+                  label="Status"
+                >
+                  {statuses.map((status) => (
+                    <MenuItem key={status.id} value={status.id}>
+                      {status.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <IconButton>
+                <AddCircleIcon />
+              </IconButton>
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDialog(false)} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleSaveTask} color="primary">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
 };
 
-export default Calendar; // Exporta el componente Calendar para su uso en otras partes de la aplicación
+export default Calendar;
