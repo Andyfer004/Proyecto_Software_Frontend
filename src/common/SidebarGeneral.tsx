@@ -23,6 +23,7 @@ import { useNavigate as useWebNavigate } from 'react-router-dom';
 import { Platform } from 'react-native';
 import LoginIcon from '@mui/icons-material/Login';
 import EventNoteIcon from '@mui/icons-material/EventNote';
+import HomeIcon from '@mui/icons-material/Home';
 
 const DrawerHeader = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -57,6 +58,7 @@ const drawerWidth = 240;
 
 const drawerItems = [
   { name: 'Login', icon: LoginIcon, route: 'login' },
+  { name: 'Home', icon: HomeIcon, route: '' },
   { name: 'Notes', icon: EventNoteIcon, route: 'notes' },
   { name: 'Add', icon: AddCircle, route: 'add-profile' },
 ];

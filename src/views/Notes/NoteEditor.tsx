@@ -1,48 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Button,
-  Drawer,
   Box,
   IconButton,
   TextField,
   Typography,
-  Divider,
   FormControl,
   InputLabel,
   Select,
-  MenuItem
+  MenuItem,
+  AppBar,
+  Toolbar,
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';
 import ImageIcon from '@mui/icons-material/Image';
 import FormatSizeIcon from '@mui/icons-material/FormatSize';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css'; // Importa los estilos del editor
 
-// Define the interface for the component props
+// Define la interfaz incluyendo initialTitle e initialContent
 interface NoteEditorProps {
-  open: boolean;
   onClose: () => void;
   onSave: (title: string, content: string) => void;
+  initialTitle: string;
+  initialContent: string;
 }
 
-const drawerWidth = 400;
+const NoteEditor: React.FC<NoteEditorProps> = ({ onClose, onSave, initialTitle, initialContent }) => {
+  const [title, setTitle] = useState<string>(initialTitle);
+  const [content, setContent] = useState<string>(initialContent);
 
-const DrawerHeader = styled('div')(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  padding: theme.spacing(1),
-  justifyContent: 'space-between',
-}));
-
-const NoteEditor: React.FC<NoteEditorProps> = ({ open, onClose, onSave }) => {
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [fontSize, setFontSize] = useState('medium');
+  // Sincroniza los valores iniciales cuando cambian
+  useEffect(() => {
+    setTitle(initialTitle);
+    setContent(initialContent);
+  }, [initialTitle, initialContent]);
 
   const handleSave = () => {
     if (title && content) {
       onSave(title, content);
-      setTitle('');
-      setContent('');
       onClose();
     } else {
       alert('Please fill out both fields.');
@@ -50,27 +46,18 @@ const NoteEditor: React.FC<NoteEditorProps> = ({ open, onClose, onSave }) => {
   };
 
   return (
-    <Drawer
-      anchor="right"
-      open={open}
-      onClose={onClose}
-      sx={{
-        width: drawerWidth,
-        flexShrink: 0,
-        '& .MuiDrawer-paper': {
-          width: drawerWidth,
-          boxSizing: 'border-box',
-        },
-      }}
-    >
-      <DrawerHeader>
-        <Typography variant="h6">Edit Note</Typography>
-        <IconButton onClick={onClose}>
-          <CloseIcon />
-        </IconButton>
-      </DrawerHeader>
-      <Divider />
-      <Box sx={{ padding: 2 }}>
+    <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            Edit Note
+          </Typography>
+          <IconButton color="inherit" onClick={onClose}>
+            <CloseIcon />
+          </IconButton>
+        </Toolbar>
+      </AppBar>
+      <Box sx={{ padding: 2, flexGrow: 1, overflow: 'auto' }}>
         <TextField
           label="Title"
           variant="outlined"
@@ -79,45 +66,22 @@ const NoteEditor: React.FC<NoteEditorProps> = ({ open, onClose, onSave }) => {
           onChange={(e) => setTitle(e.target.value)}
           margin="normal"
         />
-        <TextField
-          label="Content"
-          variant="outlined"
-          fullWidth
-          multiline
-          rows={10}
+        <ReactQuill
+          theme="snow"
           value={content}
-          onChange={(e) => setContent(e.target.value)}
-          margin="normal"
-          sx={{ fontSize: fontSize === 'large' ? 18 : fontSize === 'small' ? 12 : 14 }}
+          onChange={setContent}
+          style={{ height: '350px', marginBottom: '50px' }}
         />
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', marginY: 2 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
           <Button variant="outlined" startIcon={<ImageIcon />}>
             Add Image
           </Button>
-          <FormControl variant="outlined" sx={{ minWidth: 120 }}>
-            <InputLabel>Font Size</InputLabel>
-            <Select
-              value={fontSize}
-              onChange={(e) => setFontSize(e.target.value as string)}
-              label="Font Size"
-              startAdornment={<FormatSizeIcon />}
-            >
-              <MenuItem value="small">Small</MenuItem>
-              <MenuItem value="medium">Medium</MenuItem>
-              <MenuItem value="large">Large</MenuItem>
-            </Select>
-          </FormControl>
         </Box>
-        <Button
-          variant="contained"
-          color="primary"
-          fullWidth
-          onClick={handleSave}
-        >
+        <Button variant="contained" color="primary" fullWidth onClick={handleSave}>
           Save Note
         </Button>
       </Box>
-    </Drawer>
+    </Box>
   );
 };
 
