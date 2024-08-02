@@ -59,7 +59,12 @@ const Calendar: React.FC = () => {
                 weekends={false}
                 events={[
                     { title: 'event 1', date: '2024-05-01' },
-                    { title: 'event 2', date: '2024-05-22' }
+                    { title: 'event 2', date: '2024-05-22' },
+                    {
+                        title  : 'event3',
+                        start  : '2024-05-07',
+                        end    : '2024-05-08'
+                    },
                 ]}
             />
         </>
