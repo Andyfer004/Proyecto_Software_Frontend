@@ -42,12 +42,12 @@ export const ModalNewTask = () => {
       <Button variant="contained" size="large">+ New</Button>
 
       <StyledDialog open={open} onClose={handleClose} aria-labelledby="options-dialog-title">
-        <DialogTitle id="options-dialog-title">Switch Workspaces</DialogTitle>
+        <DialogTitle id="options-dialog-title"> Profile</DialogTitle>
         <DialogContent>
           {/* Aquí puedes añadir las opciones que quieras mostrar en el modal */}
-          <p>Workspace 1</p>
-          <p>Workspace 2</p>
-          <p>Workspace 3</p>
+          <p>Name</p>
+          <p>Upload Image</p>
+          
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
