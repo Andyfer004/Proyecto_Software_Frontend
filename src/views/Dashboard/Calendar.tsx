@@ -39,19 +39,21 @@ const Calendar: React.FC = () => {
   const [statusId, setStatusId] = useState<number | string>('');
   const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]); // Estado para almacenar las tareas
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [anchorElPriority, setAnchorElPriority] = useState<null | HTMLElement>(null);
+  const [anchorElStatus, setAnchorElStatus] = useState<null | HTMLElement>(null);
   const [newPriorityName, setNewPriorityName] = useState<string>('');
+  const [newStatusName, setNewStatusName] = useState<string>('');
   const [priorities, setPriorities] = useState([
     { id: 1, name: 'Low' },
     { id: 2, name: 'Medium' },
     { id: 3, name: 'High' },
   ]);
 
-  const statuses = [
+  const [statuses, setStatuses] = useState([
     { id: 1, name: 'To Do' },
     { id: 2, name: 'In Progress' },
     { id: 3, name: 'Completed' },
-  ];
+  ]);
 
   const handleDateClick = (arg: any) => {
     setSelectedDate(arg.dateStr);
@@ -107,12 +109,13 @@ const Calendar: React.FC = () => {
     setOpenDialog(false);
   };
 
-  const handleOpenPopover = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
+  // Functions for handling priority popover
+  const handleOpenPopoverPriority = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElPriority(event.currentTarget);
   };
 
-  const handleClosePopover = () => {
-    setAnchorEl(null);
+  const handleClosePopoverPriority = () => {
+    setAnchorElPriority(null);
     setNewPriorityName(''); // Reset new priority name
   };
 
@@ -123,7 +126,28 @@ const Calendar: React.FC = () => {
         name: newPriorityName,
       };
       setPriorities([...priorities, newPriority]);
-      handleClosePopover();
+      handleClosePopoverPriority();
+    }
+  };
+
+  // Functions for handling status popover
+  const handleOpenPopoverStatus = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElStatus(event.currentTarget);
+  };
+
+  const handleClosePopoverStatus = () => {
+    setAnchorElStatus(null);
+    setNewStatusName(''); // Reset new status name
+  };
+
+  const handleAddStatus = () => {
+    if (newStatusName.trim()) {
+      const newStatus = {
+        id: statuses.length + 1,
+        name: newStatusName,
+      };
+      setStatuses([...statuses, newStatus]);
+      handleClosePopoverStatus();
     }
   };
 
@@ -197,7 +221,7 @@ const Calendar: React.FC = () => {
                   ))}
                 </Select>
               </FormControl>
-              <IconButton onClick={handleOpenPopover}>
+              <IconButton onClick={handleOpenPopoverPriority}>
                 <AddCircleIcon />
               </IconButton>
             </Grid>
@@ -216,7 +240,7 @@ const Calendar: React.FC = () => {
                   ))}
                 </Select>
               </FormControl>
-              <IconButton>
+              <IconButton onClick={handleOpenPopoverStatus}>
                 <AddCircleIcon />
               </IconButton>
             </Grid>
@@ -232,10 +256,11 @@ const Calendar: React.FC = () => {
         </DialogActions>
       </Dialog>
 
+      {/* Popover for adding new priority */}
       <Popover
-        open={Boolean(anchorEl)}
-        anchorEl={anchorEl}
-        onClose={handleClosePopover}
+        open={Boolean(anchorElPriority)}
+        anchorEl={anchorElPriority}
+        onClose={handleClosePopoverPriority}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'center',
@@ -258,10 +283,46 @@ const Calendar: React.FC = () => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClosePopover} color="primary">
+          <Button onClick={handleClosePopoverPriority} color="primary">
             Cancel
           </Button>
           <Button onClick={handleAddPriority} color="primary">
+            Add
+          </Button>
+        </DialogActions>
+      </Popover>
+
+      {/* Popover for adding new status */}
+      <Popover
+        open={Boolean(anchorElStatus)}
+        anchorEl={anchorElStatus}
+        onClose={handleClosePopoverStatus}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+      >
+        <DialogTitle>Add New Status</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Status Name"
+            type="text"
+            fullWidth
+            value={newStatusName}
+            onChange={(e) => setNewStatusName(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClosePopoverStatus} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleAddStatus} color="primary">
             Add
           </Button>
         </DialogActions>
