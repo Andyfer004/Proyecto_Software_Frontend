@@ -1,21 +1,62 @@
-import { Button } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Paper } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
+const StyledDialog = styled(Dialog)(({ theme }) => ({
+  '& .MuiDialog-paper': {
+    borderRadius: theme.shape.borderRadius,
+    minWidth: 300,
+    boxShadow: '0 2px 10px rgba(0,0,0,0.2)',
+  },
+  '& .MuiDialogContent-root': {
+    paddingTop: 0,
+    paddingBottom: theme.spacing(1),
+  },
+  '& .MuiDialogTitle-root': {
+    borderBottom: `1px solid ${theme.palette.divider}`,
+    marginBottom: theme.spacing(1),
+  }
+}));
 
 export const ModalNewTask = () => {
-    return (
-      <div>
-            <Button variant="contained" size="large">+ New</Button>  
-            <div className="modal fade bd-example-modal-lg" tabIndex={-1} role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-                <div className="modal-dialog modal-lg">
-                    <div className="modal-content">
-                    ...
-                    </div>
-                </div>
-            </div>
-      </div>
-    );
+  const [open, setOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  return (
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+      <Button 
+        variant="contained" 
+        size="large" 
+        style={{ backgroundColor: 'green', marginRight: '10px' }} 
+        onClick={handleClickOpen}
+      >
+        PROFILE
+      </Button>
+      <Button variant="contained" size="large">+ New</Button>
+
+      <StyledDialog open={open} onClose={handleClose} aria-labelledby="options-dialog-title">
+        <DialogTitle id="options-dialog-title">Switch Workspaces</DialogTitle>
+        <DialogContent>
+          {/* Aquí puedes añadir las opciones que quieras mostrar en el modal */}
+          <p>Workspace 1</p>
+          <p>Workspace 2</p>
+          <p>Workspace 3</p>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </StyledDialog>
+    </div>
+  );
 };
 
 export default ModalNewTask;
-  
