@@ -1,5 +1,155 @@
-.completed-event {
-    text-decoration: line-through; /* Subraya el texto */
-    background-color: #d1c4e9 !important; /* O cualquier color que desees */
-    color: #4a148c !important;
+/* Sombrear los números de los días en las columnas de la izquierda y derecha */
+.fc-day-sun, .fc-day-sat, 
+.fc-daygrid-day.fc-day-other {
+  background-color: #f8f9fa; /* Fondo sombreado */
+  color: #adb5bd; /* Color del texto del día y número */
+}
+
+/* Estilizar el día actual con un círculo azul y número blanco */
+.fc-day-today {
+    background-color: transparent !important; /* Eliminar el fondo amarillo */
+    position: relative; /* Necesario para posicionar el círculo */
+}
+
+.fc-day-today .fc-daygrid-day-number {
+    background-color: #007bff; /* Color de fondo del círculo (azul) */
+    color: white; /* Color del número dentro del círculo */
+    border-radius: 50%; /* Convertir en círculo */
+    width: 30px; /* Tamaño del círculo */
+    height: 30px; /* Tamaño del círculo */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold; /* Negrita para el número */
+}
+
+/* Sombrear solo el número de los días fuera del mes actual (como 30, 31, etc.) */
+.fc-daygrid-day.fc-day-other .fc-daygrid-day-number {
+    color: #adb5bd; /* Sombrear solo el texto */
+}
+
+/* Evitar sombrear la celda completa de los días fuera del mes actual */
+.fc-daygrid-day.fc-day-other {
+    background-color: transparent; /* Celda sin sombreado */
+}
+
+/* Sombrear los fines de semana (sábado y domingo) */
+.fc-day-sun, .fc-day-sat {
+    background-color: #f8f9fa; /* Fondo sombreado */
+}
+
+/* Sombrear los números de los días (números en los cuadros) */
+.fc-daygrid-day-number {
+    border-bottom: none !important; /* Eliminar la línea debajo del número del día */
+    text-decoration: none !important;
+    font-weight: bold;
+    color: #495057;
+}
+
+/* Aplicar sombreado a los nombres de los días en las columnas de la izquierda y derecha */
+.fc-col-header-cell.fc-day-sun, 
+.fc-col-header-cell.fc-day-sat {
+    background-color: #f8f9fa; /* Fondo sombreado */
+    color: #adb5bd; /* Color del texto del día sombreado */
+}
+
+/* Estilizar la cabecera (nombres de los días) */
+.fc-col-header-cell-cushion {
+    text-decoration: none !important;
+    border-bottom: none !important;
+    pointer-events: none !important;
+    font-weight: bold;
+    color: #495057;
+    text-transform: uppercase;
+}
+
+/* Mantener el estilo del resto del texto en las cabeceras */
+.fc-toolbar-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #333;
+}
+
+/* Botones de navegación */
+.fc-prev-button,
+.fc-next-button,
+.fc-today-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.fc-prev-button:hover,
+.fc-next-button:hover,
+.fc-today-button:hover {
+    background-color: #0056b3;
+}
+
+/* Efecto hover en los días del calendario */
+.fc-daygrid-day:hover {
+    background-color: #f0f0f0; /* Fondo gris claro */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Sombra sutil en los días */
+.fc-daygrid-day {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Sombra en el contenedor del calendario */
+.fc {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 30px;
+    background-color: white;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    color: #333;
+}
+
+/* Estilo de eventos */
+.fc-daygrid-event {
+    background-color: #007bff;
+    border: none;
+    color: white;
+    padding: 5px;
+    font-size: 0.85rem;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.fc-daygrid-event:hover {
+    background-color: #0056b3;
+}
+
+/* Botones prev/next */
+.fc-prev-button:hover,
+.fc-next-button:hover {
+    color: #0056b3;
+    background-color: transparent;
+}
+
+/* Evitar bordes innecesarios */
+.fc-daygrid-day-frame,
+.fc-scrollgrid,
+.fc-scrollgrid-section,
+.fc-scrollgrid-sync-inner,
+.fc-daygrid-week,
+.fc-daygrid-day-bg {
+    border: none !important;
+}
+
+/* Mantener el estilo de los nombres de los días en las cabeceras */
+.fc-col-header-cell {
+    padding: 8px 0;
+    background-color: transparent;
+    border-bottom: none;
 }
