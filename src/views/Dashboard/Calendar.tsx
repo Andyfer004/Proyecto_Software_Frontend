@@ -18,6 +18,8 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import listPlugin from '@fullcalendar/list';
 import './Calendar.css';
 
 // Define the task interface
@@ -82,7 +84,7 @@ const Calendar: React.FC = () => {
   const handleSaveTask = () => {
     if (selectedTaskId !== null) {
       // Update existing task
-      setTasks(tasks.map(task => 
+      setTasks(tasks.map(task =>
         task.id === selectedTaskId
           ? { ...task, taskName, description, priorityId, statusId, dueDate: selectedDate }
           : task
@@ -99,7 +101,7 @@ const Calendar: React.FC = () => {
       };
       setTasks([...tasks, newTask]);
     }
-    
+
     // Reset fields and close dialog
     setTaskName('');
     setDescription('');
@@ -162,20 +164,51 @@ const Calendar: React.FC = () => {
     },
   }));
 
+  const handleEventDrop = (info) => {
+    const { event } = info;
+    const updatedTaskId = parseInt(event.id, 10);
+
+    setTasks(tasks.map(task =>
+      task.id === updatedTaskId
+        ? { ...task, dueDate: event.startStr }
+        : task
+    ));
+  };
+
+  const handleEventResize = (info) => {
+    const { event } = info;
+    const updatedTaskId = parseInt(event.id, 10);
+
+    setTasks(tasks.map(task =>
+      task.id === updatedTaskId
+        ? { ...task, dueDate: event.startStr }
+        : task
+    ));
+  };
+
   return (
     <>
       <FullCalendar
-        plugins={[dayGridPlugin, interactionPlugin]}
+        plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin]}
         initialView="dayGridMonth"
         weekends={true}
         dateClick={handleDateClick}
         eventClick={handleEventClick}
+        editable={true} // Habilitar arrastrar y soltar
+        droppable={true} // Habilitar soltar en otro día
         events={calendarEvents}
+        eventDrop={handleEventDrop}
+        eventResize={handleEventResize}
         eventClassNames={(arg) => {
           if (arg.event.extendedProps.statusId === 3) {
             return 'completed-event';
           }
           return '';
+        }}
+        headerToolbar={{
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
         }}
       />
 
