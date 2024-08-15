@@ -164,7 +164,7 @@ const Calendar: React.FC = () => {
     },
   }));
 
-  const handleEventDrop = (info) => {
+  const handleEventDrop = (info: { event: any; }) => {
     const { event } = info;
     const updatedTaskId = parseInt(event.id, 10);
 
@@ -175,7 +175,7 @@ const Calendar: React.FC = () => {
     ));
   };
 
-  const handleEventResize = (info) => {
+  const handleEventResize = (info: { event: any; }) => {
     const { event } = info;
     const updatedTaskId = parseInt(event.id, 10);
 
