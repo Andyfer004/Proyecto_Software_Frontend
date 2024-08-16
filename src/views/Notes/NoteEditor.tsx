@@ -5,41 +5,52 @@ import {
   IconButton,
   TextField,
   Typography,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   AppBar,
   Toolbar,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import ImageIcon from '@mui/icons-material/Image';
-import FormatSizeIcon from '@mui/icons-material/FormatSize';
 import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css'; // Importa los estilos del editor
+import 'react-quill/dist/quill.snow.css';
+import { useCreateNote } from '../../common/Hooks/useNotes';
 
-// Define la interfaz incluyendo initialTitle e initialContent
 interface NoteEditorProps {
   onClose: () => void;
-  onSave: (title: string, content: string) => void;
+  onSave: () => void; // Ahora no es opcional
   initialTitle: string;
   initialContent: string;
 }
 
-const NoteEditor: React.FC<NoteEditorProps> = ({ onClose, onSave, initialTitle, initialContent }) => {
-  const [title, setTitle] = useState<string>(initialTitle);
-  const [content, setContent] = useState<string>(initialContent);
+const extractTitleAndContent = (note: string) => {
+  const titleMatch = note.match(/<strong>(.*?)<\/strong>/);
+  const title = titleMatch ? titleMatch[1] : '';
+  const content = note.replace(/<strong>.*?<\/strong><br\/?>/, '').trim();
+  return { title, content };
+};
 
-  // Sincroniza los valores iniciales cuando cambian
+const NoteEditor: React.FC<NoteEditorProps> = ({ onClose, onSave, initialTitle, initialContent }) => {
+  const { title: extractedTitle, content: extractedContent } = extractTitleAndContent(initialTitle);
+  const [title, setTitle] = useState<string>(extractedTitle);
+  const [content, setContent] = useState<string>(extractedContent);
+  const { createNote, loading, error } = useCreateNote();
+
   useEffect(() => {
-    setTitle(initialTitle);
-    setContent(initialContent);
+    setTitle(extractedTitle);
+    setContent(extractedContent);
   }, [initialTitle, initialContent]);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (title && content) {
-      onSave(title, content);
-      onClose();
+      const combinedContent = `<strong>${title}</strong><br/>${content}`;
+
+      await createNote({
+        note: combinedContent,
+        image: 'image.jpg',
+        profileid: 1,
+      });
+
+      onSave(); // Refetch las notas
+      onClose(); // Cierra el editor después de guardar
     } else {
       alert('Please fill out both fields.');
     }
@@ -77,9 +88,10 @@ const NoteEditor: React.FC<NoteEditorProps> = ({ onClose, onSave, initialTitle, 
             Add Image
           </Button>
         </Box>
-        <Button variant="contained" color="primary" fullWidth onClick={handleSave}>
-          Save Note
+        <Button variant="contained" color="primary" fullWidth onClick={handleSave} disabled={loading}>
+          {loading ? 'Saving...' : 'Save Note'}
         </Button>
+        {error && <Typography color="error">{error}</Typography>}
       </Box>
     </Box>
   );

@@ -5,7 +5,7 @@ type Note = {
   id: number;
   note: string;
   image: string;
-  profile_id: number;
+  profileid: number;
   created_at: string;
   updated_at: string;
 };
@@ -20,7 +20,7 @@ export const useFetchNotes = () => {
     setLoading(true);
     try {
       const notes = await getNotes();
-      setData(notes);
+      setData(notes.notes);
     } catch (err: any) {
       setError(err.message);
     } finally {

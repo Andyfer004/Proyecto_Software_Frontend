@@ -10,7 +10,7 @@ export const getNote = async (id: number) => {
   return response.data;
 };
 
-export const addNote = async (note: { note: string, image: string, profile_id: number }) => {
+export const addNote = async (note: { note: string, image: string, profileid: number }) => {
   const response = await api.post('/notes', note);
   return response.data;
 };

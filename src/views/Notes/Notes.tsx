@@ -9,7 +9,7 @@ type Note = {
   id: number;
   note: string;
   image: string;
-  profile_id: number;
+  profileid: number;
   created_at: string;
   updated_at: string;
 };
@@ -18,7 +18,9 @@ const Notes = () => {
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
-  const { data: notes, loading, error, refetch } = useFetchNotes();
+  // Utiliza el hook para obtener las notas, asegúrate de que `data` sea un array vacío inicialmente
+  const { data: notes = [], loading, error, refetch } = useFetchNotes();
+  console.log("Fetched notes:", notes);
 
   const handleSelectNote = (note: Note) => {
     setSelectedNote(note);
@@ -29,18 +31,16 @@ const Notes = () => {
       id: notes.length + 1, 
       note: noteContent, 
       image: '', 
-      profile_id: 1, 
+      profileid: 1, 
       created_at: new Date().toISOString(), 
       updated_at: new Date().toISOString() 
     };
-    // Aquí deberías usar el hook de creación para agregar la nota a la base de datos
     refetch(); 
     setSelectedNote(newNote);
   };
 
   const handleDeleteNote = (index: number) => {
     const noteToDelete = notes[index];
-    // Aquí deberías usar el hook de eliminación para borrar la nota de la base de datos
     refetch();
   };
 
@@ -70,11 +70,11 @@ const Notes = () => {
             <Typography variant="h6" gutterBottom>
               Notes
             </Typography>
-            <IconButton aria-label="add" onClick={() => setSelectedNote({ id: 0, note: '', image: '', profile_id: 1, created_at: '', updated_at: '' })}>
+            <IconButton aria-label="add" onClick={() => setSelectedNote({ id: 0, note: '', image: '', profileid: 1, created_at: '', updated_at: '' })}>
               <AddCircleOutlineIcon />
             </IconButton>
             <List>
-              {notes.map((note, index) => (
+              {Array.isArray(notes) && notes.map((note, index) => (
                 <ListItem
                   key={note.id}
                   button
@@ -83,7 +83,10 @@ const Notes = () => {
                   onClick={() => handleSelectNote(note)}
                   sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
                 >
-                  <ListItemText primary={note.note} secondary={note.created_at.split('T')[0]} />
+                  <ListItemText primary={
+                      <div dangerouslySetInnerHTML={{ __html: note.note }} />
+                    }
+                    secondary={note.created_at.split('T')[0]} />
                   {hoveredIndex === index && (
                     <IconButton
                       aria-label="delete"
@@ -103,9 +106,9 @@ const Notes = () => {
         </Grid>
         <Grid item xs={8}>
           {selectedNote && (
-            <NoteEditor
+              <NoteEditor
+              onSave={refetch} 
               onClose={() => setSelectedNote(null)}
-              onSave={(title, content) => handleSaveNote(content)} 
               initialTitle={selectedNote.note}
               initialContent={selectedNote.note}
             />
