@@ -3,27 +3,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide, Typog
 import { styled } from '@mui/material/styles';
 import PersonIcon from '@mui/icons-material/Person';
 import WorkIcon from '@mui/icons-material/Work';
-
-// Estilo personalizado para el botón de perfil
-const ProfileButton = styled(Button)(({ theme }) => ({
-  backgroundColor: 'green',
-  color: 'white',
-  borderRadius: '20px',
-  padding: '6px 16px',
-  display: 'flex',
-  alignItems: 'center',
-  transition: 'width 0.3s ease',
-  width: '48px', // Ancho inicial solo para el ícono
-  justifyContent: 'center',
-  '&:hover': {
-    width: '150px', // Ancho cuando se pasa el mouse
-    justifyContent: 'flex-start',
-    backgroundColor: 'darkgreen',
-  },
-  '& .MuiButton-startIcon': {
-    marginRight: '8px', // Espacio entre el ícono y el texto
-  },
-}));
+import ProfileIcon from '@mui/icons-material/AccountCircle';
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialog-paper': {
@@ -42,7 +22,7 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
     paddingTop: theme.spacing(2),
   },
   '& .MuiDialogContent-root': {
-    paddingTop: theme.spacing(2),
+    paddingTop: theme.spacing(2), // Añadir espacio en la parte superior del contenido
     paddingBottom: theme.spacing(1),
     width: '100%',
   },
@@ -50,7 +30,7 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
     borderBottom: `1px solid ${theme.palette.divider}`,
     width: '100%',
     textAlign: 'center',
-    marginBottom: theme.spacing(2),
+    marginBottom: theme.spacing(2), // Espacio entre el título y el contenido
   }
 }));
 
@@ -61,6 +41,24 @@ const StyledButton = styled(Button)(({ theme }) => ({
   padding: '6px 16px',
   '&:hover': {
     backgroundColor: 'red',
+  },
+}));
+
+const ProfileButton = styled(Button)(({ theme }) => ({
+  backgroundColor: theme.palette.primary.main,
+  color: 'white',
+  borderRadius: '20px',
+  padding: '6px 16px',
+  display: 'flex',
+  alignItems: 'center',
+  transition: 'width 0.3s ease',
+  overflow: 'hidden',
+  textAlign: 'left',
+  whiteSpace: 'nowrap',
+  width: 110, // Initial width of the button
+  '&:hover': {
+    width: 120, // Expanded width on hover
+    backgroundColor: theme.palette.primary.dark,
   },
 }));
 
@@ -76,16 +74,19 @@ export const ModalNewTask = () => {
   };
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <Button variant="contained" size="large" style={{ marginBottom: '10px' }}>
+        + New
+      </Button>
       <ProfileButton 
-        startIcon={<PersonIcon />}
         variant="contained"
         size="large"
         onClick={handleClickOpen}
+        style={{backgroundColor: 'green '}}
       >
-        PROFILE
+        <ProfileIcon style={{ marginRight: '8px'}} />
+        <span style={{ backgroundColor: 'green'}}>PROFILE</span>
       </ProfileButton>
-      <Button variant="contained" size="large" style={{ marginLeft: '10px' }}>+ New</Button>
 
       <StyledDialog 
         open={open} 
