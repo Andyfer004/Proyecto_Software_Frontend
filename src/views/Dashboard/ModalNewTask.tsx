@@ -22,7 +22,7 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
     paddingTop: theme.spacing(2),
   },
   '& .MuiDialogContent-root': {
-    paddingTop: theme.spacing(2), // Añadir espacio en la parte superior del contenido
+    paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(1),
     width: '100%',
   },
@@ -30,7 +30,7 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
     borderBottom: `1px solid ${theme.palette.divider}`,
     width: '100%',
     textAlign: 'center',
-    marginBottom: theme.spacing(2), // Espacio entre el título y el contenido
+    marginBottom: theme.spacing(2),
   }
 }));
 
@@ -55,10 +55,13 @@ const ProfileButton = styled(Button)(({ theme }) => ({
   overflow: 'hidden',
   textAlign: 'left',
   whiteSpace: 'nowrap',
-  width: 110, // Initial width of the button
+  width: 115, // Initial width of the button
   '&:hover': {
-    width: 120, // Expanded width on hover
+    width: 125, // Expanded width on hover
     backgroundColor: theme.palette.primary.dark,
+    '& span': {
+      opacity: 1, // Show text on hover
+    },
   },
 }));
 
@@ -74,18 +77,18 @@ export const ModalNewTask = () => {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <Button variant="contained" size="large" style={{ marginBottom: '10px' }}>
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px' }}>
+      <Button variant="contained" size="large">
         + New
       </Button>
       <ProfileButton 
         variant="contained"
         size="large"
         onClick={handleClickOpen}
-        style={{backgroundColor: 'green '}}
+        style={{ backgroundColor: 'green' }}
       >
         <ProfileIcon style={{ marginRight: '8px'}} />
-        <span style={{ backgroundColor: 'green'}}>PROFILE</span>
+        <span >PROFILE</span>
       </ProfileButton>
 
       <StyledDialog 
