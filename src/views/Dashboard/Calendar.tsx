@@ -11,6 +11,9 @@ import {
   Grid,
   Popover,
   Autocomplete,
+  InputLabel,
+  Select,
+  MenuItem,
 } from '@mui/material';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import FullCalendar from '@fullcalendar/react';
@@ -20,7 +23,16 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import './Calendar.css';
 
-// Define the task interface
+interface Subtask {
+  id: number;
+  name: string;
+  description: string;
+  priorityId: number | string;
+  dueDate: string;
+  timeEstimateHours: number | string;
+  statusId: number | string;
+}
+
 interface Task {
   id: number;
   taskName: string;
@@ -28,6 +40,7 @@ interface Task {
   priorityId: number | string;
   statusId: number | string;
   dueDate: string;
+  subtasks: Subtask[];
 }
 
 const Calendar: React.FC = () => {
@@ -39,6 +52,7 @@ const Calendar: React.FC = () => {
   const [statusId, setStatusId] = useState<number | string>('');
   const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [subtasks, setSubtasks] = useState<Subtask[]>([]);
   const [anchorElPriority, setAnchorElPriority] = useState<null | HTMLElement>(null);
   const [anchorElStatus, setAnchorElStatus] = useState<null | HTMLElement>(null);
   const [newPriorityName, setNewPriorityName] = useState<string>('');
@@ -57,17 +71,17 @@ const Calendar: React.FC = () => {
 
   const handleDateClick = (arg: any) => {
     setSelectedDate(arg.dateStr);
-    setSelectedTaskId(null); // Clear selected task for new entry
+    setSelectedTaskId(null); 
     setTaskName('');
     setDescription('');
     setPriorityId('');
     setStatusId('');
+    setSubtasks([]); 
     setOpenDialog(true);
   };
 
   const handleEventClick = (clickInfo: any) => {
     const clickedTask = tasks.find((task) => task.id === parseInt(clickInfo.event.id, 10));
-
     if (clickedTask) {
       setSelectedTaskId(clickedTask.id);
       setTaskName(clickedTask.taskName);
@@ -75,27 +89,27 @@ const Calendar: React.FC = () => {
       setPriorityId(clickedTask.priorityId);
       setStatusId(clickedTask.statusId);
       setSelectedDate(clickedTask.dueDate);
+      setSubtasks(clickedTask.subtasks || []);
       setOpenDialog(true);
     }
   };
 
   const handleSaveTask = () => {
     if (selectedTaskId !== null) {
-      // Update existing task
-      setTasks(tasks.map(task =>
+      setTasks(tasks.map(task => 
         task.id === selectedTaskId
-          ? { ...task, taskName, description, priorityId, statusId, dueDate: selectedDate }
+          ? { ...task, taskName, description, priorityId, statusId, dueDate: selectedDate, subtasks }
           : task
       ));
     } else {
-      // Add new task
       const newTask: Task = {
-        id: tasks.length + 1, // Simple way to generate an ID, use better approach in production
+        id: tasks.length + 1,
         taskName,
         description,
         priorityId,
         statusId,
         dueDate: selectedDate,
+        subtasks,
       };
       setTasks([...tasks, newTask]);
     }
@@ -105,11 +119,34 @@ const Calendar: React.FC = () => {
     setDescription('');
     setPriorityId('');
     setStatusId('');
+    setSubtasks([]); 
     setSelectedTaskId(null);
     setOpenDialog(false);
   };
 
-  // Functions for handling priority popover
+  const handleAddSubtask = () => {
+    const newSubtask: Subtask = {
+      id: subtasks.length + 1,
+      name: '',
+      description: '',
+      priorityId: '',
+      dueDate: '',
+      timeEstimateHours: '',
+      statusId: '',
+    };
+    setSubtasks([...subtasks, newSubtask]);
+  };
+
+  const handleSubtaskChange = (index: number, field: keyof Subtask, value: any) => {
+    setSubtasks((prevSubtasks) =>
+      prevSubtasks.map((subtask, i) =>
+        i === index ? { ...subtask, [field]: value } : subtask
+      )
+    );
+  };
+  
+  
+
   const handleOpenPopoverPriority = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElPriority(event.currentTarget);
   };
@@ -131,7 +168,6 @@ const Calendar: React.FC = () => {
     }
   };
 
-  // Functions for handling status popover
   const handleOpenPopoverStatus = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElStatus(event.currentTarget);
   };
@@ -153,14 +189,13 @@ const Calendar: React.FC = () => {
     }
   };
 
-  // Transform tasks into events for FullCalendar
   const calendarEvents = tasks.map((task) => ({
     id: task.id.toString(),
     title: task.taskName,
     start: task.dueDate,
     description: task.description,
     extendedProps: {
-      statusId: task.statusId, // Pass statusId for class name logic
+      statusId: task.statusId,
     },
   }));
 
@@ -335,6 +370,89 @@ const Calendar: React.FC = () => {
                 />
               </FormControl>
             </Grid>
+            <Grid item xs={12}>
+              <Button onClick={handleAddSubtask} color="primary">
+                Add Subtask
+              </Button>
+            </Grid>
+            {subtasks.map((subtask, index) => (
+              <Grid container spacing={2} key={subtask.id}>
+                <Grid item xs={12}>
+                  <TextField
+                    margin="dense"
+                    label="Subtask Name"
+                    type="text"
+                    fullWidth
+                    value={subtask.name}
+                    onChange={(e) => handleSubtaskChange(index, 'name', e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    margin="dense"
+                    label="Subtask Description"
+                    type="text"
+                    fullWidth
+                    multiline
+                    rows={2}
+                    value={subtask.description}
+                    onChange={(e) => handleSubtaskChange(index, 'description', e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <FormControl fullWidth margin="dense">
+                    <InputLabel>Priority</InputLabel>
+                    <Select
+                      value={subtask.priorityId}
+                      onChange={(e) => handleSubtaskChange(index, 'priorityId', e.target.value)}
+                      label="Priority"
+                    >
+                      {priorities.map((priority) => (
+                        <MenuItem key={priority.id} value={priority.id}>
+                          {priority.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    margin="dense"
+                    label="Due Date"
+                    type="date"
+                    fullWidth
+                    value={subtask.dueDate}
+                    onChange={(e) => handleSubtaskChange(index, 'dueDate', e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    margin="dense"
+                    label="Time Estimate (Hours)"
+                    type="number"
+                    fullWidth
+                    value={subtask.timeEstimateHours}
+                    onChange={(e) => handleSubtaskChange(index, 'timeEstimateHours', e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <FormControl fullWidth margin="dense">
+                    <InputLabel>Status</InputLabel>
+                    <Select
+                      value={subtask.statusId}
+                      onChange={(e) => handleSubtaskChange(index, 'statusId', e.target.value)}
+                      label="Status"
+                    >
+                      {statuses.map((status) => (
+                        <MenuItem key={status.id} value={status.id}>
+                          {status.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+              </Grid>
+            ))}
           </Grid>
         </DialogContent>
         <DialogActions>
