@@ -1,7 +1,29 @@
 import React, { useState } from 'react';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide, Typography } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide, Typography, Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import PersonIcon from '@mui/icons-material/Person';
+import WorkIcon from '@mui/icons-material/Work';
+
+// Estilo personalizado para el botón de perfil
+const ProfileButton = styled(Button)(({ theme }) => ({
+  backgroundColor: 'green',
+  color: 'white',
+  borderRadius: '20px',
+  padding: '6px 16px',
+  display: 'flex',
+  alignItems: 'center',
+  transition: 'width 0.3s ease',
+  width: '48px', // Ancho inicial solo para el ícono
+  justifyContent: 'center',
+  '&:hover': {
+    width: '150px', // Ancho cuando se pasa el mouse
+    justifyContent: 'flex-start',
+    backgroundColor: 'darkgreen',
+  },
+  '& .MuiButton-startIcon': {
+    marginRight: '8px', // Espacio entre el ícono y el texto
+  },
+}));
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialog-paper': {
@@ -11,7 +33,7 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
     height: '100vh',
     margin: 0,
     position: 'fixed',
-    left: 0,
+    left: '1vh',
     top: 0,
     boxShadow: '0 2px 10px rgba(0,0,0,0.2)',
     display: 'flex',
@@ -20,7 +42,7 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
     paddingTop: theme.spacing(2),
   },
   '& .MuiDialogContent-root': {
-    paddingTop: 0,
+    paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(1),
     width: '100%',
   },
@@ -28,17 +50,17 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
     borderBottom: `1px solid ${theme.palette.divider}`,
     width: '100%',
     textAlign: 'center',
+    marginBottom: theme.spacing(2),
   }
 }));
 
-// Estilo personalizado para el botón de "Close"
 const StyledButton = styled(Button)(({ theme }) => ({
-  backgroundColor: 'blue',
+  backgroundColor: 'darkred',
   color: 'white',
-  borderRadius: '20px', // Hacer el botón medio redondo
-  padding: '6px 16px', // Añadir algo de padding para mejorar la apariencia
+  borderRadius: '20px',
+  padding: '6px 16px',
   '&:hover': {
-    backgroundColor: 'darkblue', // Cambiar el color al hacer hover
+    backgroundColor: 'red',
   },
 }));
 
@@ -55,15 +77,15 @@ export const ModalNewTask = () => {
 
   return (
     <div style={{ display: 'flex', alignItems: 'center' }}>
-      <Button 
-        variant="contained" 
-        size="large" 
-        style={{ backgroundColor: 'green', marginRight: '10px' }} 
+      <ProfileButton 
+        startIcon={<PersonIcon />}
+        variant="contained"
+        size="large"
         onClick={handleClickOpen}
       >
         PROFILE
-      </Button>
-      <Button variant="contained" size="large">+ New</Button>
+      </ProfileButton>
+      <Button variant="contained" size="large" style={{ marginLeft: '10px' }}>+ New</Button>
 
       <StyledDialog 
         open={open} 
@@ -75,9 +97,14 @@ export const ModalNewTask = () => {
         <PersonIcon style={{ fontSize: 60, marginBottom: '8px' }} />
         <DialogTitle id="options-dialog-title">Switch Workspaces</DialogTitle>
         <DialogContent>
-          <Typography variant="subtitle1">Nombre</Typography>
-          <Typography variant="body2" color="textSecondary">Profile</Typography>
-          {/* Aquí puedes añadir más opciones que quieras mostrar en el modal */}
+          <Box display="flex" alignItems="center" marginBottom={2}>
+            <WorkIcon style={{ marginRight: '8px' }} />
+            <Typography variant="subtitle1">Workspace</Typography>
+          </Box>
+          <Box display="flex" alignItems="center">
+            <WorkIcon style={{ marginRight: '8px' }} />
+            <Typography variant="subtitle1">Workspace</Typography>
+          </Box>
         </DialogContent>
         <DialogActions>
           <StyledButton onClick={handleClose}>
