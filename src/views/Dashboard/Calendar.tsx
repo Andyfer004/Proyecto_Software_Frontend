@@ -7,12 +7,10 @@ import {
   Button,
   TextField,
   FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   IconButton,
   Grid,
   Popover,
+  Autocomplete,
 } from '@mui/material';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import FullCalendar from '@fullcalendar/react';
@@ -38,7 +36,7 @@ const Calendar: React.FC = () => {
   const [priorityId, setPriorityId] = useState<number | string>('');
   const [statusId, setStatusId] = useState<number | string>('');
   const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
-  const [tasks, setTasks] = useState<Task[]>([]); // Estado para almacenar las tareas
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [anchorElPriority, setAnchorElPriority] = useState<null | HTMLElement>(null);
   const [anchorElStatus, setAnchorElStatus] = useState<null | HTMLElement>(null);
   const [newPriorityName, setNewPriorityName] = useState<string>('');
@@ -126,6 +124,7 @@ const Calendar: React.FC = () => {
         name: newPriorityName,
       };
       setPriorities([...priorities, newPriority]);
+      setPriorityId(newPriority.id); // Set the new priority as selected
       handleClosePopoverPriority();
     }
   };
@@ -147,6 +146,7 @@ const Calendar: React.FC = () => {
         name: newStatusName,
       };
       setStatuses([...statuses, newStatus]);
+      setStatusId(newStatus.id); // Set the new status as selected
       handleClosePopoverStatus();
     }
   };
@@ -208,41 +208,75 @@ const Calendar: React.FC = () => {
             </Grid>
             <Grid item xs={6}>
               <FormControl fullWidth margin="dense">
-                <InputLabel>Priority</InputLabel>
-                <Select
-                  value={priorityId}
-                  onChange={(e) => setPriorityId(e.target.value as number)}
-                  label="Priority"
-                >
-                  {priorities.map((priority) => (
-                    <MenuItem key={priority.id} value={priority.id}>
-                      {priority.name}
-                    </MenuItem>
-                  ))}
-                </Select>
+                <Autocomplete
+                  freeSolo
+                  options={priorities}
+                  getOptionLabel={(option) => typeof option === 'object' ? option.name : ''}
+                  value={priorities.find(p => p.id === priorityId) || null}
+                  onChange={(event, newValue) => {
+                    if (typeof newValue === 'string') {
+                      setNewPriorityName(newValue);
+                    } else if (newValue && newValue.id) {
+                      setPriorityId(newValue.id);
+                    }
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Priority"
+                      value={newPriorityName}
+                      onChange={(e) => setNewPriorityName(e.target.value)}
+                      InputProps={{
+                        ...params.InputProps,
+                        endAdornment: (
+                          <>
+                            {params.InputProps.endAdornment}
+                            <IconButton onClick={handleAddPriority}>
+                              <AddCircleIcon />
+                            </IconButton>
+                          </>
+                        ),
+                      }}
+                    />
+                  )}
+                />
               </FormControl>
-              <IconButton onClick={handleOpenPopoverPriority}>
-                <AddCircleIcon />
-              </IconButton>
             </Grid>
             <Grid item xs={6}>
               <FormControl fullWidth margin="dense">
-                <InputLabel>Status</InputLabel>
-                <Select
-                  value={statusId}
-                  onChange={(e) => setStatusId(e.target.value as number)}
-                  label="Status"
-                >
-                  {statuses.map((status) => (
-                    <MenuItem key={status.id} value={status.id}>
-                      {status.name}
-                    </MenuItem>
-                  ))}
-                </Select>
+                <Autocomplete
+                  freeSolo
+                  options={statuses}
+                  getOptionLabel={(option) => typeof option === 'object' ? option.name : ''}
+                  value={statuses.find(s => s.id === statusId) || null}
+                  onChange={(event, newValue) => {
+                    if (typeof newValue === 'string') {
+                      setNewStatusName(newValue);
+                    } else if (newValue && newValue.id) {
+                      setStatusId(newValue.id);
+                    }
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Status"
+                      value={newStatusName}
+                      onChange={(e) => setNewStatusName(e.target.value)}
+                      InputProps={{
+                        ...params.InputProps,
+                        endAdornment: (
+                          <>
+                            {params.InputProps.endAdornment}
+                            <IconButton onClick={handleAddStatus}>
+                              <AddCircleIcon />
+                            </IconButton>
+                          </>
+                        ),
+                      }}
+                    />
+                  )}
+                />
               </FormControl>
-              <IconButton onClick={handleOpenPopoverStatus}>
-                <AddCircleIcon />
-              </IconButton>
             </Grid>
           </Grid>
         </DialogContent>
