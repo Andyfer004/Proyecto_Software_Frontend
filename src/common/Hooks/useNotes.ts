@@ -10,7 +10,8 @@ type Note = {
   updated_at: string;
 };
 
-const useNotes = () => {
+// Hook para obtener las notas
+export const useFetchNotes = () => {
   const [data, setData] = useState<Note[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -31,35 +32,56 @@ const useNotes = () => {
     fetchData();
   }, []);
 
+  return { data, loading, error, refetch: fetchData };
+};
+
+// Hook para crear una nueva nota
+export const useCreateNote = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   const createNote = async (newNote: Omit<Note, 'id' | 'created_at' | 'updated_at'>) => {
     setLoading(true);
     try {
       await addNote(newNote);
-      await fetchData(); // Refrescar la lista de notas
     } catch (err: any) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
   };
+
+  return { createNote, loading, error };
+};
+
+// Hook para modificar una nota
+export const useModifyNote = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const modifyNote = async (id: number, updatedNote: Partial<Omit<Note, 'id'>>) => {
     setLoading(true);
     try {
       await updateNote(id, updatedNote);
-      await fetchData(); // Refrescar la lista de notas
     } catch (err: any) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
   };
+
+  return { modifyNote, loading, error };
+};
+
+// Hook para eliminar una nota
+export const useRemoveNote = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const removeNote = async (id: number) => {
     setLoading(true);
     try {
       await deleteNote(id);
-      await fetchData(); // Refrescar la lista de notas
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -67,7 +89,5 @@ const useNotes = () => {
     }
   };
 
-  return { data, loading, error, createNote, modifyNote, removeNote };
+  return { removeNote, loading, error };
 };
-
-export default useNotes;
