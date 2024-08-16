@@ -78,9 +78,6 @@ export const ModalNewTask = () => {
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px' }}>
-      <Button variant="contained" size="large">
-        + New
-      </Button>
       <ProfileButton 
         variant="contained"
         size="large"
