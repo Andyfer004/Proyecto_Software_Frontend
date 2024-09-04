@@ -29,3 +29,21 @@ const useProfiles = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const createProfile = async (newProfile: Omit<Profile, 'id' | 'created_at' | 'updated_at'>) => {
+    setLoading(true);
+    try {
+      await addProfile(newProfile);
+      await fetchData(); // Refrescar la lista de perfiles
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  return { data, loading, error, createProfile };
+};
+
+export default useProfiles;
