@@ -42,8 +42,21 @@ const useProfiles = () => {
     }
   };
 
+  const modifyProfile = async (id: number, updatedProfile: Partial<Omit<Profile, 'id'>>) => {
+    setLoading(true);
+    try {
+      await updateProfile(id, updatedProfile);
+      await fetchData(); // Refrescar la lista de perfiles
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  return { data, loading, error, createProfile };
+
+
+  return { data, loading, error, createProfile, modifyProfile,  };
 };
 
 export default useProfiles;
