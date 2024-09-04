@@ -20,3 +20,15 @@ export const addProfile = async (profile: { name: string, image: string }) => {
   });
   return response.json();
 };
+
+export const updateProfile = async (id: number, updatedFields: Partial<{ name: string, image: string }>) => {
+  const response = await fetch(`${BASE_URL}/profiles/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(updatedFields),
+  });
+  return response.json();
+};
+
