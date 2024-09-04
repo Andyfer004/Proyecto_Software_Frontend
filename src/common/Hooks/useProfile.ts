@@ -54,9 +54,19 @@ const useProfiles = () => {
     }
   };
 
+  const removeProfile = async (id: number) => {
+    setLoading(true);
+    try {
+      await deleteProfile(id);
+      await fetchData(); // Refrescar la lista de perfiles
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-
-  return { data, loading, error, createProfile, modifyProfile,  };
+  return { data, loading, error, createProfile, modifyProfile, removeProfile };
 };
 
 export default useProfiles;
