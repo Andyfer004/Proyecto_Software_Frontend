@@ -32,3 +32,9 @@ export const updateProfile = async (id: number, updatedFields: Partial<{ name: s
   return response.json();
 };
 
+export const deleteProfile = async (id: number) => {
+  const response = await fetch(`${BASE_URL}/profiles/${id}`, {
+    method: 'DELETE',
+  });
+  return response.json();
+};
