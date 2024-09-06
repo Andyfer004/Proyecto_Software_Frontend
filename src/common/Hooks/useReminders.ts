@@ -13,7 +13,7 @@ type Reminder = {
 };
 
 const useReminders = () => {
-  const [data, setData] = useState<Reminder[]>([]);
+  const [data, setData] = useState<any>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
