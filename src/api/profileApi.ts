@@ -2,7 +2,7 @@ import api from './index'; // Importa tu instancia de Axios
 
 export const getProfiles = async () => {
   const response = await api.get('/profiles');
-  return response.data;
+  return response.data; // Axios devuelve los datos en 'data'
 };
 
 export const getProfile = async (id: number) => {
