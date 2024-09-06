@@ -1,40 +1,26 @@
-const BASE_URL = 'http://localhost:8000';
+import api from './index'; // Importa tu instancia de Axios
 
 export const getStatuses = async () => {
-  const response = await fetch(`${BASE_URL}/statuses`);
-  return response.json();
+  const response = await api.get('/statuses');
+  return response.data;
 };
 
 export const getStatus = async (id: number) => {
-  const response = await fetch(`${BASE_URL}/status/${id}`);
-  return response.json();
+  const response = await api.get(`/status/${id}`);
+  return response.data;
 };
 
 export const addStatus = async (status: { name: string }) => {
-  const response = await fetch(`${BASE_URL}/status`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(status),
-  });
-  return response.json();
+  const response = await api.post('/status', status);
+  return response.data;
 };
 
 export const updateStatus = async (id: number, updatedFields: Partial<{ name: string }>) => {
-  const response = await fetch(`${BASE_URL}/status/${id}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(updatedFields),
-  });
-  return response.json();
+  const response = await api.put(`/status/${id}`, updatedFields);
+  return response.data;
 };
 
 export const deleteStatus = async (id: number) => {
-  const response = await fetch(`${BASE_URL}/status/${id}`, {
-    method: 'DELETE',
-  });
-  return response.json();
+  const response = await api.delete(`/status/${id}`);
+  return response.data;
 };
