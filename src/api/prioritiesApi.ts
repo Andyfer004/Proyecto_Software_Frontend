@@ -16,7 +16,10 @@ export const addPriority = async (priority: { namepriority: string }) => {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(priority),
+    body: JSON.stringify({
+      ...priority,
+      profile_id: 1,
+    }),
   });
   return response.json();
 };
