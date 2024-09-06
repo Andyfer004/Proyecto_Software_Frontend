@@ -16,10 +16,14 @@ export const addStatus = async (status: { name: string }) => {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(status),
+    body: JSON.stringify({
+      ...status,
+      profile_id: 1, // Agregamos el profile_id como 1
+    }),
   });
   return response.json();
 };
+
 
 export const updateStatus = async (id: number, updatedFields: Partial<{ name: string }>) => {
   const response = await fetch(`${BASE_URL}/status/${id}`, {

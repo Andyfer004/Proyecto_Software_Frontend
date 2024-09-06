@@ -22,6 +22,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import './Calendar.css';
+import useStatus from '../../common/Hooks/useStatus'; // Asegúrate de que la ruta sea correcta
 
 interface Subtask {
   id: number;
@@ -177,17 +178,22 @@ const Calendar: React.FC = () => {
     setNewStatusName(''); // Reset new status name
   };
 
-  const handleAddStatus = () => {
+  const { createStatus } = useStatus(); // Extraemos createStatus del hook
+
+  const handleAddStatus = async () => {
     if (newStatusName.trim()) {
-      const newStatus = {
-        id: statuses.length + 1,
-        name: newStatusName,
-      };
-      setStatuses([...statuses, newStatus]);
-      setStatusId(newStatus.id); // Set new status as selected
-      handleClosePopoverStatus();
+      try {
+        // Agregar el estado utilizando el hook y la API
+        await createStatus({ name: newStatusName });
+        setNewStatusName(''); // Limpiar el campo
+      } catch (error) {
+        console.error('Error al agregar el estado:', error);
+      } finally {
+        handleClosePopoverStatus();
+      }
     }
   };
+  
 
   const calendarEvents = tasks.map((task) => ({
     id: task.id.toString(),
