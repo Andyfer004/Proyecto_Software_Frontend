@@ -29,4 +29,9 @@ export const addReminder = async (reminder: { title: string; description: string
     return response.json();
   };
 
-  
+  export const deleteReminder = async (id: number) => {
+    const response = await fetch(`${BASE_URL}/reminders/${id}`, {
+      method: 'DELETE',
+    });
+    return response.json();
+  };
