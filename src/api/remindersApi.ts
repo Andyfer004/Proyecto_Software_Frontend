@@ -6,3 +6,4 @@ export const getReminders = async () => {
   });
   return response.json();
 };
+
