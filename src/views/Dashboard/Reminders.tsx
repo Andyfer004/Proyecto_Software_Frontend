@@ -7,11 +7,9 @@ import {
   IconButton,
   TextField,
   Typography,
-  Tooltip,
   CircularProgress,
   Button,
 } from "@mui/material";
-import InfoIcon from "@mui/icons-material/Info";
 import AddIcon from "@mui/icons-material/Add";
 import { styled } from "@mui/material/styles";
 import useReminders from "src/common/Hooks/useReminders";
@@ -26,14 +24,16 @@ const StyledListItem = styled(ListItem)(({ theme }) => ({
 }));
 
 const Reminders: React.FC = () => {
-  const { data: reminders, loading, error, createReminder, modifyReminder } = useReminders();
+  const { data, loading, error, createReminder, modifyReminder } = useReminders();
   const [newReminder, setNewReminder] = useState("");
   const [isAdding, setIsAdding] = useState(false);
 
+  // Asegúrate de acceder a data.reminders
+  const reminders = data?.reminders || [];
+
   const handleCheckboxToggle = (id: number) => {
-    const reminderToUpdate = reminders.find((reminder) => reminder.id === id);
+    const reminderToUpdate = reminders.find((reminder: any) => reminder.id === id);
     if (reminderToUpdate) {
-      // Usamos la propiedad 'alarm' para marcar o desmarcar como hecho
       modifyReminder(id, { alarm: !reminderToUpdate.alarm });
     }
   };
@@ -45,7 +45,7 @@ const Reminders: React.FC = () => {
         alarm: false,
         datereminder: new Date().toISOString().split("T")[0], // Ajustar según el formato necesario
         hourreminder: new Date().toISOString().split("T")[1].substring(0, 5),
-        profile_id: 1, // Debes ajustar el ID del perfil según corresponda
+        profileid: 1, // Ajusta el ID del perfil según corresponda
       });
       setNewReminder("");
       setIsAdding(false);
@@ -64,16 +64,19 @@ const Reminders: React.FC = () => {
     <>
       <Typography variant="h6">Reminders</Typography>
       <List>
-        {reminders.map((reminder) => (
-          <StyledListItem key={reminder.id}>
-            <Checkbox
-              checked={reminder.alarm} // Usamos 'alarm' para marcar como hecho
-              onChange={() => handleCheckboxToggle(reminder.id)}
-            />
-            <ListItemText primary={reminder.description} />
-            {/* Si quieres mostrar algún tooltip basado en alguna condición, puedes añadirlo aquí */}
-          </StyledListItem>
-        ))}
+        {Array.isArray(reminders) && reminders.length > 0 ? (
+          reminders.map((reminder: any) => (
+            <StyledListItem key={reminder.id}>
+              <Checkbox
+                checked={reminder.alarm} // Usamos 'alarm' para marcar como hecho
+                onChange={() => handleCheckboxToggle(reminder.id)}
+              />
+              <ListItemText primary={reminder.description} />
+            </StyledListItem>
+          ))
+        ) : (
+          <Typography>No hay recordatorios disponibles</Typography>
+        )}
         {isAdding ? (
           <StyledListItem>
             <TextField

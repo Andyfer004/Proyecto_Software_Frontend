@@ -7,7 +7,7 @@ type Reminder = {
   alarm: boolean;
   datereminder: string;
   hourreminder: string;
-  profile_id: number;
+  profileid: number;
   created_at: string;
   updated_at: string;
 };
