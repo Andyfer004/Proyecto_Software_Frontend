@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
 import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete"; // Importamos el icono de eliminar
 import { styled } from "@mui/material/styles";
 
 type Reminder = {
@@ -59,6 +60,10 @@ const Reminders: React.FC = () => {
     }
   };
 
+  const handleDeleteReminder = (id: number) => {
+    setReminders((prev) => prev.filter((reminder) => reminder.id !== id));
+  };
+
   return (
     <>
       <Typography variant="h6">Reminders</Typography>
@@ -77,6 +82,15 @@ const Reminders: React.FC = () => {
                 </IconButton>
               </Tooltip>
             )}
+            <Tooltip title="Eliminar">
+              <IconButton
+                edge="end"
+                size="small"
+                onClick={() => handleDeleteReminder(reminder.id)}
+              >
+                <DeleteIcon color="error" />
+              </IconButton>
+            </Tooltip>
           </StyledListItem>
         ))}
         {isAdding ? (
