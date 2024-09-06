@@ -17,3 +17,16 @@ export const addReminder = async (reminder: { title: string; description: string
     });
     return response.json();
   };
+
+  export const updateReminder = async (id: number, updatedFields: Partial<{ title: string; description: string; dueDate: string }>) => {
+    const response = await fetch(`${BASE_URL}/reminders/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedFields),
+    });
+    return response.json();
+  };
+
+  
