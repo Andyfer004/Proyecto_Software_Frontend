@@ -1,40 +1,26 @@
-const BASE_URL = 'http://localhost:8000';
+import api from './index'; // Importa tu instancia de Axios
 
 export const getProfiles = async () => {
-  const response = await fetch(`${BASE_URL}/profiles`);
-  return response.json();
+  const response = await api.get('/profiles');
+  return response.data; // Axios devuelve los datos en 'data'
 };
 
 export const getProfile = async (id: number) => {
-  const response = await fetch(`${BASE_URL}/profiles/${id}`);
-  return response.json();
+  const response = await api.get(`/profiles/${id}`);
+  return response.data;
 };
 
 export const addProfile = async (profile: { name: string, image: string }) => {
-  const response = await fetch(`${BASE_URL}/profiles`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(profile),
-  });
-  return response.json();
+  const response = await api.post('/profiles', profile);
+  return response.data;
 };
 
 export const updateProfile = async (id: number, updatedFields: Partial<{ name: string, image: string }>) => {
-  const response = await fetch(`${BASE_URL}/profiles/${id}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(updatedFields),
-  });
-  return response.json();
+  const response = await api.put(`/profiles/${id}`, updatedFields);
+  return response.data;
 };
 
 export const deleteProfile = async (id: number) => {
-  const response = await fetch(`${BASE_URL}/profiles/${id}`, {
-    method: 'DELETE',
-  });
-  return response.json();
+  const response = await api.delete(`/profiles/${id}`);
+  return response.data;
 };
