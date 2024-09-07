@@ -375,6 +375,13 @@ const Calendar: React.FC = () => {
                     setNewStatusName(''); // Limpiar el campo
                     console.log('Nuevo estado agregado:', newStatus);
                   }
+                  if(newPriorityName.trim()){
+                    const newPriority = {id: priorities.length +1, name: newPriorityName};
+                    setPriorities([...priorities, newPriority]);
+                    setPriorityId(newPriority.id);
+                    setNewPriorityName('');
+                    console.log('Prioridad')
+                  }
                 }}
               >
                 <AddCircleIcon />
