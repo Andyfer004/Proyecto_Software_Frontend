@@ -13,20 +13,7 @@ import InfoIcon from "@mui/icons-material/Info";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { styled } from "@mui/material/styles";
-import { updateReminder } from "../../api/remindersApi"; // Importamos la función de la API para actualizar
-
-type Reminder = {
-  id: number;
-  text: string;
-  urgent: boolean;
-  done: boolean;
-};
-
-const remindersList: Reminder[] = [
-  { id: 1, text: "Terminar webifica", urgent: false, done: false },
-  { id: 2, text: "Terminar proyecto de gráficas", urgent: true, done: false },
-  { id: 3, text: "Ir al gringo", urgent: false, done: false },
-];
+import useReminders from "../../common/Hooks/useReminders";// Importa tu hook personalizado
 
 const StyledListItem = styled(ListItem)(({ theme }) => ({
   padding: theme.spacing(1),
@@ -38,52 +25,40 @@ const StyledListItem = styled(ListItem)(({ theme }) => ({
 }));
 
 const Reminders: React.FC = () => {
-  const [reminders, setReminders] = useState<Reminder[]>(remindersList);
+  const { data: reminders, createReminder, modifyReminder, removeReminder, loading, error } = useReminders();
   const [editingId, setEditingId] = useState<number | null>(null); // Estado para saber cuál está en modo edición
   const [newReminder, setNewReminder] = useState("");
   const [isAdding, setIsAdding] = useState(false);
   const [editedText, setEditedText] = useState(""); // Estado para almacenar el texto editado
 
-  const handleCheckboxToggle = (id: number) => {
-    setReminders((prev) =>
-      prev.map((reminder) =>
-        reminder.id === id ? { ...reminder, done: !reminder.done } : reminder
-      )
-    );
+  const handleCheckboxToggle = (id: number, done: boolean) => {
+    modifyReminder(id, { alarm: !done }); // Actualizar el campo 'alarm' en la API
   };
 
-  const handleAddReminder = () => {
+  const handleAddReminder = async () => {
     if (newReminder.trim()) {
-      setReminders([
-        ...reminders,
-        { id: reminders.length + 1, text: newReminder, urgent: false, done: false },
-      ]);
+      await createReminder({ description: newReminder, alarm: false, datereminder: "", hourreminder: "", profile_id: 1 });
       setNewReminder("");
       setIsAdding(false);
     }
   };
 
-  const handleDeleteReminder = (id: number) => {
-    setReminders((prev) => prev.filter((reminder) => reminder.id !== id));
+  const handleDeleteReminder = async (id: number) => {
+    await removeReminder(id);
   };
 
   const handleEditReminder = (id: number) => {
     const reminderToEdit = reminders.find((reminder) => reminder.id === id);
     if (reminderToEdit) {
       setEditingId(id); // Activar modo de edición
-      setEditedText(reminderToEdit.text); // Seteamos el texto actual para poder editarlo
+      setEditedText(reminderToEdit.description); // Seteamos el texto actual para poder editarlo
     }
   };
 
   const handleUpdateReminder = async (id: number) => {
     try {
       if (editedText.trim() === "") return; // Validación para no guardar texto vacío
-      await updateReminder(id, { description: editedText }); // Llamada a la API para actualizar
-      setReminders((prev) =>
-        prev.map((reminder) =>
-          reminder.id === id ? { ...reminder, text: editedText } : reminder
-        )
-      );
+      await modifyReminder(id, { description: editedText }); // Llamada a la API para actualizar
       setEditingId(null); // Salir del modo de edición después de actualizar
     } catch (error) {
       console.error("Error al actualizar el recordatorio:", error);
@@ -98,6 +73,9 @@ const Reminders: React.FC = () => {
     }
   };
 
+  if (loading) return <Typography>Loading...</Typography>;
+  if (error) return <Typography>Error: {error}</Typography>;
+
   return (
     <>
       <Typography variant="h6">Reminders</Typography>
@@ -105,8 +83,8 @@ const Reminders: React.FC = () => {
         {reminders.map((reminder) => (
           <StyledListItem key={reminder.id}>
             <Checkbox
-              checked={reminder.done}
-              onChange={() => handleCheckboxToggle(reminder.id)}
+              checked={reminder.alarm}
+              onChange={() => handleCheckboxToggle(reminder.id, reminder.alarm)}
             />
             {editingId === reminder.id ? (
               <TextField
@@ -119,16 +97,9 @@ const Reminders: React.FC = () => {
               />
             ) : (
               <ListItemText
-                primary={reminder.text}
+                primary={reminder.description}
                 onClick={() => handleEditReminder(reminder.id)} // Al hacer clic, entrar en modo edición
               />
-            )}
-            {reminder.urgent && (
-              <Tooltip title="Urgent">
-                <IconButton edge="end" size="small">
-                  <InfoIcon color="warning" />
-                </IconButton>
-              </Tooltip>
             )}
             <Tooltip title="Eliminar">
               <IconButton
