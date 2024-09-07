@@ -9,8 +9,10 @@ import {
   Typography,
   CircularProgress,
   Button,
+  Tooltip,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { styled } from "@mui/material/styles";
 import useReminders from "src/common/Hooks/useReminders";
 
@@ -24,9 +26,11 @@ const StyledListItem = styled(ListItem)(({ theme }) => ({
 }));
 
 const Reminders: React.FC = () => {
-  const { data, loading, error, createReminder, modifyReminder } = useReminders();
+  const { data, loading, error, createReminder, modifyReminder, removeReminder } = useReminders();
   const [newReminder, setNewReminder] = useState("");
   const [isAdding, setIsAdding] = useState(false);
+  const [editingId, setEditingId] = useState<number | null>(null); // Estado para saber cuál está en modo edición
+  const [editedText, setEditedText] = useState(""); // Estado para almacenar el texto editado
 
   // Asegúrate de acceder a data.reminders
   const reminders = data?.reminders || [];
@@ -38,9 +42,9 @@ const Reminders: React.FC = () => {
     }
   };
 
-  const handleAddReminder = () => {
+  const handleAddReminder = async () => {
     if (newReminder.trim()) {
-      createReminder({
+      await createReminder({
         description: newReminder,
         alarm: false,
         datereminder: new Date().toISOString().split("T")[0], // Ajustar según el formato necesario
@@ -49,6 +53,36 @@ const Reminders: React.FC = () => {
       });
       setNewReminder("");
       setIsAdding(false);
+    }
+  };
+
+  const handleDeleteReminder = async (id: number) => {
+    await removeReminder(id);
+  };
+
+  const handleEditReminder = (id: number) => {
+    const reminderToEdit = reminders.find((reminder: any) => reminder.id === id);
+    if (reminderToEdit) {
+      setEditingId(id); // Activar modo de edición
+      setEditedText(reminderToEdit.description); // Setear el texto actual para poder editarlo
+    }
+  };
+
+  const handleUpdateReminder = async (id: number) => {
+    try {
+      if (editedText.trim() === "") return; // Validación para no guardar texto vacío
+      await modifyReminder(id, { description: editedText }); // Llamada a la API para actualizar
+      setEditingId(null); // Salir del modo de edición después de actualizar
+    } catch (error) {
+      console.error("Error al actualizar el recordatorio:", error);
+      setEditingId(null); // Salir del modo de edición aunque ocurra un error
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent, id: number) => {
+    if (e.key === "Enter") {
+      e.preventDefault(); // Previene que se envíe un formulario o algún comportamiento por defecto
+      handleUpdateReminder(id);
     }
   };
 
@@ -71,7 +105,30 @@ const Reminders: React.FC = () => {
                 checked={reminder.alarm} // Usamos 'alarm' para marcar como hecho
                 onChange={() => handleCheckboxToggle(reminder.id)}
               />
-              <ListItemText primary={reminder.description} />
+              {editingId === reminder.id ? (
+                <TextField
+                  fullWidth
+                  value={editedText}
+                  onChange={(e) => setEditedText(e.target.value)}
+                  onBlur={() => handleUpdateReminder(reminder.id)} // Guardar al perder foco
+                  onKeyDown={(e) => handleKeyDown(e, reminder.id)} // Guardar al presionar Enter
+                  autoFocus
+                />
+              ) : (
+                <ListItemText
+                  primary={reminder.description}
+                  onClick={() => handleEditReminder(reminder.id)} // Al hacer clic, entrar en modo edición
+                />
+              )}
+              <Tooltip title="Eliminar">
+                <IconButton
+                  edge="end"
+                  size="small"
+                  onClick={() => handleDeleteReminder(reminder.id)}
+                >
+                  <DeleteIcon color="error" />
+                </IconButton>
+              </Tooltip>
             </StyledListItem>
           ))
         ) : (
