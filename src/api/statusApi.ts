@@ -10,13 +10,13 @@ export const getStatus = async (id: number) => {
   return response.data;
 };
 
-export const addStatus = async (status: { name: string }) => {
+export const addStatus = async (status: { statusname: string }) => {
   const response = await api.post('/status', status);
   return response.data;
 };
 
 
-export const updateStatus = async (id: number, updatedFields: Partial<{ name: string }>) => {
+export const updateStatus = async (id: number, updatedFields: Partial<{ statusname: string }>) => {
   const response = await api.put(`/status/${id}`, updatedFields);
   return response.data;
 };

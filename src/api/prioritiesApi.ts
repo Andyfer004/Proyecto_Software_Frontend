@@ -1,26 +1,31 @@
 import api from './index'; // Importa tu instancia de Axios
 
-export const getProfiles = async () => {
-  const response = await api.get('/profiles');
+// Obtener todas las prioridades
+export const getPriorities = async () => {
+  const response = await api.get('/priorities');
   return response.data;
 };
 
-export const getProfile = async (id: number) => {
-  const response = await api.get(`/profiles/${id}`);
+// Obtener una prioridad por su ID
+export const getPriority = async (id: number) => {
+  const response = await api.get(`/priorities/${id}`);
   return response.data;
 };
 
-export const addProfile = async (profile: { name: string, image: string }) => {
-  const response = await api.post('/profiles', profile);
+// Agregar una nueva prioridad
+export const addPriority = async (priority: { namepriority: string }) => {
+  const response = await api.post('/priorities', priority);
   return response.data;
 };
 
-export const updateProfile = async (id: number, updatedFields: Partial<{ name: string, image: string }>) => {
-  const response = await api.put(`/profiles/${id}`, updatedFields);
+// Actualizar una prioridad por su ID
+export const updatePriority = async (id: number, updatedFields: Partial<{ namepriority: string }>) => {
+  const response = await api.put(`/priorities/${id}`, updatedFields);
   return response.data;
 };
 
-export const deleteProfile = async (id: number) => {
-  const response = await api.delete(`/profiles/${id}`);
+// Eliminar una prioridad por su ID
+export const deletePriority = async (id: number) => {
+  const response = await api.delete(`/priorities/${id}`);
   return response.data;
 };

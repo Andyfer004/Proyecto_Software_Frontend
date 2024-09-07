@@ -23,6 +23,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import './Calendar.css';
 import useStatus from '../../common/Hooks/useStatus'; // Asegúrate de que la ruta sea correcta
+import usePriorities from 'src/common/Hooks/usePriorities';
 
 interface Subtask {
   id: number;
@@ -178,14 +179,21 @@ const Calendar: React.FC = () => {
     setNewStatusName(''); // Reset new status name
   };
 
-  const { createStatus } = useStatus(); // Extraemos createStatus del hook
+  const { createStatus } = useStatus(); 
+  const { createPriority } = usePriorities(); 
 
   const handleAddStatus = async () => {
     if (newStatusName.trim()) {
       try {
         // Agregar el estado utilizando el hook y la API
-        await createStatus({ name: newStatusName });
-        setNewStatusName(''); // Limpiar el campo
+        const newStatus = {
+        id: statuses.length + 1,
+        name: newStatusName,
+      };
+        await createStatus({ statusname: newStatusName });
+        setStatuses([...statuses, newStatus]);
+        setStatusId(newStatus.id); // Set the new status as selected
+        setNewStatusName('');
       } catch (error) {
         console.error('Error al agregar el estado:', error);
       } finally {
@@ -227,29 +235,28 @@ const Calendar: React.FC = () => {
     ));
   };
 
-  const handleAddNewPriority = () => {
+  const handleAddNewPriority = async () =>  {
+    
     if (newPriorityName.trim()) {
-      const newPriority = {
+      try {
+        // Agregar el estado utilizando el hook y la API
+        const newPriority = {
         id: priorities.length + 1,
         name: newPriorityName,
       };
-      setPriorities([...priorities, newPriority]);
-      setPriorityId(newPriority.id); // Set the new priority as selected
-      setNewPriorityName('');
+        await createPriority({ namepriority: newPriorityName });
+        setPriorities([...priorities, newPriority]);
+        setPriorityId(newPriority.id); // Set the new priority as selected
+        setNewPriorityName('');
+      } catch (error) {
+        console.error('Error al agregar el estado:', error);
+      } finally {
+        handleClosePopoverStatus();
+      }
     }
   };
 
-  const handleAddNewStatus = () => {
-    if (newStatusName.trim()) {
-      const newStatus = {
-        id: statuses.length + 1,
-        name: newStatusName,
-      };
-      setStatuses([...statuses, newStatus]);
-      setStatusId(newStatus.id); // Set the new status as selected
-      setNewStatusName('');
-    }
-  };
+
 
   return (
     <>
@@ -367,15 +374,7 @@ const Calendar: React.FC = () => {
             <>
               {params.InputProps.endAdornment}
               <IconButton
-                onClick={() => {
-                  if (newStatusName.trim()) {
-                    const newStatus = { id: statuses.length + 1, name: newStatusName };
-                    setStatuses([...statuses, newStatus]);
-                    setStatusId(newStatus.id); // Selecciona el nuevo estado
-                    setNewStatusName(''); // Limpiar el campo
-                    console.log('Nuevo estado agregado:', newStatus);
-                  }
-                }}
+                onClick={handleAddStatus}
               >
                 <AddCircleIcon />
               </IconButton>

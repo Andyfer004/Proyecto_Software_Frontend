@@ -3,7 +3,7 @@ import { getStatuses, addStatus, updateStatus, deleteStatus } from '../../api/st
 
 type Status = {
   id: number;
-  name: string;
+  statusname: string;
   created_at: string;
   updated_at: string;
 };
