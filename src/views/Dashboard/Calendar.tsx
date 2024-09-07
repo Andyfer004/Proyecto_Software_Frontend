@@ -341,41 +341,52 @@ const Calendar: React.FC = () => {
               </FormControl>
             </Grid>
             <Grid item xs={6}>
-              <FormControl fullWidth margin="dense">
-                <Autocomplete
-                  freeSolo
-                  options={statuses}
-                  getOptionLabel={(option) => typeof option === 'object' ? option.name : ''}
-                  value={statuses.find(s => s.id === statusId) || null}
-                  onChange={(event, newValue) => {
-                    if (typeof newValue === 'string') {
-                      setNewStatusName(newValue);
-                    } else if (newValue && newValue.id) {
-                      setStatusId(newValue.id);
-                    }
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Status"
-                      value={newStatusName}
-                      onChange={(e) => setNewStatusName(e.target.value)}
-                      InputProps={{
-                        ...params.InputProps,
-                        endAdornment: (
-                          <>
-                            {params.InputProps.endAdornment}
-                            <IconButton onClick={handleAddNewStatus}>
-                              <AddCircleIcon />
-                            </IconButton>
-                          </>
-                        ),
-                      }}
-                    />
-                  )}
-                />
-              </FormControl>
-            </Grid>
+            <FormControl fullWidth margin="dense">
+  <Autocomplete
+    freeSolo
+    options={statuses}
+    getOptionLabel={(option) => typeof option === 'object' ? option.name : ''}
+    value={statuses.find(s => s.id === statusId) || null}
+    onChange={(event, newValue) => {
+      if (typeof newValue === 'string') {
+        setNewStatusName(newValue);
+      } else if (newValue && newValue.id) {
+        setStatusId(newValue.id);
+        setNewStatusName(''); // Limpiar si selecciona un estado existente
+      }
+    }}
+    renderInput={(params) => (
+      <TextField
+        {...params}
+        label="Status"
+        value={newStatusName}  // Aseguramos que el valor sea el correcto
+        onChange={(e) => setNewStatusName(e.target.value)}
+        InputProps={{
+          ...params.InputProps,
+          endAdornment: (
+            <>
+              {params.InputProps.endAdornment}
+              <IconButton
+                onClick={() => {
+                  if (newStatusName.trim()) {
+                    const newStatus = { id: statuses.length + 1, name: newStatusName };
+                    setStatuses([...statuses, newStatus]);
+                    setStatusId(newStatus.id); // Selecciona el nuevo estado
+                    setNewStatusName(''); // Limpiar el campo
+                    console.log('Nuevo estado agregado:', newStatus);
+                  }
+                }}
+              >
+                <AddCircleIcon />
+              </IconButton>
+            </>
+          ),
+        }}
+      />
+    )}
+  />
+</FormControl>
+</Grid>
             <Grid item xs={12}>
               <Button onClick={handleAddSubtask} color="primary">
                 Add Subtask
