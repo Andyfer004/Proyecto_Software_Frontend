@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide, Typography, Box, TextField } from '@mui/material';
+import React, { useState } from 'react';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide, Typography, TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import PersonIcon from '@mui/icons-material/Person';
-import WorkIcon from '@mui/icons-material/Work';
 import ProfileIcon from '@mui/icons-material/AccountCircle';
-import useTasks from 'src/common/Hooks/useTasks';//  import your useTasks hook
+import useTasks from 'src/common/Hooks/useTasks';
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialog-paper': {
@@ -76,6 +75,7 @@ export const ModalNewTask = () => {
   });
   const [isEditing, setIsEditing] = useState(false);
   const [taskId, setTaskId] = useState<number | null>(null);
+  const [isDueDateFocused, setIsDueDateFocused] = useState(false);
 
   const { createTask, modifyTask, loading, error } = useTasks();
 
@@ -106,7 +106,7 @@ export const ModalNewTask = () => {
     } else {
       await createTask(taskData);
     }
-    handleClose(); // Close the dialog after saving
+    handleClose();
   };
 
   return (
@@ -155,11 +155,15 @@ export const ModalNewTask = () => {
             name="due_date"
             type="date"
             InputLabelProps={{ shrink: true }}
+            placeholder={isDueDateFocused ? 'dd/mm/yyyy' : 'Due Date'}
             value={taskData.due_date}
             onChange={handleChange}
+            onFocus={() => setIsDueDateFocused(true)}
+            onBlur={() => setIsDueDateFocused(false)}
             margin="normal"
             variant="outlined"
           />
+
           <TextField
             fullWidth
             label="Status ID"
