@@ -10,6 +10,10 @@ import {
   CircularProgress,
   Button,
   Tooltip,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -29,10 +33,10 @@ const Reminders: React.FC = () => {
   const { data, loading, error, createReminder, modifyReminder, removeReminder } = useReminders();
   const [newReminder, setNewReminder] = useState("");
   const [isAdding, setIsAdding] = useState(false);
-  const [editingId, setEditingId] = useState<number | null>(null); // Estado para saber cuál está en modo edición
-  const [editedText, setEditedText] = useState(""); // Estado para almacenar el texto editado
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editedText, setEditedText] = useState("");
+  const [sortType, setSortType] = useState("today");
 
-  // Asegúrate de acceder a data.reminders
   const reminders = data?.reminders || [];
 
   const handleCheckboxToggle = (id: number) => {
@@ -47,9 +51,9 @@ const Reminders: React.FC = () => {
       await createReminder({
         description: newReminder,
         alarm: false,
-        datereminder: new Date().toISOString().split("T")[0], // Ajustar según el formato necesario
+        datereminder: new Date().toISOString().split("T")[0],
         hourreminder: new Date().toISOString().split("T")[1].substring(0, 5),
-        profileid: 1, // Ajusta el ID del perfil según corresponda
+        profileid: 1,
       });
       setNewReminder("");
       setIsAdding(false);
@@ -63,28 +67,38 @@ const Reminders: React.FC = () => {
   const handleEditReminder = (id: number) => {
     const reminderToEdit = reminders.find((reminder: any) => reminder.id === id);
     if (reminderToEdit) {
-      setEditingId(id); // Activar modo de edición
-      setEditedText(reminderToEdit.description); // Setear el texto actual para poder editarlo
+      setEditingId(id);
+      setEditedText(reminderToEdit.description);
     }
   };
 
   const handleUpdateReminder = async (id: number) => {
     try {
-      if (editedText.trim() === "") return; // Validación para no guardar texto vacío
-      await modifyReminder(id, { description: editedText }); // Llamada a la API para actualizar
-      setEditingId(null); // Salir del modo de edición después de actualizar
+      if (editedText.trim() === "") return;
+      await modifyReminder(id, { description: editedText });
+      setEditingId(null);
     } catch (error) {
       console.error("Error al actualizar el recordatorio:", error);
-      setEditingId(null); // Salir del modo de edición aunque ocurra un error
+      setEditingId(null);
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent, id: number) => {
     if (e.key === "Enter") {
-      e.preventDefault(); // Previene que se envíe un formulario o algún comportamiento por defecto
+      e.preventDefault();
       handleUpdateReminder(id);
     }
   };
+
+  // Sorting logic
+  const sortedReminders = [...reminders].sort((a, b) => {
+    if (sortType === "today") {
+      return new Date(a.datereminder).getTime() - new Date(b.datereminder).getTime();
+    } else if (sortType === "alphabetical") {
+      return a.description.localeCompare(b.description);
+    }
+    return 0;
+  });
 
   if (loading) {
     return <CircularProgress />;
@@ -97,12 +111,24 @@ const Reminders: React.FC = () => {
   return (
     <>
       <Typography variant="h6">Reminders</Typography>
+      <FormControl fullWidth variant="outlined" margin="dense">
+        <InputLabel id="sort-label">Sort By</InputLabel>
+        <Select
+          labelId="sort-label"
+          value={sortType}
+          onChange={(e) => setSortType(e.target.value)}
+          label="Sort By"
+        >
+          <MenuItem value="today">Today</MenuItem>
+          <MenuItem value="alphabetical">Alphabetical</MenuItem>
+        </Select>
+      </FormControl>
       <List>
-        {Array.isArray(reminders) && reminders.length > 0 ? (
-          reminders.map((reminder: any) => (
+        {Array.isArray(sortedReminders) && sortedReminders.length > 0 ? (
+          sortedReminders.map((reminder: any) => (
             <StyledListItem key={reminder.id}>
               <Checkbox
-                checked={reminder.alarm} // Usamos 'alarm' para marcar como hecho
+                checked={reminder.alarm}
                 onChange={() => handleCheckboxToggle(reminder.id)}
               />
               {editingId === reminder.id ? (
@@ -110,14 +136,14 @@ const Reminders: React.FC = () => {
                   fullWidth
                   value={editedText}
                   onChange={(e) => setEditedText(e.target.value)}
-                  onBlur={() => handleUpdateReminder(reminder.id)} // Guardar al perder foco
-                  onKeyDown={(e) => handleKeyDown(e, reminder.id)} // Guardar al presionar Enter
+                  onBlur={() => handleUpdateReminder(reminder.id)}
+                  onKeyDown={(e) => handleKeyDown(e, reminder.id)}
                   autoFocus
                 />
               ) : (
                 <ListItemText
                   primary={reminder.description}
-                  onClick={() => handleEditReminder(reminder.id)} // Al hacer clic, entrar en modo edición
+                  onClick={() => handleEditReminder(reminder.id)}
                 />
               )}
               <Tooltip title="Eliminar">
