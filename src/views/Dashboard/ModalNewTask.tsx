@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide, Typography, Box } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide, Typography, Box, TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import PersonIcon from '@mui/icons-material/Person';
 import WorkIcon from '@mui/icons-material/Work';
 import ProfileIcon from '@mui/icons-material/AccountCircle';
+import useTasks from 'src/common/Hooks/useTasks';//  import your useTasks hook
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialog-paper': {
@@ -55,25 +56,57 @@ const ProfileButton = styled(Button)(({ theme }) => ({
   overflow: 'hidden',
   textAlign: 'left',
   whiteSpace: 'nowrap',
-  width: 115, // Initial width of the button
+  width: 115,
   '&:hover': {
-    width: 125, // Expanded width on hover
+    width: 125,
     backgroundColor: theme.palette.primary.dark,
     '& span': {
-      opacity: 1, // Show text on hover
+      opacity: 1,
     },
   },
 }));
 
 export const ModalNewTask = () => {
   const [open, setOpen] = useState(false);
+  const [taskData, setTaskData] = useState({
+    title: '',
+    description: '',
+    due_date: '',
+    status_id: 1, // Default status
+  });
+  const [isEditing, setIsEditing] = useState(false);
+  const [taskId, setTaskId] = useState<number | null>(null);
+
+  const { createTask, modifyTask, loading, error } = useTasks();
 
   const handleClickOpen = () => {
     setOpen(true);
+    setIsEditing(false);
+    setTaskData({
+      title: '',
+      description: '',
+      due_date: '',
+      status_id: 1,
+    });
+    setTaskId(null);
   };
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setTaskData({ ...taskData, [name]: value });
+  };
+
+  const handleSaveTask = async () => {
+    if (isEditing && taskId !== null) {
+      await modifyTask(taskId, taskData);
+    } else {
+      await createTask(taskData);
+    }
+    handleClose(); // Close the dialog after saving
   };
 
   return (
@@ -96,20 +129,55 @@ export const ModalNewTask = () => {
         transitionDuration={500}
       >
         <PersonIcon style={{ fontSize: 60, marginBottom: '8px' }} />
-        <DialogTitle id="options-dialog-title">Switch Workspaces</DialogTitle>
+        <DialogTitle id="options-dialog-title">{isEditing ? 'Edit Task' : 'Add New Task'}</DialogTitle>
         <DialogContent>
-          <Box display="flex" alignItems="center" marginBottom={2}>
-            <WorkIcon style={{ marginRight: '8px' }} />
-            <Typography variant="subtitle1">Workspace</Typography>
-          </Box>
-          <Box display="flex" alignItems="center">
-            <WorkIcon style={{ marginRight: '8px' }} />
-            <Typography variant="subtitle1">Workspace</Typography>
-          </Box>
+          <TextField
+            fullWidth
+            label="Title"
+            name="title"
+            value={taskData.title}
+            onChange={handleChange}
+            margin="normal"
+            variant="outlined"
+          />
+          <TextField
+            fullWidth
+            label="Description"
+            name="description"
+            value={taskData.description}
+            onChange={handleChange}
+            margin="normal"
+            variant="outlined"
+          />
+          <TextField
+            fullWidth
+            label="Due Date"
+            name="due_date"
+            type="date"
+            InputLabelProps={{ shrink: true }}
+            value={taskData.due_date}
+            onChange={handleChange}
+            margin="normal"
+            variant="outlined"
+          />
+          <TextField
+            fullWidth
+            label="Status ID"
+            name="status_id"
+            type="number"
+            value={taskData.status_id}
+            onChange={handleChange}
+            margin="normal"
+            variant="outlined"
+          />
+          {error && <Typography color="error">{error}</Typography>}
         </DialogContent>
         <DialogActions>
           <StyledButton onClick={handleClose}>
-            Close
+            Cancel
+          </StyledButton>
+          <StyledButton onClick={handleSaveTask} disabled={loading}>
+            {isEditing ? 'Update Task' : 'Add Task'}
           </StyledButton>
         </DialogActions>
       </StyledDialog>
