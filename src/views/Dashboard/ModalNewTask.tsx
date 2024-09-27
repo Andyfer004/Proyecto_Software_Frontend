@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide, Typography, Box, TextField } from '@mui/material';
+import React, { useState } from 'react';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide, Typography, TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import PersonIcon from '@mui/icons-material/Person';
-import WorkIcon from '@mui/icons-material/Work';
 import ProfileIcon from '@mui/icons-material/AccountCircle';
 import useTasks from 'src/common/Hooks/useTasks';//  import your useTasks hook
 import useProfiles from '../../common/Hooks/useProfile'; // Importar el hook de perfiles
@@ -77,6 +76,7 @@ export const ModalNewTask = () => {
   });
   const [isEditing, setIsEditing] = useState(false);
   const [taskId, setTaskId] = useState<number | null>(null);
+  const [isDueDateFocused, setIsDueDateFocused] = useState(false);
 
   const { createTask, modifyTask, loading: loadingTask, error } = useTasks();
   const { data: profiles, loading } = useProfiles(); // Usar el hook para obtener los perfiles
@@ -108,7 +108,7 @@ export const ModalNewTask = () => {
     } else {
       await createTask(taskData);
     }
-    handleClose(); // Close the dialog after saving
+    handleClose();
   };
 
   return (

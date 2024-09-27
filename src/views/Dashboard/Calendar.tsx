@@ -471,14 +471,22 @@ const Calendar: React.FC = () => {
                   </FormControl>
                 </Grid>
                 <Grid item xs={6}>
-                  <TextField
-                    margin="dense"
-                    label="Due Date"
-                    type="date"
-                    fullWidth
-                    value={subtask.dueDate}
-                    onChange={(e) => handleSubtaskChange(index, 'dueDate', e.target.value)}
-                  />
+                  // Date Picker for modal subtask
+                <TextField
+                  margin="dense"
+                  label="Due Date"
+                  type="date"
+                  fullWidth
+                  value={subtask.dueDate}
+                  onChange={(e) => handleSubtaskChange(index, 'dueDate', e.target.value)}
+                  InputLabelProps={{
+                    shrink: true, // Always shrink the label so it's visible above the input field
+                    style: { color: subtask.dueDate ? 'black' : 'grey' }, // Change color if needed when a date is not selected
+                  }}
+                  InputProps={{
+                    placeholder: subtask.dueDate ? '' : 'dd/mm/yyyy', // Show the placeholder when there's no selected date
+                  }}
+                />
                 </Grid>
                 <Grid item xs={6}>
                   <TextField
