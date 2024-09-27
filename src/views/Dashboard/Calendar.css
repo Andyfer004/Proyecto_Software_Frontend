@@ -223,3 +223,16 @@
     }
 }
 
+/* Responsive para pantallas de 320px */
+@media (max-width: 320px) {
+    .fc {
+        padding: 5px; /* Reducir el padding */
+    }
+    .fc-toolbar-title {
+        font-size: 0.9rem; /* Ajustar el tamaño del texto */
+    }
+    .fc-prev-button, .fc-next-button, .fc-today-button {
+        padding: 2px 4px; /* Ajustar padding de botones */
+        font-size: 0.8rem; /* Ajustar el tamaño del texto de los botones */
+    }
+}
