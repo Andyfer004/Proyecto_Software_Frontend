@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Divider,
@@ -11,6 +11,8 @@ import {
   ListItemText,
   Toolbar,
   Typography,
+  Menu,
+  MenuItem,
 } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
@@ -19,7 +21,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import MenuIcon from '@mui/icons-material/Menu';
-import AccountCircle from '@mui/icons-material/AccountCircle'
+import AccountCircle from '@mui/icons-material/AccountCircle';
 import { useNavigation as useNativeNavigation } from '@react-navigation/native';
 import { useNavigate as useWebNavigate } from 'react-router-dom';
 import { Platform } from 'react-native';
@@ -64,11 +66,11 @@ const drawerItems = [
   { name: 'Notes', icon: EventNoteIcon, route: 'notes' },
   { name: 'Add', icon: AddCircle, route: 'add-profile' },
   { name: 'Update Account', icon: RefreshIcon, route: 'update-account' },
-  
 ];
 
 const SidebarGeneral = () => {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -76,6 +78,26 @@ const SidebarGeneral = () => {
 
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    // Lógica para logout
+    console.log("Logout");
+    handleMenuClose();
+  };
+
+  const handleUpdateAccount = () => {
+    // Lógica para update account
+    navigateTo("update-account");
+    handleMenuClose();
   };
 
   const theme = useTheme();
@@ -108,20 +130,27 @@ const SidebarGeneral = () => {
           <Typography variant="h6" noWrap component="div">
             Navigation
           </Typography>
-        
+
+          {/* Icono de AccountCircle con menú desplegable */}
           <IconButton
-           color="inherit"
-           
-           sx={{ ml: 'auto' }}  
+            color="inherit"
+            sx={{ ml: 'auto' }}  
+            onClick={handleMenuClick}  
           >
-          <AccountCircle fontSize='large'/> {/* Aquí se reemplaza MenuIcon por AccountCircle */}
+            <AccountCircle fontSize="large" />
           </IconButton>
-         
-        
-          
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+          >
+            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+            <MenuItem onClick={handleUpdateAccount}>Update Account</MenuItem>
+          </Menu>
 
         </Toolbar>
       </AppBar>
+
       <Drawer
         sx={{
           width: drawerWidth,
