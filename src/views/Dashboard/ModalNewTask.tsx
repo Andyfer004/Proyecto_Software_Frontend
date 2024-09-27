@@ -5,6 +5,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import WorkIcon from '@mui/icons-material/Work';
 import ProfileIcon from '@mui/icons-material/AccountCircle';
 import useTasks from 'src/common/Hooks/useTasks';//  import your useTasks hook
+import useProfiles from '../../common/Hooks/useProfile'; // Importar el hook de perfiles
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialog-paper': {
@@ -77,7 +78,8 @@ export const ModalNewTask = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [taskId, setTaskId] = useState<number | null>(null);
 
-  const { createTask, modifyTask, loading, error } = useTasks();
+  const { createTask, modifyTask, loading: loadingTask, error } = useTasks();
+  const { data: profiles, loading } = useProfiles(); // Usar el hook para obtener los perfiles
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -118,7 +120,7 @@ export const ModalNewTask = () => {
         style={{ backgroundColor: 'green' }}
       >
         <ProfileIcon style={{ marginRight: '8px'}} />
-        <span >PROFILE</span>
+        <span>Profile</span>
       </ProfileButton>
 
       <StyledDialog 
@@ -129,55 +131,22 @@ export const ModalNewTask = () => {
         transitionDuration={500}
       >
         <PersonIcon style={{ fontSize: 60, marginBottom: '8px' }} />
-        <DialogTitle id="options-dialog-title">{isEditing ? 'Edit Task' : 'Add New Task'}</DialogTitle>
+        <DialogTitle id="options-dialog-title">Seleccionar Perfil</DialogTitle>
         <DialogContent>
-          <TextField
-            fullWidth
-            label="Title"
-            name="title"
-            value={taskData.title}
-            onChange={handleChange}
-            margin="normal"
-            variant="outlined"
-          />
-          <TextField
-            fullWidth
-            label="Description"
-            name="description"
-            value={taskData.description}
-            onChange={handleChange}
-            margin="normal"
-            variant="outlined"
-          />
-          <TextField
-            fullWidth
-            label="Due Date"
-            name="due_date"
-            type="date"
-            InputLabelProps={{ shrink: true }}
-            value={taskData.due_date}
-            onChange={handleChange}
-            margin="normal"
-            variant="outlined"
-          />
-          <TextField
-            fullWidth
-            label="Status ID"
-            name="status_id"
-            type="number"
-            value={taskData.status_id}
-            onChange={handleChange}
-            margin="normal"
-            variant="outlined"
-          />
-          {error && <Typography color="error">{error}</Typography>}
+          {loading ? (
+            <Typography>Cargando perfiles...</Typography>
+          ) : (
+            profiles.map((profile) => (
+              <Box key={profile.id} display="flex" alignItems="center" marginBottom={2}>
+                <ProfileIcon style={{ marginRight: '8px' }} />
+                <Typography variant="subtitle1">{profile.name}</Typography>
+              </Box>
+            ))
+          )}
         </DialogContent>
         <DialogActions>
           <StyledButton onClick={handleClose}>
-            Cancel
-          </StyledButton>
-          <StyledButton onClick={handleSaveTask} disabled={loading}>
-            {isEditing ? 'Update Task' : 'Add Task'}
+            Cerrar
           </StyledButton>
         </DialogActions>
       </StyledDialog>
