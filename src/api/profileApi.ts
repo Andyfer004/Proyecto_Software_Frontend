@@ -24,3 +24,7 @@ export const deleteProfile = async (id: number) => {
   const response = await api.delete(`/profiles/${id}`);
   return response.data;
 };
+
+export const assignProfile = async (profileId: number, userId: number) => {
+  return await api.post(`/profiles/assign`, { profileId, userId });
+};
