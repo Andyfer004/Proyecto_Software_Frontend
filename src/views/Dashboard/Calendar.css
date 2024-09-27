@@ -170,3 +170,17 @@
         height: 25px;
     }
 }
+
+
+/* Responsive para pantallas de 768px */
+@media (max-width: 768px) {
+    .fc {
+        padding: 15px; /* Reducir el padding */
+    }
+    .fc-toolbar-title {
+        font-size: 1.2rem; /* Ajustar el tamaño del texto */
+    }
+    .fc-prev-button, .fc-next-button, .fc-today-button {
+        padding: 3px 6px; /* Ajustar padding de botones */
+    }
+}
