@@ -14,6 +14,8 @@ import {
   Menu,
   MenuItem,
 } from '@mui/material';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp'; // Icono para logout
+import SettingsIcon from '@mui/icons-material/Settings';
 import { styled, useTheme } from '@mui/material/styles';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import AddCircle from '@mui/icons-material/AddCircle';
@@ -65,7 +67,6 @@ const drawerItems = [
   { name: 'Home', icon: HomeIcon, route: '' },
   { name: 'Notes', icon: EventNoteIcon, route: 'notes' },
   { name: 'Add', icon: AddCircle, route: 'add-profile' },
-  { name: 'Update Account', icon: RefreshIcon, route: 'update-account' },
 ];
 
 const SidebarGeneral = () => {
@@ -144,8 +145,18 @@ const SidebarGeneral = () => {
             open={Boolean(anchorEl)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={handleLogout}>Logout</MenuItem>
-            <MenuItem onClick={handleUpdateAccount}>Update Account</MenuItem>
+            <MenuItem onClick={handleLogout}>
+              <ListItemIcon>
+                <ExitToAppIcon fontSize="small" /> {/* Icono de logout */}
+              </ListItemIcon>
+              Logout
+            </MenuItem>
+            <MenuItem onClick={handleUpdateAccount}>
+              <ListItemIcon>
+                <SettingsIcon fontSize="small" /> {/* Icono de update account */}
+              </ListItemIcon>
+              Update Account
+            </MenuItem>
           </Menu>
 
         </Toolbar>
