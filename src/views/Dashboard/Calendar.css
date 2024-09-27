@@ -201,3 +201,25 @@
         font-size: 0.9rem; /* Ajustar tamaño del número */
     }
 }
+
+/* Responsive para pantallas de 425px */
+@media (max-width: 425px) {
+    .fc {
+        padding: 5px; /* Reducir el padding */
+    }
+    .fc-toolbar-title {
+        font-size: 1rem; /* Ajustar el tamaño del texto */
+    }
+}
+
+/* Responsive para pantallas de 375px */
+@media (max-width: 375px) {
+    .fc {
+        padding: 5px; /* Reducir el padding */
+    }
+    .fc-day-today .fc-daygrid-day-number {
+        width: 18px; /* Ajustar tamaño del círculo */
+        height: 18px;
+    }
+}
+
