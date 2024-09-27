@@ -36,7 +36,7 @@ const useEvents = () => {
     fetchData();
   }, []);
 
-  const createEvent = async (newEvent: Omit<Event, 'id' | 'created_at' | 'updated_at'>) => {
+  const createEvent = async (newEvent: any) => {
     setLoading(true);
     try {
       await addEvent(newEvent);

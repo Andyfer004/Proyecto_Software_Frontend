@@ -33,7 +33,7 @@ const useTasks = () => {
       fetchData();
     }, []);
   
-    const createTask = async (newTask: Omit<Task, 'id' | 'created_at' | 'updated_at'>) => {
+    const createTask = async (newTask: any) => {
       setLoading(true);
       try {
         await addTask(newTask);
@@ -45,7 +45,7 @@ const useTasks = () => {
       }
     };
   
-    const modifyTask = async (id: number, updatedTask: Partial<Omit<Task, 'id'>>) => {
+    const modifyTask = async (id: number, updatedTask: any) => {
       setLoading(true);
       try {
         await updateTask(id, updatedTask);

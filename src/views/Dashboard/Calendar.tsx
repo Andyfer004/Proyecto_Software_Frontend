@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dialog,
   DialogActions,
@@ -24,6 +24,8 @@ import listPlugin from '@fullcalendar/list';
 import './Calendar.css';
 import useStatus from '../../common/Hooks/useStatus'; // Asegúrate de que la ruta sea correcta
 import usePriorities from 'src/common/Hooks/usePriorities';
+import useEvents from 'src/common/Hooks/useEvents';
+import useTasks from 'src/common/Hooks/useTasks';
 
 interface Subtask {
   id: number;
@@ -59,6 +61,10 @@ const Calendar: React.FC = () => {
   const [anchorElStatus, setAnchorElStatus] = useState<null | HTMLElement>(null);
   const [newPriorityName, setNewPriorityName] = useState<string>('');
   const [newStatusName, setNewStatusName] = useState<string>('');
+
+  const { data: tasksData, loading, error, createTask, modifyTask, removeTask } = useTasks();
+
+
   const [priorities, setPriorities] = useState([
     { id: 1, name: 'Low' },
     { id: 2, name: 'Medium' },
@@ -82,6 +88,7 @@ const Calendar: React.FC = () => {
     setOpenDialog(true);
   };
 
+
   const handleEventClick = (clickInfo: any) => {
     const clickedTask = tasks.find((task) => task.id === parseInt(clickInfo.event.id, 10));
     if (clickedTask) {
@@ -96,24 +103,54 @@ const Calendar: React.FC = () => {
     }
   };
 
-  const handleSaveTask = () => {
+  useEffect(() => {
+    if (tasksData) {
+      const mappedTasks = tasksData.map((task:any) => ({
+        id: task.id,
+        taskName: task.name, // Assuming 'name' holds the task name
+        description: task.description,
+        priorityId: 1,
+        statusId: 1,
+        dueDate: task.duedate,
+        subtasks: [], // Assuming you manage subtasks separately
+      }));
+      setTasks(mappedTasks);
+    }
+  }, [tasksData]);
+
+
+
+  const handleSaveTask = async () => {
     if (selectedTaskId !== null) {
-      setTasks(tasks.map(task => 
-        task.id === selectedTaskId
-          ? { ...task, taskName, description, priorityId, statusId, dueDate: selectedDate, subtasks }
-          : task
-      ));
+      // Update existing task using modifyTask
+      try {
+        await modifyTask(selectedTaskId, {
+          name: taskName,
+          description,
+          priorityid: priorityId,
+          statusid: statusId,
+          duedate: selectedDate,
+        });
+      } catch (error) {
+        console.error('Error updating task:', error);
+      }
     } else {
-      const newTask: Task = {
-        id: tasks.length + 1,
-        taskName,
+      // Create a new task using createTask
+      const newTask = {
+        name: taskName,
         description,
-        priorityId,
-        statusId,
-        dueDate: selectedDate,
-        subtasks,
+        priorityid: priorityId || 1, // Replace with the actual priority ID
+        statusid: statusId || 1,     // Replace with the actual status ID
+        duedate: selectedDate,
+        profileid: 1,                // Replace with the actual profile ID
+        timeestimatehours: 1.0       // Replace with the actual estimated hours if available
       };
-      setTasks([...tasks, newTask]);
+
+      try {
+        await createTask(newTask);
+      } catch (error) {
+        console.error('Error creating task:', error);
+      }
     }
 
     // Reset fields and close dialog
@@ -126,6 +163,8 @@ const Calendar: React.FC = () => {
     setOpenDialog(false);
   };
 
+
+  
   const handleAddSubtask = () => {
     const newSubtask: Subtask = {
       id: subtasks.length + 1,
