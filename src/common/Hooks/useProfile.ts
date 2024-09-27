@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getProfiles, addProfile, updateProfile, deleteProfile } from '../../api/profileApi';
+import { getProfiles, addProfile, updateProfile, deleteProfile, assignProfile } from '../../api/profileApi'; // Asegúrate de tener esta función en tu API
 
 type Profile = {
   id: number;
@@ -14,6 +14,7 @@ const useProfiles = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Función para obtener todos los perfiles
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -26,10 +27,12 @@ const useProfiles = () => {
     }
   };
 
+  // Obtener perfiles al montar el componente
   useEffect(() => {
     fetchData();
   }, []);
 
+  // Función para crear un nuevo perfil
   const createProfile = async (newProfile: Omit<Profile, 'id' | 'created_at' | 'updated_at'>) => {
     setLoading(true);
     try {
@@ -42,6 +45,7 @@ const useProfiles = () => {
     }
   };
 
+  // Función para modificar un perfil existente
   const modifyProfile = async (id: number, updatedProfile: Partial<Omit<Profile, 'id'>>) => {
     setLoading(true);
     try {
@@ -54,6 +58,7 @@ const useProfiles = () => {
     }
   };
 
+  // Función para eliminar un perfil
   const removeProfile = async (id: number) => {
     setLoading(true);
     try {
@@ -66,7 +71,27 @@ const useProfiles = () => {
     }
   };
 
-  return { data, loading, error, createProfile, modifyProfile, removeProfile };
+  // Nueva función para asignar un perfil a un usuario
+  const assignProfileToUser = async (profileId: number, userId: number) => {
+    setLoading(true);
+    try {
+      await assignProfile(profileId, userId);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { 
+    data, 
+    loading, 
+    error, 
+    createProfile, 
+    modifyProfile, 
+    removeProfile, 
+    assignProfileToUser // Exportar la función de asignación
+  };
 };
 
 export default useProfiles;
