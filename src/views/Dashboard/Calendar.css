@@ -184,3 +184,20 @@
         padding: 3px 6px; /* Ajustar padding de botones */
     }
 }
+
+/* Responsive para pantallas de 576px */
+@media (max-width: 576px) {
+    .fc {
+        padding: 10px; /* Reducir el padding */
+    }
+    .fc-toolbar-title {
+        font-size: 1.1rem; /* Ajustar el tamaño del texto */
+    }
+    .fc-day-today .fc-daygrid-day-number {
+        width: 20px; /* Ajustar tamaño del círculo */
+        height: 20px;
+    }
+    .fc-daygrid-day-number {
+        font-size: 0.9rem; /* Ajustar tamaño del número */
+    }
+}
