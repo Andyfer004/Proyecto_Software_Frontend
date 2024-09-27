@@ -4,11 +4,7 @@ import React from 'react';
 const DaySelector = () => {
     return (
         <>
-            <div style={{ marginBottom: '20px' }}> {/* Espacio inferior para separarlo del ProgressBar */}
-                <select style={selectStyle}>
-                <option value="Monday">Today</option>
-                </select>
-            </div>
+            
       </>
     );
   };
