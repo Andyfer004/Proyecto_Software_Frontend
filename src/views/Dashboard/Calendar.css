@@ -153,3 +153,20 @@
     background-color: transparent;
     border-bottom: none;
 }
+
+/* Responsive para pantallas de 1024px */
+@media (max-width: 1024px) {
+    .fc {
+        padding: 20px; /* Reducir el padding */
+    }
+    .fc-toolbar-title {
+        font-size: 1.3rem; /* Ajustar el tamaño del texto */
+    }
+    .fc-prev-button, .fc-next-button, .fc-today-button {
+        padding: 4px 8px; /* Ajustar padding de botones */
+    }
+    .fc-day-today .fc-daygrid-day-number {
+        width: 25px; /* Ajustar tamaño del círculo */
+        height: 25px;
+    }
+}
