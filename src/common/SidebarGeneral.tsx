@@ -19,6 +19,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import MenuIcon from '@mui/icons-material/Menu';
+import AccountCircle from '@mui/icons-material/AccountCircle'
 import { useNavigation as useNativeNavigation } from '@react-navigation/native';
 import { useNavigate as useWebNavigate } from 'react-router-dom';
 import { Platform } from 'react-native';
@@ -107,6 +108,18 @@ const SidebarGeneral = () => {
           <Typography variant="h6" noWrap component="div">
             Navigation
           </Typography>
+        
+          <IconButton
+           color="inherit"
+           
+           sx={{ ml: 'auto' }}  
+          >
+          <AccountCircle fontSize='large'/> {/* Aquí se reemplaza MenuIcon por AccountCircle */}
+          </IconButton>
+         
+        
+          
+
         </Toolbar>
       </AppBar>
       <Drawer
