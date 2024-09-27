@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Button, TextField } from "@mui/material";
-import { Header } from "react-native/Libraries/NewAppScreen";
 
 const UpdateAccountScreen: React.FC = () => {
   const [name, setName] = useState('');
@@ -10,15 +9,14 @@ const UpdateAccountScreen: React.FC = () => {
   const [phone, setPhone] = useState('');
 
   const handleUpdate = () => {
-    
     const id = 'id'; 
   
     const userData = {
-      name: name,
-      email: email,
-      password: password,
-      phone: phone,
-      id: id
+      name,
+      email,
+      password,
+      phone,
+      id
     };
   
     console.log(userData);  
@@ -27,44 +25,51 @@ const UpdateAccountScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Update Account</Text>
-      <TextField
-        label="Name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        fullWidth // Agrega este prop para que el TextField ocupe todo el ancho disponible
-        style={styles.input}
-      />
-      <TextField
-        label="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        fullWidth
-        style={styles.input}
-      />
-      <TextField
-        label="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        type="password"
-        fullWidth
-        style={styles.input}
-      />
-      <TextField
-        label="Phone"
-        value={phone}
-        onChange={(e) => setPhone(e.target.value)}
-        type="number"
-        fullWidth
-        style={styles.input}
-      />
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleUpdate} // Cambia onPress por onClick
-        style={styles.button}
-      >
-        Update
-      </Button>
+      <View style={styles.form}>
+        <TextField
+          label="Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          fullWidth
+          style={styles.input}
+          variant="outlined" // Agrega bordes al TextField
+        />
+        <TextField
+          label="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          fullWidth
+          style={styles.input}
+          variant="outlined"
+        />
+        <TextField
+          label="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          type="password"
+          fullWidth
+          style={styles.input}
+          variant="outlined"
+        />
+        <TextField
+          label="Phone"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          type="number"
+          fullWidth
+          style={styles.input}
+          variant="outlined"
+        />
+        <Button 
+          variant="contained"
+          color="primary"
+          onClick={handleUpdate}
+          style={styles.button}
+          fullWidth // Botón ocupa todo el ancho disponible
+        >
+          Update
+        </Button>
+      </View>
     </View>
   );
 };
@@ -75,19 +80,25 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
+    backgroundColor: '#f9f9f9', // Fondo más claro
   },
   heading: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
+    color: '#333', // Color de texto más oscuro
+  },
+  form: {
+    width: '100%', // Asegúrate de que el formulario ocupe el ancho completo
+    maxWidth: 400, // Ancho máximo para mantener el diseño
   },
   input: {
-    width: "100%",
-    marginBottom: 10,
+    marginBottom: 15, // Aumenta el margen entre los campos
   },
   button: {
     marginTop: 20,
   },
+  
 });
 
 export default UpdateAccountScreen;
