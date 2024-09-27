@@ -4,6 +4,7 @@ import { styled } from '@mui/material/styles';
 import PersonIcon from '@mui/icons-material/Person';
 import WorkIcon from '@mui/icons-material/Work';
 import ProfileIcon from '@mui/icons-material/AccountCircle';
+import useProfiles from '../../common/Hooks/useProfile'; // Importar el hook de perfiles
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialog-paper': {
@@ -67,6 +68,7 @@ const ProfileButton = styled(Button)(({ theme }) => ({
 
 export const ModalNewTask = () => {
   const [open, setOpen] = useState(false);
+  const { data: profiles, loading } = useProfiles(); // Usar el hook para obtener los perfiles
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -85,7 +87,7 @@ export const ModalNewTask = () => {
         style={{ backgroundColor: 'green' }}
       >
         <ProfileIcon style={{ marginRight: '8px'}} />
-        <span >PROFILE</span>
+        <span>Profile</span>
       </ProfileButton>
 
       <StyledDialog 
@@ -96,20 +98,22 @@ export const ModalNewTask = () => {
         transitionDuration={500}
       >
         <PersonIcon style={{ fontSize: 60, marginBottom: '8px' }} />
-        <DialogTitle id="options-dialog-title">Switch Workspaces</DialogTitle>
+        <DialogTitle id="options-dialog-title">Seleccionar Perfil</DialogTitle>
         <DialogContent>
-          <Box display="flex" alignItems="center" marginBottom={2}>
-            <WorkIcon style={{ marginRight: '8px' }} />
-            <Typography variant="subtitle1">Workspace</Typography>
-          </Box>
-          <Box display="flex" alignItems="center">
-            <WorkIcon style={{ marginRight: '8px' }} />
-            <Typography variant="subtitle1">Workspace</Typography>
-          </Box>
+          {loading ? (
+            <Typography>Cargando perfiles...</Typography>
+          ) : (
+            profiles.map((profile) => (
+              <Box key={profile.id} display="flex" alignItems="center" marginBottom={2}>
+                <ProfileIcon style={{ marginRight: '8px' }} />
+                <Typography variant="subtitle1">{profile.name}</Typography>
+              </Box>
+            ))
+          )}
         </DialogContent>
         <DialogActions>
           <StyledButton onClick={handleClose}>
-            Close
+            Cerrar
           </StyledButton>
         </DialogActions>
       </StyledDialog>
