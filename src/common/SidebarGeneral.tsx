@@ -15,6 +15,7 @@ import {
 import { styled, useTheme } from '@mui/material/styles';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import AddCircle from '@mui/icons-material/AddCircle';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -61,6 +62,8 @@ const drawerItems = [
   { name: 'Home', icon: HomeIcon, route: '' },
   { name: 'Notes', icon: EventNoteIcon, route: 'notes' },
   { name: 'Add', icon: AddCircle, route: 'add-profile' },
+  { name: 'Update Account', icon: RefreshIcon, route: 'update-account' },
+  
 ];
 
 const SidebarGeneral = () => {
