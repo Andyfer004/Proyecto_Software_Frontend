@@ -156,7 +156,7 @@ export default function Header() {
         </IconButton>
         <p>Profile</p>
       </MenuItem>
-      <MenuItem onClick={handleUpdateAccount}> // Opción nueva
+      <MenuItem onClick={handleUpdateAccount}> 
       <IconButton
         size="large"
         aria-label="update account"
