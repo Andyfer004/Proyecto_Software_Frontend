@@ -1,10 +1,12 @@
-name: Test
+name: Simple Test
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
   build:
@@ -12,21 +14,15 @@ jobs:
 
     steps:
     - name: Check out the repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v3
 
-    - name: Set up Node.js 20
-      uses: actions/setup-node@v4
+    - name: Set up Node.js 18
+      uses: actions/setup-node@v3
       with:
-        node-version: '20'
+        node-version: '18'
 
     - name: Install dependencies
       run: npm install
-
-    - name: Install Grunt CLI
-      run: npm install -g grunt-cli
-
-    - name: Run Grunt tasks
-      run: grunt
 
     - name: Run Tests
       run: npm test
