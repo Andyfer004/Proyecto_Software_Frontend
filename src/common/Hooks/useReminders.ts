@@ -8,6 +8,7 @@ type Reminder = {
   datereminder: string;
   hourreminder: string;
   profileid: number;
+  priorityid: number; // Agregar prioridad
   created_at: string;
   updated_at: string;
 };
