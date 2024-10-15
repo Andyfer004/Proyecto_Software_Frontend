@@ -121,6 +121,8 @@ const Calendar: React.FC = () => {
 
 
   const handleSaveTask = async () => {
+    const profileId = localStorage.getItem('selectedProfile'); // Obtener el profileId desde localStorage
+  
     if (selectedTaskId !== null) {
       // Update existing task using modifyTask
       try {
@@ -130,6 +132,8 @@ const Calendar: React.FC = () => {
           priorityid: priorityId,
           statusid: statusId,
           duedate: selectedDate,
+          profileid: profileId || 1,  // Incluir el profileId al actualizar la tarea
+          timeestimatehours: 1.0      // Tiempo estimado predeterminado (puedes cambiarlo según corresponda)
         });
       } catch (error) {
         console.error('Error updating task:', error);
@@ -139,20 +143,20 @@ const Calendar: React.FC = () => {
       const newTask = {
         name: taskName,
         description,
-        priorityid: priorityId || 1, // Replace with the actual priority ID
-        statusid: statusId || 1,     // Replace with the actual status ID
+        priorityid: priorityId || 1,  // Prioridad predeterminada
+        statusid: statusId || 1,      // Estado predeterminado
         duedate: selectedDate,
-        profileid: 1,                // Replace with the actual profile ID
-        timeestimatehours: 1.0       // Replace with the actual estimated hours if available
+        profileid: profileId || 1,    // Incluir el profileId al crear la tarea
+        timeestimatehours: 1.0        // Tiempo estimado predeterminado (puedes cambiarlo según corresponda)
       };
-
+  
       try {
         await createTask(newTask);
       } catch (error) {
         console.error('Error creating task:', error);
       }
     }
-
+  
     // Reset fields and close dialog
     setTaskName('');
     setDescription('');
@@ -162,7 +166,7 @@ const Calendar: React.FC = () => {
     setSelectedTaskId(null);
     setOpenDialog(false);
   };
-
+  
 
   
   const handleAddSubtask = () => {
