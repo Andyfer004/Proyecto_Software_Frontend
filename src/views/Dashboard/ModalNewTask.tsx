@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide, Typography, TextField, Box } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide, TextField, Typography, Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import PersonIcon from '@mui/icons-material/Person';
 import ProfileIcon from '@mui/icons-material/AccountCircle';
-import useTasks from 'src/common/Hooks/useTasks';//  import your useTasks hook
-import useProfiles from '../../common/Hooks/useProfile'; // Importar el hook de perfiles
+import useTasks from 'src/common/Hooks/useTasks';
+import useProfiles from '../../common/Hooks/useProfile'; 
+import { addProfile } from 'src/api/profileApi'; // Importa la función para agregar perfil
 
+// Estilos personalizados
 const StyledDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialog-paper': {
     borderRadius: theme.shape.borderRadius,
@@ -68,47 +70,54 @@ const ProfileButton = styled(Button)(({ theme }) => ({
 
 export const ModalNewTask = () => {
   const [open, setOpen] = useState(false);
-  const [taskData, setTaskData] = useState({
-    title: '',
-    description: '',
-    due_date: '',
-    status_id: 1, // Default status
-  });
-  const [isEditing, setIsEditing] = useState(false);
-  const [taskId, setTaskId] = useState<number | null>(null);
-  const [isDueDateFocused, setIsDueDateFocused] = useState(false);
-
+  const [showNewProfileForm, setShowNewProfileForm] = useState(false); // Para alternar el formulario de nuevo perfil
+  const [newProfileName, setNewProfileName] = useState(''); // Almacena el nombre del nuevo perfil
+  const [newProfileImage, setNewProfileImage] = useState(''); // Almacena la imagen del nuevo perfil como texto
+  const [selectedProfile, setSelectedProfile] = useState<number | null>(null); // Almacena el perfil seleccionado
   const { createTask, modifyTask, loading: loadingTask, error } = useTasks();
-  const { data: profiles, loading } = useProfiles(); // Usar el hook para obtener los perfiles
+  const { data: profiles, loading } = useProfiles(); // Usa el hook para obtener perfiles
 
+  // Cargar el perfil guardado de localStorage
+  useEffect(() => {
+    const savedProfile = localStorage.getItem('selectedProfile');
+    if (savedProfile) {
+      setSelectedProfile(Number(savedProfile));
+    }
+  }, []);
+
+  // Manejar apertura del modal
   const handleClickOpen = () => {
     setOpen(true);
-    setIsEditing(false);
-    setTaskData({
-      title: '',
-      description: '',
-      due_date: '',
-      status_id: 1,
-    });
-    setTaskId(null);
   };
 
+  // Manejar cierre del modal
   const handleClose = () => {
     setOpen(false);
+    setShowNewProfileForm(false); // Reiniciar el formulario al cerrar el modal
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setTaskData({ ...taskData, [name]: value });
-  };
-
-  const handleSaveTask = async () => {
-    if (isEditing && taskId !== null) {
-      await modifyTask(taskId, taskData);
-    } else {
-      await createTask(taskData);
-    }
+  // Seleccionar un perfil
+  const handleSelectProfile = (profileId: number) => {
+    setSelectedProfile(profileId);
+    localStorage.setItem('selectedProfile', profileId.toString()); // Guardar el perfil seleccionado en localStorage
     handleClose();
+  };
+
+  // Manejar el envío de un nuevo perfil
+  const handleNewProfileSubmit = async () => {
+    if (newProfileName) {
+      try {
+        // Llamar a la API para guardar el nuevo perfil
+        await addProfile({ name: newProfileName, image: newProfileImage }); // Pasa el nombre y la imagen como texto
+        console.log(`Nuevo perfil creado: ${newProfileName}`);
+        setNewProfileName('');
+        setNewProfileImage('');
+        setShowNewProfileForm(false);
+        window.location.reload(); // Refrescar la lista de perfiles tras agregar uno nuevo
+      } catch (error) {
+        console.error('Error al crear el perfil:', error);
+      }
+    }
   };
 
   return (
@@ -119,8 +128,8 @@ export const ModalNewTask = () => {
         onClick={handleClickOpen}
         style={{ backgroundColor: 'green' }}
       >
-        <ProfileIcon style={{ marginRight: '8px'}} />
-        <span>Profile</span>
+        <ProfileIcon style={{ marginRight: '8px' }} />
+        <span>Perfil</span>
       </ProfileButton>
 
       <StyledDialog 
@@ -137,11 +146,51 @@ export const ModalNewTask = () => {
             <Typography>Cargando perfiles...</Typography>
           ) : (
             profiles.map((profile) => (
-              <Box key={profile.id} display="flex" alignItems="center" marginBottom={2}>
+              <Box 
+                key={profile.id} 
+                display="flex" 
+                alignItems="center" 
+                marginBottom={2} 
+                onClick={() => handleSelectProfile(profile.id)} 
+                style={{ cursor: 'pointer', backgroundColor: profile.id === selectedProfile ? 'lightgreen' : 'transparent', padding: '8px', borderRadius: '8px' }}
+              >
                 <ProfileIcon style={{ marginRight: '8px' }} />
                 <Typography variant="subtitle1">{profile.name}</Typography>
               </Box>
             ))
+          )}
+          {/* Formulario para nuevo perfil */}
+          {showNewProfileForm ? (
+            <>
+              <TextField
+                label="Nombre del nuevo perfil"
+                variant="outlined"
+                fullWidth
+                value={newProfileName}
+                onChange={(e) => setNewProfileName(e.target.value)}
+                style={{ marginBottom: '16px' }}
+              />
+              <TextField
+                label="URL de la imagen"
+                variant="outlined"
+                fullWidth
+                value={newProfileImage}
+                onChange={(e) => setNewProfileImage(e.target.value)}
+                style={{ marginBottom: '16px' }}
+              />
+              <Box display="flex" justifyContent="space-between" width="100%">
+                <Button variant="contained" color="secondary" onClick={() => setShowNewProfileForm(false)}>
+                  Regresar
+                </Button>
+                <Button variant="contained" color="primary" onClick={handleNewProfileSubmit}>
+                  Confirmar
+                </Button>
+              </Box>
+            </>
+          ) : (
+            <Button variant="contained" color="primary" onClick={() => setShowNewProfileForm(true)}>
+              +
+            </Button>
           )}
         </DialogContent>
         <DialogActions>
