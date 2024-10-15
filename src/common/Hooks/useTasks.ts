@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getTasks, addTask, updateTask, deleteTask } from '../../api/tasksApi';
+import { getTasks, addTask, updateTask, deleteTask, getTask} from '../../api/tasksApi';
 
 type Task = {
   id: number;
@@ -68,9 +68,34 @@ const useTasks = () => {
         setLoading(false);
       }
     };
+
+    const fetchTasksByProfile = async (idProfile: number) => {
+      setLoading(true);
+      try {
+        const tasks = await getTask(idProfile); // Usar la función 'getTask' para obtener tareas por idProfile
+        setData(tasks); // Actualizar el estado con las tareas filtradas
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
   
-    return { data, loading, error, createTask, modifyTask, removeTask };
+    return { data, loading, error, createTask, modifyTask, removeTask, fetchTasksByProfile,};
   };
+
   
   export default useTasks;
+
+function setLoading(arg0: boolean) {
+  throw new Error('Function not implemented.');
+}
+
+function setData(tasks: any) {
+  throw new Error('Function not implemented.');
+}
+
+function setError(message: any) {
+  throw new Error('Function not implemented.');
+}
   
