@@ -18,7 +18,7 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { styled } from "@mui/material/styles";
-import useReminders from "src/common/Hooks/useReminders";
+import useReminders from "../../common/Hooks/useReminders";
 
 const StyledListItem = styled(ListItem)(({ theme }) => ({
   padding: theme.spacing(1),

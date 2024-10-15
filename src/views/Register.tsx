@@ -13,7 +13,7 @@ import { Container } from "@mui/material";
 import GlobalLayout from "src/common/GlobalLayout";
 import { register } from "src/features/authActions";
 import api from '../api';
-import NotificationService from "src/common/AlertNotification";
+import NotificationService from "../common/AlertNotification";
 
 
 const RegisterScreen: React.FC = () => {

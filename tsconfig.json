@@ -9,7 +9,8 @@
     "paths": {
       // Ejemplo de configuración de paths
       "@components/*": ["src/components/*"],
-      "@reducers/*": ["src/reducers/*"]
+      "@reducers/*": ["src/reducers/*"],
+      "src/*": ["src/*"]
     }
   }
 }

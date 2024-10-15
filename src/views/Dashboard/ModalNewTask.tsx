@@ -3,9 +3,9 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide, TextF
 import { styled } from '@mui/material/styles';
 import PersonIcon from '@mui/icons-material/Person';
 import ProfileIcon from '@mui/icons-material/AccountCircle';
-import useTasks from 'src/common/Hooks/useTasks';
+import useTasks from '../../common/Hooks/useTasks';
 import useProfiles from '../../common/Hooks/useProfile'; 
-import { addProfile } from 'src/api/profileApi'; // Importa la función para agregar perfil
+import { addProfile } from '../../api/profileApi'; // Importa la función para agregar perfil
 
 // Estilos personalizados
 const StyledDialog = styled(Dialog)(({ theme }) => ({

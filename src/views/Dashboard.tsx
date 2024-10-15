@@ -2,7 +2,7 @@ import React from 'react';
 import '@mui/material/styles';
 import  {FunctionComponent, ReactNode, useEffect, useState} from 'react'
 import Calendar from './Dashboard/Calendar';
-import GlobalLayout from 'src/common/GlobalLayout';
+import GlobalLayout from '../../src/common/GlobalLayout';
 import { Box } from '@mui/material';
 import DaySelector from './Dashboard/DaySelector';
 import ReactCustomizableProgressbar from './Dashboard/ReactCustomizableProgressbar';

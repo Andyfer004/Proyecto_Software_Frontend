@@ -23,9 +23,8 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import './Calendar.css';
 import useStatus from '../../common/Hooks/useStatus'; // Asegúrate de que la ruta sea correcta
-import usePriorities from 'src/common/Hooks/usePriorities';
-import useEvents from 'src/common/Hooks/useEvents';
-import useTasks from 'src/common/Hooks/useTasks';
+import usePriorities from '../../common/Hooks/usePriorities';
+import useTasks from '../../common/Hooks/useTasks';
 
 interface Subtask {
   id: number;

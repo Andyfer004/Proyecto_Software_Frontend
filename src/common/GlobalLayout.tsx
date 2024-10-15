@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
-import Header from 'src/common/Header';
-import Footer from 'src/common/Footer';
+import Header from './Header';
+import Footer from './Footer';
 
 // Definición de la interfaz para las props de GlobalLayout
 interface GlobalLayoutProps {

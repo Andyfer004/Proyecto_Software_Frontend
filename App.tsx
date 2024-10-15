@@ -4,14 +4,14 @@ import { Platform } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import SidebarGeneral from 'src/common/SidebarGeneral';
+import SidebarGeneral from './src/common/SidebarGeneral';
 import { ToastContainer } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import LoginScreen from 'src/views/Login';
-import Dashboard from 'src/views/Dashboard';
-import UpdateAccountScreen from 'src/views/UpdateAccount';
-import Notes from 'src/views/Notes/Notes';
-import ProtectedRoute from 'src/common/ProtectedRoute';
+import LoginScreen from './src/views/Login';
+import Dashboard from './src/views/Dashboard';
+import UpdateAccountScreen from './src/views/UpdateAccount';
+import Notes from './src/views/Notes/Notes';
+import ProtectedRoute from './src/common/ProtectedRoute';
 
 const Stack = createNativeStackNavigator();
 

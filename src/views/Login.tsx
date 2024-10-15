@@ -4,11 +4,11 @@ import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import GlobalLayout from 'src/common/GlobalLayout';
+import GlobalLayout from '../../src/common/GlobalLayout';
 import RegisterScreen from './Register';
 import api from '../api';
-import NotificationService from 'src/common/AlertNotification';
-import ServiceToken from 'src/common/ServiceToken';
+import NotificationService from '../common/AlertNotification';
+import ServiceToken from '../common/ServiceToken';
 import { Platform } from 'react-native';  // Importar Platform para detectar la plataforma
 import { useNavigation } from '@react-navigation/native';  // Para móvil
 import { useNavigate } from 'react-router-dom';  // Para web
