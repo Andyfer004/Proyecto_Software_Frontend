@@ -19,8 +19,10 @@ const useTasks = () => {
   
     const fetchData = async () => {
       setLoading(true);
+      const selectedProfile:number = parseInt(localStorage.getItem('selectedProfile') || "1") || 1;
+
       try {
-        const tasks = await getTasks();
+        const tasks = await getTask(selectedProfile);
         setData(tasks);
       } catch (err: any) {
         setError(err.message);

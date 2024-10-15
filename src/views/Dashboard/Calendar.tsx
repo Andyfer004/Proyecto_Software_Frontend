@@ -46,7 +46,13 @@ interface Task {
   subtasks: Subtask[];
 }
 
-const Calendar: React.FC = () => {
+
+interface CalendarProps {
+  selectedProfile: number | null;
+}
+
+const Calendar: React.FC<CalendarProps> = ({ selectedProfile }) => {
+
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [taskName, setTaskName] = useState<string>('');
@@ -104,26 +110,19 @@ const Calendar: React.FC = () => {
 
   useEffect(() => {
     const fetchDataByProfile = () => {
-      const selectedProfile = localStorage.getItem('selectedProfile');
       if (selectedProfile) {
-        fetchTasksByProfile(parseInt(selectedProfile));
+        fetchTasksByProfile(selectedProfile);
       }
     };
-  
+
     // Ejecutar al iniciar el componente
     fetchDataByProfile();
+
   
-    // Ejecutar cada vez que cambie selectedProfile en localStorage
-    const interval = setInterval(() => {
-      const newProfile = localStorage.getItem('selectedProfile');
-      if (newProfile) {
-        fetchDataByProfile();
-      }
-    }, 1000); // Verifica cada segundo si el profile cambió
-  
-    // Limpiar el interval al desmontar
-    return () => clearInterval(interval);
-  }, []);
+  }, [selectedProfile]);
+
+
+
   
   useEffect(() => {
     if (tasksData) {
@@ -164,7 +163,7 @@ const Calendar: React.FC = () => {
         priorityid: priorityId || 1, // Replace with the actual priority ID
         statusid: statusId || 1,     // Replace with the actual status ID
         duedate: selectedDate,
-        profileid: 1,                // Replace with the actual profile ID
+        profileid: localStorage.getItem("selectedProfile"),                // Replace with the actual profile ID
         timeestimatehours: 1.0       // Replace with the actual estimated hours if available
       };
 

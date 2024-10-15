@@ -68,14 +68,20 @@ const ProfileButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-export const ModalNewTask = () => {
+
+interface ModalNewTaskProps {
+  selectedProfile: number | null;
+  setSelectedProfile: (id: number) => void;
+}
+
+export const ModalNewTask: React.FC<ModalNewTaskProps> = ({  selectedProfile, setSelectedProfile }) => {
   const [open, setOpen] = useState(false);
   const [showNewProfileForm, setShowNewProfileForm] = useState(false); // Para alternar el formulario de nuevo perfil
   const [newProfileName, setNewProfileName] = useState(''); // Almacena el nombre del nuevo perfil
   const [newProfileImage, setNewProfileImage] = useState(''); // Almacena la imagen del nuevo perfil como texto
-  const [selectedProfile, setSelectedProfile] = useState<number | null>(null); // Almacena el perfil seleccionado
   const { createTask, modifyTask, loading: loadingTask, error } = useTasks();
   const { data: profiles, loading } = useProfiles(); // Usa el hook para obtener perfiles
+
 
   // Cargar el perfil guardado de localStorage
   useEffect(() => {
@@ -142,8 +148,9 @@ export const ModalNewTask = () => {
         <PersonIcon style={{ fontSize: 60, marginBottom: '8px' }} />
         <DialogTitle id="options-dialog-title">Seleccionar Perfil</DialogTitle>
         <DialogContent>
-          {loading ? (
-            <Typography>Cargando perfiles...</Typography>
+          {profiles.length==0 ? (
+            <Typography>no hay perfiles disponibles...</Typography>
+    
           ) : (
             profiles.map((profile) => (
               <Box 
