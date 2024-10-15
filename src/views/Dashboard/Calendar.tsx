@@ -61,7 +61,7 @@ const Calendar: React.FC = () => {
   const [newPriorityName, setNewPriorityName] = useState<string>('');
   const [newStatusName, setNewStatusName] = useState<string>('');
 
-  const { data: tasksData, loading, error, createTask, modifyTask, removeTask } = useTasks();
+  const { data: tasksData, loading, error, createTask, modifyTask, removeTask, fetchTasksByProfile} = useTasks();
 
 
   const [priorities, setPriorities] = useState([
@@ -103,6 +103,29 @@ const Calendar: React.FC = () => {
   };
 
   useEffect(() => {
+    const fetchDataByProfile = () => {
+      const selectedProfile = localStorage.getItem('selectedProfile');
+      if (selectedProfile) {
+        fetchTasksByProfile(parseInt(selectedProfile));
+      }
+    };
+  
+    // Ejecutar al iniciar el componente
+    fetchDataByProfile();
+  
+    // Ejecutar cada vez que cambie selectedProfile en localStorage
+    const interval = setInterval(() => {
+      const newProfile = localStorage.getItem('selectedProfile');
+      if (newProfile) {
+        fetchDataByProfile();
+      }
+    }, 1000); // Verifica cada segundo si el profile cambió
+  
+    // Limpiar el interval al desmontar
+    return () => clearInterval(interval);
+  }, []);
+  
+  useEffect(() => {
     if (tasksData) {
       const mappedTasks = tasksData.map((task:any) => ({
         id: task.id,
@@ -120,8 +143,6 @@ const Calendar: React.FC = () => {
 
 
   const handleSaveTask = async () => {
-    const profileId = localStorage.getItem('selectedProfile'); // Obtener el profileId desde localStorage
-  
     if (selectedTaskId !== null) {
       // Update existing task using modifyTask
       try {
@@ -131,8 +152,6 @@ const Calendar: React.FC = () => {
           priorityid: priorityId,
           statusid: statusId,
           duedate: selectedDate,
-          profileid: profileId || 1,  // Incluir el profileId al actualizar la tarea
-          timeestimatehours: 1.0      // Tiempo estimado predeterminado (puedes cambiarlo según corresponda)
         });
       } catch (error) {
         console.error('Error updating task:', error);
@@ -142,20 +161,20 @@ const Calendar: React.FC = () => {
       const newTask = {
         name: taskName,
         description,
-        priorityid: priorityId || 1,  // Prioridad predeterminada
-        statusid: statusId || 1,      // Estado predeterminado
+        priorityid: priorityId || 1, // Replace with the actual priority ID
+        statusid: statusId || 1,     // Replace with the actual status ID
         duedate: selectedDate,
-        profileid: profileId || 1,    // Incluir el profileId al crear la tarea
-        timeestimatehours: 1.0        // Tiempo estimado predeterminado (puedes cambiarlo según corresponda)
+        profileid: 1,                // Replace with the actual profile ID
+        timeestimatehours: 1.0       // Replace with the actual estimated hours if available
       };
-  
+
       try {
         await createTask(newTask);
       } catch (error) {
         console.error('Error creating task:', error);
       }
     }
-  
+
     // Reset fields and close dialog
     setTaskName('');
     setDescription('');
@@ -165,7 +184,7 @@ const Calendar: React.FC = () => {
     setSelectedTaskId(null);
     setOpenDialog(false);
   };
-  
+
 
   
   const handleAddSubtask = () => {
@@ -255,35 +274,16 @@ const Calendar: React.FC = () => {
     },
   }));
 
-  const handleEventDrop = async (info: { event: any }) => {
+  const handleEventDrop = (info: { event: any; }) => {
     const { event } = info;
     const updatedTaskId = parseInt(event.id, 10);
-    const newDueDate = event.start.toISOString().split('T')[0];
-  
-    // Guardar el estado anterior para revertirlo si la API falla
-    const previousTasks = [...tasks];
-  
-    // Actualización inmediata del estado local (optimistic UI)
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === updatedTaskId ? { ...task, dueDate: newDueDate } : task
-      )
-    );
-  
-    try {
-      // Llamar a modifyTask para actualizar la fecha en el backend
-      await modifyTask(updatedTaskId, { duedate: newDueDate });
-      console.log("Fecha actualizada correctamente en el backend");
-    } catch (error: any) {
-      console.error('Error al actualizar la fecha de la tarea:', error.response?.data || error.message);
-  
-      // Si ocurre un error, revertir el estado local
-      setTasks(previousTasks);
-    }
-  };
-  
-  
 
+    setTasks(tasks.map(task =>
+      task.id === updatedTaskId
+        ? { ...task, dueDate: event.startStr }
+        : task
+    ));
+  };
 
   const handleEventResize = (info: { event: any; }) => {
     const { event } = info;
