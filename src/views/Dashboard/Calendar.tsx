@@ -256,16 +256,35 @@ const Calendar: React.FC = () => {
     },
   }));
 
-  const handleEventDrop = (info: { event: any; }) => {
+  const handleEventDrop = async (info: { event: any }) => {
     const { event } = info;
     const updatedTaskId = parseInt(event.id, 10);
-
-    setTasks(tasks.map(task =>
-      task.id === updatedTaskId
-        ? { ...task, dueDate: event.startStr }
-        : task
-    ));
+    const newDueDate = event.start.toISOString().split('T')[0];
+  
+    // Guardar el estado anterior para revertirlo si la API falla
+    const previousTasks = [...tasks];
+  
+    // Actualización inmediata del estado local (optimistic UI)
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === updatedTaskId ? { ...task, dueDate: newDueDate } : task
+      )
+    );
+  
+    try {
+      // Llamar a modifyTask para actualizar la fecha en el backend
+      await modifyTask(updatedTaskId, { duedate: newDueDate });
+      console.log("Fecha actualizada correctamente en el backend");
+    } catch (error: any) {
+      console.error('Error al actualizar la fecha de la tarea:', error.response?.data || error.message);
+  
+      // Si ocurre un error, revertir el estado local
+      setTasks(previousTasks);
+    }
   };
+  
+  
+
 
   const handleEventResize = (info: { event: any; }) => {
     const { event } = info;
