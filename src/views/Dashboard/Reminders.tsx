@@ -31,8 +31,12 @@ const StyledListItem = styled(ListItem)(({ theme }) => ({
 }));
 
 // Función para obtener el color según la prioridad
-const getPriorityColor = (priorityid: number) => {
-  switch (priorityid) {
+const getPriorityColor = (priorityid: any) => {
+
+  const id = parseInt(priorityid);
+
+
+  switch (id) {
     case 1:
       return "red"; // Alta prioridad
     case 2:
