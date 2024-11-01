@@ -72,7 +72,7 @@ const Login: React.FC = () => {
     <GlobalLayout>
       <Box sx={{ height: "100vh" }} className="row justify-content-center align-items-center">
         <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}> {/* Removed borderBottom here */}
-          <img src={'assets/now.png'} alt="Logo" style={{ width: '350px', height: 'auto' }} /> {/* Increased width */}
+          <img src={'assets/logo1.png'} alt="Logo" style={{ width: '450px', height: 'auto' }} /> {/* Increased width */}
         </Box>
         <Box sx={{ width: '95%', borderBottom: 1, borderColor: 'divider' }}>
           <Tabs
