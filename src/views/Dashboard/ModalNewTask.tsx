@@ -68,20 +68,18 @@ const ProfileButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-
 interface ModalNewTaskProps {
   selectedProfile: number | null;
   setSelectedProfile: (id: number) => void;
 }
 
-export const ModalNewTask: React.FC<ModalNewTaskProps> = ({  selectedProfile, setSelectedProfile }) => {
+export const ModalNewTask: React.FC<ModalNewTaskProps> = ({ selectedProfile, setSelectedProfile }) => {
   const [open, setOpen] = useState(false);
   const [showNewProfileForm, setShowNewProfileForm] = useState(false); // Para alternar el formulario de nuevo perfil
   const [newProfileName, setNewProfileName] = useState(''); // Almacena el nombre del nuevo perfil
-  const [newProfileImage, setNewProfileImage] = useState(''); // Almacena la imagen del nuevo perfil como texto
+  const [newProfileImage, setNewProfileImage] = useState<File | null>(null); // Almacena la imagen del nuevo perfil como archivo
   const { createTask, modifyTask, loading: loadingTask, error } = useTasks();
   const { data: profiles, loading } = useProfiles(); // Usa el hook para obtener perfiles
-
 
   // Cargar el perfil guardado de localStorage
   useEffect(() => {
@@ -111,13 +109,16 @@ export const ModalNewTask: React.FC<ModalNewTaskProps> = ({  selectedProfile, se
 
   // Manejar el envío de un nuevo perfil
   const handleNewProfileSubmit = async () => {
-    if (newProfileName) {
+    if (newProfileName && newProfileImage) {
+      const formData = new FormData();
+      formData.append('name', newProfileName);
+      formData.append('image', newProfileImage); // Agregar el archivo al FormData
+  
       try {
-        // Llamar a la API para guardar el nuevo perfil
-        await addProfile({ name: newProfileName, image: newProfileImage }); // Pasa el nombre y la imagen como texto
+        await addProfile(formData); // Llama a la API con el FormData
         console.log(`Nuevo perfil creado: ${newProfileName}`);
         setNewProfileName('');
-        setNewProfileImage('');
+        setNewProfileImage(null);
         setShowNewProfileForm(false);
         window.location.reload(); // Refrescar la lista de perfiles tras agregar uno nuevo
       } catch (error) {
@@ -148,9 +149,8 @@ export const ModalNewTask: React.FC<ModalNewTaskProps> = ({  selectedProfile, se
         <PersonIcon style={{ fontSize: 60, marginBottom: '8px' }} />
         <DialogTitle id="options-dialog-title">Seleccionar Perfil</DialogTitle>
         <DialogContent>
-          {profiles.length==0 ? (
+          {profiles.length === 0 ? (
             <Typography>no hay perfiles disponibles...</Typography>
-    
           ) : (
             profiles.map((profile) => (
               <Box 
@@ -178,11 +178,15 @@ export const ModalNewTask: React.FC<ModalNewTaskProps> = ({  selectedProfile, se
                 style={{ marginBottom: '16px' }}
               />
               <TextField
-                label="URL de la imagen"
+                type="file"
                 variant="outlined"
                 fullWidth
-                value={newProfileImage}
-                onChange={(e) => setNewProfileImage(e.target.value)}
+                onChange={(e) => {
+                  const file = (e.target as HTMLInputElement).files?.[0];
+                  if (file) {
+                    setNewProfileImage(file);
+                  }
+                }} // Almacena el archivo en el estado
                 style={{ marginBottom: '16px' }}
               />
               <Box display="flex" justifyContent="space-between" width="100%">
