@@ -9,18 +9,17 @@ import RegisterScreen from './Register';
 import api from '../api';
 import NotificationService from '../common/AlertNotification';
 import ServiceToken from '../common/ServiceToken';
-import { Platform } from 'react-native';  // Importar Platform para detectar la plataforma
-import { useNavigation } from '@react-navigation/native';  // Para móvil
-import { useNavigate } from 'react-router-dom';  // Para web
-import { getProfiles } from '../api/profileApi';  // Asume que tienes una función API para obtener perfiles
+import { Platform } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { useNavigate } from 'react-router-dom';
+import { getProfiles } from '../api/profileApi';
 
 const Login: React.FC = () => {
   const [value, setValue] = useState(0);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loadingProfiles, setLoadingProfiles] = useState(false); // Estado para manejar la carga de perfiles
+  const [loadingProfiles, setLoadingProfiles] = useState(false);
 
-  // Usar useNavigation para móvil y useNavigate para web
   const navigation: any = Platform.OS === 'web' ? useNavigate() : useNavigation();
 
   const handleLogin = async () => {
@@ -33,14 +32,12 @@ const Login: React.FC = () => {
         ServiceToken.saveToken(response.data.token);
         localStorage.setItem("user", JSON.stringify(response.data.user));
 
-        // Después de guardar el token y user, llama a la API para obtener perfiles
         await handleFetchProfiles();
 
-        // Navegación condicional según la plataforma
         if (Platform.OS === 'web') {
-          navigation('/home'); // Redirección en web usando useNavigate
+          navigation('/home');
         } else if (typeof navigation.navigate === 'function') {
-          navigation.navigate("home" as never); // Redirección en móvil usando useNavigation
+          navigation.navigate("home" as never);
         }
       }
     } catch (error: any) {
@@ -49,22 +46,21 @@ const Login: React.FC = () => {
     }
   };
 
-  // Función para obtener perfiles después de iniciar sesión
   const handleFetchProfiles = async () => {
-    setLoadingProfiles(true); // Mostrar algún indicador de carga si lo necesitas
+    setLoadingProfiles(true);
     try {
-      const profiles = await getProfiles(); // Asume que fetchProfiles es tu API para obtener perfiles
+      const profiles = await getProfiles();
 
       if (profiles && profiles.length > 0) {
         const firstProfile = profiles[0];
-        localStorage.setItem('selectedProfile', firstProfile.id.toString()); // Guardar el primer perfil en localStorage
+        localStorage.setItem('selectedProfile', firstProfile.id.toString());
         NotificationService.success(`Perfil ${firstProfile.name} seleccionado`);
       }
     } catch (error) {
       console.error('Error al obtener los perfiles:', error);
       NotificationService.error('Error al obtener los perfiles');
     } finally {
-      setLoadingProfiles(false); // Termina el estado de carga
+      setLoadingProfiles(false);
     }
   };
 
@@ -75,6 +71,9 @@ const Login: React.FC = () => {
   return (
     <GlobalLayout>
       <Box sx={{ height: "100vh" }} className="row justify-content-center align-items-center">
+        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}> {/* Removed borderBottom here */}
+          <img src={'assets/now.png'} alt="Logo" style={{ width: '350px', height: 'auto' }} /> {/* Increased width */}
+        </Box>
         <Box sx={{ width: '95%', borderBottom: 1, borderColor: 'divider' }}>
           <Tabs
             value={value}
@@ -88,12 +87,12 @@ const Login: React.FC = () => {
         </Box>
         {value === 0 ? (
           <form style={{ width: '63%' }}>
-            <Box sx={{ '& > :not(style)': { m: 1 } }}>
+            <Box sx={{ '& > :not(style)': { m: 1 }, mt: 2 }}>
               <TextField fullWidth value={email} onChange={(e) => setEmail(e.target.value)} label="Email address" variant="standard" />
               <TextField fullWidth value={password} onChange={(e) => setPassword(e.target.value)} label="Password" type="password" variant="standard" />
             </Box>
 
-            <Button fullWidth variant="contained" color="primary" sx={{ mt: 3, mb: 2 }} onClick={handleLogin}>
+            <Button fullWidth variant="contained" color="primary" sx={{ mt: 2, mb: 2 }} onClick={handleLogin}>
               Sign in
             </Button>
           </form>
