@@ -6,33 +6,61 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import GlobalLayout from '../../src/common/GlobalLayout';
 import RegisterScreen from './Register';
+import api from '../api';
 import NotificationService from '../common/AlertNotification';
+import ServiceToken from '../common/ServiceToken';
 import { Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useNavigate } from 'react-router-dom';
+import { getProfiles } from '../api/profileApi';
 
 const Login: React.FC = () => {
   const [value, setValue] = useState(0);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loadingProfiles, setLoadingProfiles] = useState(false);
 
   const navigation: any = Platform.OS === 'web' ? useNavigate() : useNavigation();
 
-  const handleLogin = () => {
-    const hardcodedEmail = "usuario@ejemplo.com";
-    const hardcodedPassword = "contraseña123";
+  const handleLogin = async () => {
+    try {
+      const credentials = { email, password };
+      const response = await api.post("/login", credentials);
 
-    if (email === hardcodedEmail && password === hardcodedPassword) {
-      NotificationService.success("Inicio de sesión exitoso");
-      localStorage.setItem("user", JSON.stringify({ email }));
+      if (response.data.user) {
+        NotificationService.success(response.data.message);
+        ServiceToken.saveToken(response.data.token);
+        localStorage.setItem("user", JSON.stringify(response.data.user));
 
-      if (Platform.OS === 'web') {
-        navigation('/home');
-      } else if (typeof navigation.navigate === 'function') {
-        navigation.navigate("home" as never);
+        await handleFetchProfiles();
+
+        if (Platform.OS === 'web') {
+          navigation('/home');
+        } else if (typeof navigation.navigate === 'function') {
+          navigation.navigate("home" as never);
+        }
       }
-    } else {
-      NotificationService.error("Correo electrónico o contraseña incorrectos");
+    } catch (error: any) {
+      console.error('Error en el login:', error);
+      NotificationService.handleErrors(error.response);
+    }
+  };
+
+  const handleFetchProfiles = async () => {
+    setLoadingProfiles(true);
+    try {
+      const profiles = await getProfiles();
+
+      if (profiles && profiles.length > 0) {
+        const firstProfile = profiles[0];
+        localStorage.setItem('selectedProfile', firstProfile.id.toString());
+        NotificationService.success(`Perfil ${firstProfile.name} seleccionado`);
+      }
+    } catch (error) {
+      console.error('Error al obtener los perfiles:', error);
+      NotificationService.error('Error al obtener los perfiles');
+    } finally {
+      setLoadingProfiles(false);
     }
   };
 
@@ -41,7 +69,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <GlobalLayout hideFooter> {/* Pasamos hideFooter para ocultar el footer */}
+    <GlobalLayout hideFooter> {/* Aquí ocultamos el footer en Login */}
       <Box sx={{ height: "100vh" }} className="row justify-content-center align-items-center">
         <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
           <img src={'assets/logo1.png'} alt="Logo" style={{ width: '450px', height: 'auto' }} />
@@ -53,8 +81,8 @@ const Login: React.FC = () => {
             variant="fullWidth"
             aria-label="nav tabs example"
           >
-            <Tab label="Iniciar Sesión" />
-            <Tab label="Registrarse" />
+            <Tab label="Login" />
+            <Tab label="Sign Up" />
           </Tabs>
         </Box>
         {value === 0 ? (
@@ -64,14 +92,14 @@ const Login: React.FC = () => {
                 fullWidth
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                label="Correo Electrónico"
+                label="Email address"
                 variant="standard"
               />
               <TextField
                 fullWidth
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                label="Contraseña"
+                label="Password"
                 type="password"
                 variant="standard"
               />
@@ -84,7 +112,7 @@ const Login: React.FC = () => {
               sx={{ mt: 2, mb: 2 }}
               onClick={handleLogin}
             >
-              Iniciar Sesión
+              Sign in
             </Button>
           </form>
         ) : (
