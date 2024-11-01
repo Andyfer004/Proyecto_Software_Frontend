@@ -24,11 +24,13 @@ const WebNavigation = () => (
       {/* Rutas no protegidas */}
       <Route path="/login" element={<LoginScreen />} />
       
-
+      {/* Rutas protegidas por el componente ProtectedRoute */}
+      <Route element={<ProtectedRoute />}>
         <Route path="/home" element={<Dashboard />} />
         <Route path="/update-account" element={<UpdateAccountScreen />} />
         <Route path="/notes" element={<Notes />} />
         <Route path="*" element={<Navigate to="/home" />} />
+      </Route>
 
     </Routes>
   </Router>
