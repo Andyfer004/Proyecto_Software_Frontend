@@ -30,6 +30,8 @@ import { Platform } from 'react-native';
 import LoginIcon from '@mui/icons-material/Login';
 import EventNoteIcon from '@mui/icons-material/EventNote';
 import HomeIcon from '@mui/icons-material/Home';
+import WhatshotIcon from '@mui/icons-material/Whatshot';
+import Badge from '@mui/material/Badge';
 
 const DrawerHeader = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -132,14 +134,35 @@ const SidebarGeneral = () => {
             Navigation
           </Typography>
 
-          {/* Icono de AccountCircle con menú desplegable */}
-          <IconButton
-            color="inherit"
-            sx={{ ml: 'auto' }}  
-            onClick={handleMenuClick}  
-          >
-            <AccountCircle fontSize="large" />
-          </IconButton>
+          {/* Move Badge to the right, next to AccountCircle */}
+          <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center' }}>
+            <Badge
+              badgeContent={34}
+              max={999}
+              color="error"
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              sx={{ mr: 2 }} // Space between the badge and the AccountCircle icon
+            >
+              <WhatshotIcon
+                sx={{
+                  color: "orange",
+                  fontSize: 40,
+                }}
+              />
+            </Badge>
+
+            {/* AccountCircle with menu */}
+            <IconButton
+              color="inherit"
+              onClick={handleMenuClick}
+            >
+              <AccountCircle fontSize="large" />
+            </IconButton>
+          </Box>
+
           <Menu
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
@@ -147,20 +170,20 @@ const SidebarGeneral = () => {
           >
             <MenuItem onClick={handleLogout}>
               <ListItemIcon>
-                <ExitToAppIcon fontSize="small" /> {/* Icono de logout */}
+                <ExitToAppIcon fontSize="small" />
               </ListItemIcon>
               Logout
             </MenuItem>
             <MenuItem onClick={handleUpdateAccount}>
               <ListItemIcon>
-                <SettingsIcon fontSize="small" /> {/* Icono de update account */}
+                <SettingsIcon fontSize="small" />
               </ListItemIcon>
               Update Account
             </MenuItem>
           </Menu>
-
         </Toolbar>
       </AppBar>
+
 
       <Drawer
         sx={{
