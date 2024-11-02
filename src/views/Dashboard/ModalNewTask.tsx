@@ -110,10 +110,10 @@ export const ModalNewTask: React.FC<ModalNewTaskProps> = ({ selectedProfile, set
   // Manejar el envío de un nuevo perfil
   const handleNewProfileSubmit = async () => {
     if (newProfileName && newProfileImage) {
-      const formData = new FormData();
+      let formData:any = new FormData();
       formData.append('name', newProfileName);
       formData.append('image', newProfileImage); // Agregar el archivo al FormData
-  
+     
       try {
         await addProfile(formData); // Llama a la API con el FormData
         console.log(`Nuevo perfil creado: ${newProfileName}`);

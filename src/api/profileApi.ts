@@ -10,14 +10,10 @@ export const getProfile = async (id: number) => {
   return response.data;
 };
 
-export const addProfile = async (profile: { name: string, image: File }) => {
-  // Crear un objeto FormData para enviar el archivo de imagen
-  const formData = new FormData();
-  formData.append('name', profile.name);
-  formData.append('image', profile.image);
+export const addProfile = async (profile: any) => {
 
   // Realizar la solicitud POST usando FormData
-  const response = await api.post('/profiles', formData, {
+  const response = await api.post('/profiles', profile, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
