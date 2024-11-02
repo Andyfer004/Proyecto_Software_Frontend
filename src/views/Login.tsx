@@ -55,7 +55,6 @@ const Login: React.FC = () => {
       if (profiles && profiles.length > 0) {
         const firstProfile = profiles[0];
         localStorage.setItem('selectedProfile', firstProfile.id.toString());
-        NotificationService.success(`Perfil ${firstProfile.name} seleccionado`);
       }
     } catch (error) {
       console.error('Error al obtener los perfiles:', error);
