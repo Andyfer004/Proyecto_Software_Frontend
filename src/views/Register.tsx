@@ -24,30 +24,35 @@ const RegisterScreen: React.FC = () => {
     const [passwordConfirmation, setPasswordConfirmation] = useState('');
     const [phone, setPhone] = useState('');
 
-    const handleRegister = async() => {
+    const handleRegister = async () => {
         try {
             let credentials = {
                 "name": name,
-                "lastname":lastname,
-                "email":email,
-                "password":password,
-                "password_confirmation":passwordConfirmation,
-                "phone":phone
+                "lastname": lastname,
+                "email": email,
+                "password": password,
+                "password_confirmation": passwordConfirmation,
+                "phone": phone
+            };
+            const response = await api.post("/register", credentials);
+            
+            const data = typeof response.data === 'string' ? JSON.parse(response.data) : response.data;
+            
+            if (data.user) {
+                NotificationService.success(data.message || "Registro exitoso");
             }
-            const response = await api.post("/register",credentials);
-            console.log('Respuesta del backend:', response);
-            let data = JSON.parse(response.data);
-            if(data.user){
-                NotificationService.success(response.data.message)
+        } catch (error: any) {
+            console.error('Error al registrar:', error);
+            
+            if (error.response) {
+                NotificationService.handleErrors(error.response);
+            } else {
+                console.error("Error inesperado:", error);
+                NotificationService.handleErrors({ status: 500, message: "Error inesperado en el registro" });
             }
-        
-          } catch (error:any) {
-            console.error('Error al registrar:', error.response);
-            NotificationService.handleErrors(error.response);
-        
         }
-        
     };
+    
     
 
     
