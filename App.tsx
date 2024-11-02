@@ -13,6 +13,7 @@ import Dashboard from './src/views/Dashboard';
 import UpdateAccountScreen from './src/views/UpdateAccount';
 import Notes from './src/views/Notes/Notes';
 import ProtectedRoute from './src/common/ProtectedRoute';
+import Login from './src/views/Login';
 
 const Stack = createNativeStackNavigator();
 
@@ -22,7 +23,7 @@ const WebNavigation = () => (
     <ToastContainer />
     <Routes>
       {/* Rutas no protegidas */}
-      <Route path="/login" element={<Dashboard />} />
+      <Route path="/login" element={<Login />} />
       
       {/* Rutas protegidas por el componente ProtectedRoute */}
       <Route element={<ProtectedRoute />}>

@@ -14,6 +14,7 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  Box,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -126,6 +127,7 @@ const Reminders: React.FC = () => {
 
   return (
     <>
+    <Box className='mt-4'>
       <Typography variant="h6">Reminders</Typography>
       <FormControl fullWidth variant="outlined" margin="dense">
         <InputLabel id="sort-label">Sort By</InputLabel>
@@ -170,21 +172,7 @@ const Reminders: React.FC = () => {
       onClick={() => handleEditReminder(reminder.id)}
     />
   )}
-  <Tooltip title="Completar">
-    <IconButton
-      edge="end"
-      size="small"
-      onClick={() => handleCheckboxToggle(reminder.id)}
-      style={{
-        backgroundColor: "green",
-        color: "white",
-        borderRadius: "50%",
-        padding: 4,
-      }}
-    >
-      <CheckIcon />
-    </IconButton>
-  </Tooltip>
+  
   <Tooltip title="Eliminar">
     <IconButton
       edge="end"
@@ -236,6 +224,7 @@ const Reminders: React.FC = () => {
       )}
 
       </List>
+    </Box>
     </>
   );
 };
