@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import Header from './Header';
 import Footer from './Footer';
+import SidebarGeneral from './SidebarGeneral';
 
 // Definición de la interfaz para las props de GlobalLayout
 interface GlobalLayoutProps {
@@ -12,7 +13,7 @@ const GlobalLayout: React.FC<GlobalLayoutProps> = ({ children }) => {
   return (
     <View style={styles.container}>
         <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
-            <Header />
+            <SidebarGeneral />
             <View style={styles.content}>{children}</View>
             <Footer />
         </ScrollView>

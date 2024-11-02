@@ -53,10 +53,12 @@ const RegisterScreen: React.FC = () => {
     
 
     return (
-        <Container sx={{ width: '63%' }} >
-            <form>
-                <Box sx={{ '& > :not(style)': { m: 1 }}}>
-                <Grid container spacing={2} justifyContent="center">
+        <form  className='p-4' style={{borderRadius:'10%', background:'white', width: '40%', boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px' }}>
+            <Box className='w-100 text-center mt-5'>
+                <h3>UN RECORDATORIO, UNA TAREA, UNA META A LA VEZ</h3>
+            </Box>
+            <Box >
+                <Grid container spacing={2} justifyContent="center" sx={{marginLeft:'0px !important', width:'100% !important'}}>
                     <Grid item xs={12} sm={6} sx={{paddingLeft: { xs: '0 !important', sm: '0 8px !important' }}}>
                     <TextField value={name}  onChange={(e) => setName(e.target.value)}  fullWidth label="Name" id="nameuser" variant="standard" />
                     </Grid>
@@ -68,27 +70,26 @@ const RegisterScreen: React.FC = () => {
                 <TextField fullWidth value={password}  onChange={(e) => setPassword(e.target.value)} label="Password" id="form2Example2" type="password" variant="standard" />
                 <TextField fullWidth value={passwordConfirmation}  onChange={(e) => setPasswordConfirmation(e.target.value)} label="Password Confirmation" id="form2Example2" type="password" variant="standard" />
                 <TextField fullWidth value={phone}  onChange={(e) => setPhone(e.target.value)} label="Phone" id="phone" type="number" variant="standard" />
-                </Box>
+            </Box>
 
-                    <Button fullWidth variant="contained" onClick={handleRegister} color="primary" sx={{ mt: 3, mb: { xs: 2, sm: 0 } }}>
-                    Sign on
+            <Button fullWidth variant="contained" onClick={handleRegister}  sx={{ mt: 3, mb: { xs: 2, sm: 0, backgroundColor:'#c5bde8' } }}>
+            Sign on
+            </Button>
+
+
+            <Box textAlign="center">    
+                <p>or sign on with:</p>
+                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                    <Button variant="outlined" startIcon={<FacebookIcon />} sx={{ mx: 1 , color:'#C5BDE8' , borderColor:'#C5BDE8' }}>
+                    Facebook
                     </Button>
+                    <Button variant="outlined" startIcon={<GoogleIcon />} sx={{ mx: 1, color:'#C5BDE8' , borderColor:'#C5BDE8' }}>
+                    Google
+                    </Button>
+                </Box>
+            </Box>
 
-
-                    <Box textAlign="center">    
-                        <p>or sign on with:</p>
-                        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                            <Button variant="outlined" startIcon={<FacebookIcon />} sx={{ mx: 1 }}>
-                            Facebook
-                            </Button>
-                            <Button variant="outlined" startIcon={<GoogleIcon />} sx={{ mx: 1 }}>
-                            Google
-                            </Button>
-                        </Box>
-                        </Box>
-
-            </form>
-        </Container>
+        </form>
     );
 };
 

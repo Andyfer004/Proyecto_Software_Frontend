@@ -1,0 +1,26 @@
+.custom-shape-divider-bottom-1730526750 {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: -1;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+    transform: rotate(180deg);
+}
+
+.custom-shape-divider-bottom-1730526750 svg {
+    position: relative;
+    display: block;
+    width: calc(100% + 1.3px);
+    height: 220px;
+}
+
+.custom-shape-divider-bottom-1730526750 .shape-fill {
+    fill: #C5BDE8;
+}
+
+
+.MuiButton-root:hover{
+    background-color: #C5BDE8 !important;
+}
