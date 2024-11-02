@@ -2,7 +2,7 @@ import api from './index'; // Importa tu instancia de Axios
 
 export const getProfiles = async () => {
   const response = await api.get('/profiles');
-  return response.data; // Axios devuelve los datos en 'data'
+  return response.data;
 };
 
 export const getProfile = async (id: number) => {
@@ -10,13 +10,31 @@ export const getProfile = async (id: number) => {
   return response.data;
 };
 
-export const addProfile = async (profile: { name: string, image: string }) => {
-  const response = await api.post('/profiles', profile);
+export const addProfile = async (profile: { name: string, image: File }) => {
+  // Crear un objeto FormData para enviar el archivo de imagen
+  const formData = new FormData();
+  formData.append('name', profile.name);
+  formData.append('image', profile.image);
+
+  // Realizar la solicitud POST usando FormData
+  const response = await api.post('/profiles', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
   return response.data;
 };
 
-export const updateProfile = async (id: number, updatedFields: Partial<{ name: string, image: string }>) => {
-  const response = await api.put(`/profiles/${id}`, updatedFields);
+export const updateProfile = async (id: number, updatedFields: Partial<{ name: string, image: File }>) => {
+  const formData = new FormData();
+  if (updatedFields.name) formData.append('name', updatedFields.name);
+  if (updatedFields.image) formData.append('image', updatedFields.image);
+
+  const response = await api.put(`/profiles/${id}`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
   return response.data;
 };
 
