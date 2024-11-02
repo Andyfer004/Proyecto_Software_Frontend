@@ -9,20 +9,21 @@ type Reminder = {
   hourreminder: string;
   profileid: number;
   priorityid: number; // Agregar prioridad
+  completed: boolean; // Agregar el campo completed
   created_at: string;
   updated_at: string;
 };
 
 const useReminders = () => {
-  const [data, setData] = useState<any>([]);
+  const [data, setData] = useState<Reminder[]>([]); // Cambiar el tipo a Reminder[]
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchData = async () => {
     setLoading(true);
     try {
-      const reminders = await getReminders();
-      setData(reminders);
+      const response = await getReminders(); // Asumimos que esto regresa un objeto
+      setData(response.reminders); // Accede a la propiedad 'reminders'
     } catch (err: any) {
       setError(err.message);
     } finally {
