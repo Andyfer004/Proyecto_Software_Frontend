@@ -22,7 +22,7 @@ const WebNavigation = () => (
     <SidebarGeneral />
     <Routes>
       {/* Rutas no protegidas */}
-      <Route path="/login" element={<LoginScreen />} />
+      <Route path="/login" element={<Dashboard />} />
       
       {/* Rutas protegidas por el componente ProtectedRoute */}
       <Route element={<ProtectedRoute />}>

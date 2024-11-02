@@ -10,12 +10,12 @@ export const getReminder = async (id: number) => {
   return response.data;
 };
 
-export const addReminder = async (reminder: { description: string, alarm: boolean, datereminder: string, hourreminder: string, profileid: number }) => {
+export const addReminder = async (reminder: { description: string, alarm: boolean, datereminder: string, hourreminder: string, profileid: number, completed: boolean }) => {
   const response = await api.post('/reminders', reminder);
   return response.data;
 };
 
-export const updateReminder = async (id: number, updatedFields: Partial<{ description: string, alarm: boolean, datereminder: string, hourreminder: string, profileid: number }>) => {
+export const updateReminder = async (id: number, updatedFields: Partial<{ description: string, alarm: boolean, datereminder: string, hourreminder: string, profileid: number, completed: boolean }>) => {
   const response = await api.put(`/reminders/${id}`, updatedFields);
   return response.data;
 };
