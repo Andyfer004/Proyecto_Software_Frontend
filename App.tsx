@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import SidebarGeneral from './src/common/SidebarGeneral';
 import { ToastContainer } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './App.css'
 import LoginScreen from './src/views/Login';
 import Dashboard from './src/views/Dashboard';
 import UpdateAccountScreen from './src/views/UpdateAccount';
@@ -19,7 +20,6 @@ const Stack = createNativeStackNavigator();
 const WebNavigation = () => (
   <Router>
     <ToastContainer />
-    <SidebarGeneral />
     <Routes>
       {/* Rutas no protegidas */}
       <Route path="/login" element={<LoginScreen />} />
