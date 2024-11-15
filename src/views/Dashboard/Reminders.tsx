@@ -23,11 +23,9 @@ import { styled } from "@mui/material/styles";
 import useReminders from "../../common/Hooks/useReminders";
 import CheckIcon from "@mui/icons-material/Check";
 
-
-const StyledListItem = styled(ListItem)<{ completed: boolean }>(({ theme, completed }) => ({
+const StyledListItem = styled(ListItem)(({ theme }) => ({
   padding: theme.spacing(1),
   borderBottom: `1px solid ${theme.palette.divider}`,
-  backgroundColor: completed ? theme.palette.action.disabledBackground : "inherit",
   transition: "background-color 0.3s ease, text-decoration 0.3s ease",
   "&:hover": {
     backgroundColor: theme.palette.action.hover,
@@ -59,28 +57,22 @@ const Reminders: React.FC = () => {
   const [sortType, setSortType] = useState("today");
   const reminders = data || [];
 
-  const handleCheckboxToggle = async (id: number) => {
-    const reminderToUpdate = reminders.find((reminder: any) => reminder.id === id);
-    if (reminderToUpdate) {
-      await modifyReminder(id, { completed: !reminderToUpdate.completed });
-    }
-  };
-
   const handleAddReminder = async () => {
-    if (newReminder.trim()) {
-      await createReminder({
-        description: newReminder,
-        alarm: false,
-        datereminder: new Date().toISOString().split("T")[0],
-        hourreminder: new Date().toISOString().split("T")[1].substring(0, 5),
-        profileid: 1,
-        priorityid,
-        completed: false,
-      });
-      setNewReminder("");
-      setPriorityid(1);
-      setIsAdding(false);
-    }
+    const selectedProfileId = localStorage.getItem("selectedProfile"); // Obtener el profileid guardado
+    if (!newReminder.trim() || !selectedProfileId) return;
+  
+    await createReminder({
+      description: newReminder,
+      alarm: false,
+      datereminder: new Date().toISOString().split("T")[0],
+      hourreminder: new Date().toISOString().split("T")[1].substring(0, 5),
+      profileid: parseInt(selectedProfileId, 10), // Usar el profileid del perfil seleccionado
+      priorityid,
+    });
+  
+    setNewReminder("");
+    setPriorityid(1);
+    setIsAdding(false);
   };
 
   const handleDeleteReminder = async (id: number) => {
@@ -126,7 +118,6 @@ const Reminders: React.FC = () => {
   }
 
   return (
-    <>
     <Box className='mt-4'>
       <Typography variant="h6">Reminders</Typography>
       <FormControl fullWidth variant="outlined" margin="dense">
@@ -145,87 +136,77 @@ const Reminders: React.FC = () => {
       <List>
         {Array.isArray(sortedReminders) && sortedReminders.length > 0 ? (
           sortedReminders.map((reminder: any) => (
-            <StyledListItem key={reminder.id} completed={reminder.completed}>
-  <Checkbox
-    checked={reminder.completed}
-    onChange={() => handleCheckboxToggle(reminder.id)}
-  />
-  <CircleIcon
-    style={{ color: getPriorityColor(reminder.priorityid), marginRight: 8 }}
-  />
-  {editingId === reminder.id ? (
-    <TextField
-      fullWidth
-      value={editedText}
-      onChange={(e) => setEditedText(e.target.value)}
-      onBlur={() => handleUpdateReminder(reminder.id)}
-      onKeyDown={(e) => handleKeyDown(e, reminder.id)}
-      autoFocus
-    />
-  ) : (
-    <ListItemText
-      primary={reminder.description}
-      style={{
-        textDecoration: reminder.completed ? "line-through" : "none",
-        color: reminder.completed ? "gray" : "inherit",
-      }}
-      onClick={() => handleEditReminder(reminder.id)}
-    />
-  )}
-  
-  <Tooltip title="Eliminar">
-    <IconButton
-      edge="end"
-      size="small"
-      onClick={() => handleDeleteReminder(reminder.id)}
-    >
-      <DeleteIcon color="error" />
-    </IconButton>
-  </Tooltip>
-</StyledListItem>
+            <StyledListItem key={reminder.id}>
+              <Checkbox />
+              <CircleIcon
+                style={{ color: getPriorityColor(reminder.priorityid), marginRight: 8 }}
+              />
+              {editingId === reminder.id ? (
+                <TextField
+                  fullWidth
+                  value={editedText}
+                  onChange={(e) => setEditedText(e.target.value)}
+                  onBlur={() => handleUpdateReminder(reminder.id)}
+                  onKeyDown={(e) => handleKeyDown(e, reminder.id)}
+                  autoFocus
+                />
+              ) : (
+                <ListItemText
+                  primary={reminder.description}
+                  onClick={() => handleEditReminder(reminder.id)}
+                />
+              )}
+              <Tooltip title="Eliminar">
+                <IconButton
+                  edge="end"
+                  size="small"
+                  onClick={() => handleDeleteReminder(reminder.id)}
+                >
+                  <DeleteIcon color="error" />
+                </IconButton>
+              </Tooltip>
+            </StyledListItem>
           ))
         ) : (
           <Typography>No hay recordatorios disponibles</Typography>
         )}
 
-      {isAdding ? (
-        <StyledListItem completed={false}>
-          <TextField
-            fullWidth
-            placeholder="Nuevo recordatorio..."
-            value={newReminder}
-            onChange={(e) => setNewReminder(e.target.value)}
-            autoFocus
-          />
-          <FormControl fullWidth>
-            <InputLabel id="priority-label">Prioridad</InputLabel>
-            <Select
-              labelId="priority-label"
-              value={priorityid}
-              onChange={(e) => setPriorityid(Number(e.target.value))}
-              label="Prioridad"
-            >
-              <MenuItem value={1}>Alta</MenuItem>
-              <MenuItem value={2}>Media</MenuItem>
-              <MenuItem value={3}>Baja</MenuItem>
-            </Select>
-          </FormControl>
-          <Button onClick={handleAddReminder} disabled={!newReminder.trim()}>
-            Guardar
-          </Button>
-        </StyledListItem>
-      ) : (
-        <StyledListItem completed={false} onClick={() => setIsAdding(true)}>
-          <IconButton edge="start">
-            <AddIcon />
-          </IconButton>
-          <ListItemText primary="Agregar recordatorio" />
-        </StyledListItem>
-      )}
-
+        {isAdding ? (
+          <StyledListItem>
+            <TextField
+              fullWidth
+              placeholder="Nuevo recordatorio..."
+              value={newReminder}
+              onChange={(e) => setNewReminder(e.target.value)}
+              autoFocus
+            />
+            <FormControl fullWidth>
+              <InputLabel id="priority-label">Prioridad</InputLabel>
+              <Select
+                labelId="priority-label"
+                value={priorityid}
+                onChange={(e) => setPriorityid(Number(e.target.value))}
+                label="Prioridad"
+              >
+                <MenuItem value={1}>Alta</MenuItem>
+                <MenuItem value={2}>Media</MenuItem>
+                <MenuItem value={3}>Baja</MenuItem>
+              </Select>
+            </FormControl>
+            <Button onClick={handleAddReminder} disabled={!newReminder.trim()}>
+              Guardar
+            </Button>
+          </StyledListItem>
+        ) : (
+          <StyledListItem onClick={() => setIsAdding(true)}>
+            <IconButton edge="start">
+              <AddIcon />
+            </IconButton>
+            <ListItemText primary="Agregar recordatorio" />
+          </StyledListItem>
+        )}
       </List>
     </Box>
-    </>
   );
 };
 

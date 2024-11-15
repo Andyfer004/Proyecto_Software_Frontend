@@ -51,10 +51,10 @@ const Login: React.FC = () => {
     setLoadingProfiles(true);
     try {
       const profiles = await getProfiles();
-
+  
       if (profiles && profiles.length > 0) {
         const firstProfile = profiles[0];
-        localStorage.setItem('selectedProfile', firstProfile.id.toString());
+        localStorage.setItem('selectedProfile', firstProfile.id.toString()); // Guarda el profileid en localStorage
       }
     } catch (error) {
       console.error('Error al obtener los perfiles:', error);
@@ -63,6 +63,7 @@ const Login: React.FC = () => {
       setLoadingProfiles(false);
     }
   };
+  
 
   const handleLoginForm = () => {
     setValue(0);
