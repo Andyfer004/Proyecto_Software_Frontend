@@ -16,6 +16,7 @@ import {
 } from '@mui/material';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp'; // Icono para logout
 import SettingsIcon from '@mui/icons-material/Settings';
+import TuneIcon from '@mui/icons-material/Tune';
 import { styled, useTheme } from '@mui/material/styles';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import AddCircle from '@mui/icons-material/AddCircle';
@@ -69,6 +70,8 @@ const drawerItems = [
   { name: 'Home', icon: HomeIcon, route: '' },
   { name: 'Notes', icon: EventNoteIcon, route: 'notes' },
   { name: 'Add', icon: AddCircle, route: 'add-profile' },
+  { name: 'Preferences', icon: TuneIcon, route: 'preferences' }
+
 ];
 
 const SidebarGeneral = () => {

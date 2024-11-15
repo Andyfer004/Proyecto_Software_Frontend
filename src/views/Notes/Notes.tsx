@@ -1,122 +1,121 @@
 import React, { useState } from 'react';
-import { Box, Grid, List, ListItem, ListItemText, Typography, IconButton, CircularProgress } from '@mui/material';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import DeleteIcon from '@mui/icons-material/Delete';
-import NoteEditor from './NoteEditor';
-import { useFetchNotes } from '../../common/Hooks/useNotes';
+import { Box, Typography, Divider } from '@mui/material';
+import SidebarGeneral from '../../common/SidebarGeneral'; // Importa el SidebarGeneral
 
-type Note = {
-  id: number;
-  note: string;
-  image: string;
-  profileid: number;
-  created_at: string;
-  updated_at: string;
+// Tipos de configuración de preferencias
+type Preferences = {
+  fontFamily: string;
+  textColor: string;
+  baseColor: string;
+  fontSize: string;
 };
 
-const Notes = () => {
-  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+const PreferencesView: React.FC = () => {
+  const [preferences, setPreferences] = useState<Preferences>({
+    fontFamily: 'Arial',
+    textColor: '#000000',
+    baseColor: '#ffffff',
+    fontSize: '16px'
+  });
 
-  // Utiliza el hook para obtener las notas, asegúrate de que `data` sea un array vacío inicialmente
-  const { data: notes = [], loading, error, refetch } = useFetchNotes();
-  console.log("Fetched notes:", notes);
-
-  const handleSelectNote = (note: Note) => {
-    setSelectedNote(note);
+  // Función para manejar el cambio de cualquier preferencia
+  const handlePreferenceChange = (key: keyof Preferences, value: string) => {
+    setPreferences(prev => ({
+      ...prev,
+      [key]: value
+    }));
   };
-
-  const handleSaveNote = (noteContent: string): void => {
-    const newNote = { 
-      id: notes.length + 1, 
-      note: noteContent, 
-      image: '', 
-      profileid: 1, 
-      created_at: new Date().toISOString(), 
-      updated_at: new Date().toISOString() 
-    };
-    refetch(); 
-    setSelectedNote(newNote);
-  };
-
-  const handleDeleteNote = (index: number) => {
-    const noteToDelete = notes[index];
-    refetch();
-  };
-
-  if (loading) {
-    return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <CircularProgress />
-      </Box>
-    );
-  }
-
-  if (error) {
-    return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <Typography variant="h6" color="error">
-          Error: {error}
-        </Typography>
-      </Box>
-    );
-  }
 
   return (
-    <Box sx={{ height: '100vh', width: '100%', overflow: 'hidden' }}>
-      <Grid container sx={{ height: '100%' }}>
-        <Grid item xs={4} className='mt-3' sx={{ borderRight: '1px solid #ccc', overflowY: 'auto' }}>
-          <Box sx={{ padding: 2 }}>
-            <Typography variant="h6" gutterBottom>
-              Notes
-            </Typography>
-            <IconButton aria-label="add" onClick={() => setSelectedNote({ id: 0, note: '', image: '', profileid: 1, created_at: '', updated_at: '' })}>
-              <AddCircleOutlineIcon />
-            </IconButton>
-            <List>
-              {Array.isArray(notes) && notes.map((note, index) => (
-                <ListItem
-                  key={note.id}
-                  button
-                  onMouseEnter={() => setHoveredIndex(index)}
-                  onMouseLeave={() => setHoveredIndex(null)}
-                  onClick={() => handleSelectNote(note)}
-                  sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
-                >
-                  <ListItemText primary={
-                      <div dangerouslySetInnerHTML={{ __html: note.note }} />
-                    }
-                    secondary={note.created_at.split('T')[0]} />
-                  {hoveredIndex === index && (
-                    <IconButton
-                      aria-label="delete"
-                      onClick={(e) => {
-                        e.stopPropagation(); 
-                        handleDeleteNote(index);
-                      }}
-                      edge="end"
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  )}
-                </ListItem>
-              ))}
-            </List>
+    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+      {/* Sidebar */}
+      <SidebarGeneral />
+
+      {/* Contenido Principal */}
+      <Box component="main" sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+        <Box sx={{ padding: 3, flexGrow: 1 }}>
+          <Typography variant="h4" gutterBottom>
+            Preferencias de la Aplicación
+          </Typography>
+          
+          {/* Selección de fuente */}
+          <Box sx={{ marginBottom: 2 }}>
+            <label>Fuente:</label>
+            <select
+              value={preferences.fontFamily}
+              onChange={e => handlePreferenceChange('fontFamily', e.target.value)}
+              style={{ marginLeft: '10px' }}
+            >
+              <option value="Arial">Arial</option>
+              <option value="Times New Roman">Times New Roman</option>
+              <option value="Courier New">Courier New</option>
+              <option value="Verdana">Verdana</option>
+            </select>
           </Box>
-        </Grid>
-        <Grid item xs={8}>
-          {selectedNote && (
-              <NoteEditor
-              onSave={refetch} 
-              onClose={() => setSelectedNote(null)}
-              initialTitle={selectedNote.note}
-              initialContent={selectedNote.note}
+
+          {/* Selección de tamaño de letra */}
+          <Box sx={{ marginBottom: 2 }}>
+            <label>Tamaño de la letra:</label>
+            <select
+              value={preferences.fontSize}
+              onChange={e => handlePreferenceChange('fontSize', e.target.value)}
+              style={{ marginLeft: '10px' }}
+            >
+              <option value="14px">14px</option>
+              <option value="16px">16px</option>
+              <option value="18px">18px</option>
+              <option value="20px">20px</option>
+            </select>
+          </Box>
+
+          {/* Color del texto */}
+          <Box sx={{ marginBottom: 2 }}>
+            <label>Color de la letra:</label>
+            <input
+              type="color"
+              value={preferences.textColor}
+              onChange={e => handlePreferenceChange('textColor', e.target.value)}
+              style={{ marginLeft: '10px' }}
             />
-          )}
-        </Grid>
-      </Grid>
+          </Box>
+
+          {/* Color base de la aplicación */}
+          <Box sx={{ marginBottom: 2 }}>
+            <label>Color base de la aplicación:</label>
+            <input
+              type="color"
+              value={preferences.baseColor}
+              onChange={e => handlePreferenceChange('baseColor', e.target.value)}
+              style={{ marginLeft: '10px' }}
+            />
+          </Box>
+
+          {/* Vista previa de las preferencias */}
+          <Box
+            sx={{
+              marginTop: 3,
+              padding: 2,
+              backgroundColor: preferences.baseColor,
+              color: preferences.textColor,
+              fontFamily: preferences.fontFamily,
+              fontSize: preferences.fontSize
+            }}
+          >
+            <p>Vista previa de tus preferencias.</p>
+            <p>¡Personaliza tu experiencia en la aplicación!</p>
+          </Box>
+        </Box>
+
+        {/* Footer */}
+        <Box component="footer" sx={{ padding: 2, backgroundColor: '#f1f1f1', textAlign: 'center' }}>
+          <Divider />
+          <Typography variant="body2" color="textSecondary">
+            © 2024 Tu Aplicación - Todos los derechos reservados.
+          </Typography>
+        </Box>
+      </Box>
     </Box>
   );
 };
 
-export default Notes;
+export default PreferencesView;

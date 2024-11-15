@@ -14,6 +14,7 @@ import UpdateAccountScreen from './src/views/UpdateAccount';
 import Notes from './src/views/Notes/Notes';
 import ProtectedRoute from './src/common/ProtectedRoute';
 import Login from './src/views/Login';
+import PreferencesView from './src/views/Preferences/Preferences';
 
 const Stack = createNativeStackNavigator();
 
@@ -31,6 +32,7 @@ const WebNavigation = () => (
         <Route path="/update-account" element={<UpdateAccountScreen />} />
         <Route path="/notes" element={<Notes />} />
         <Route path="*" element={<Navigate to="/home" />} />
+        <Route path="/preferences" element={<PreferencesView />} />
      
 
     </Routes>
