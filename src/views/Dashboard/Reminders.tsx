@@ -84,9 +84,8 @@ const Reminders: React.FC = () => {
   const completedReminders = data.filter((reminder) => reminder.status === 'complete');
   const incompleteReminders = data.filter((reminder) => reminder.status === 'incomplete');
 
-  if (loading) {
-    return <CircularProgress />;
-  }
+  // Calcula el progreso en base a los recordatorios completados
+  const progress = data.length > 0 ? (completedReminders.length / data.length) * 100 : 0;
 
   if (error) {
     return <Typography color="error">{error}</Typography>;
@@ -102,6 +101,14 @@ const Reminders: React.FC = () => {
           <MenuItem value="alphabetical">Alphabetical</MenuItem>
         </Select>
       </FormControl>
+
+      {/* Barra de progreso de recordatorios completados */}
+      <Box display="flex" flexDirection="column" alignItems="center" mt={3} mb={3}>
+        <CircularProgress variant="determinate" value={progress} size={100} />
+        <Typography variant="caption" component="div" color="textSecondary" mt={1}>
+          {`${Math.round(progress)}% completado`}
+        </Typography>
+      </Box>
 
       <List>
         {incompleteReminders.map((reminder) => (
