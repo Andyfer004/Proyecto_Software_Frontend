@@ -1,12 +1,10 @@
-import api from './index'; // Asegúrate de importar tu instancia de Axios
+import api from './index';
 
-// Función para obtener los reminders
-export const getReminders = async ({ profileid }: { profileid: number }) => {
-  const response = await api.get(`/reminders`, { params: { profileid } });
+export const getReminders = async (params: { profileid: number }) => {
+  const response = await api.get('/reminders', { params });
   return response.data;
 };
 
-// Función para agregar un nuevo reminder
 export const addReminder = async (reminder: {
   description: string;
   alarm: boolean;
@@ -14,13 +12,27 @@ export const addReminder = async (reminder: {
   hourreminder: string;
   profileid: number;
   priorityid: number;
+  status?: string;
 }) => {
-  const response = await api.post('/reminders', reminder);
+  const response = await api.post('/reminders', {
+    ...reminder,
+    status: reminder.status || 'incomplete', // Valor por defecto
+  });
   return response.data;
 };
 
-// Funciones adicionales para actualizar y eliminar reminders
-export const updateReminder = async (id: number, updatedFields: Partial<{ description: string, alarm: boolean, datereminder: string, hourreminder: string, profileid: number, priorityid: number, completed: boolean }>) => {
+export const updateReminder = async (
+  id: number,
+  updatedFields: {
+    description?: string;
+    alarm?: boolean;
+    datereminder?: string;
+    hourreminder?: string;
+    profileid?: number;
+    priorityid?: number;
+    status?: string;
+  }
+) => {
   const response = await api.put(`/reminders/${id}`, updatedFields);
   return response.data;
 };

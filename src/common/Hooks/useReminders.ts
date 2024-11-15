@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getReminders, addReminder, updateReminder, deleteReminder } from '../../api/remindersApi';
 
-// Definición del tipo Reminder
 type Reminder = {
   id: number;
   description: string;
@@ -10,25 +9,19 @@ type Reminder = {
   hourreminder: string;
   profileid: number;
   priorityid: number;
+  status: string;
   created_at: string;
   updated_at: string;
 };
 
-// Hook personalizado para manejar recordatorios
 const useReminders = () => {
-  // Estados locales
   const [data, setData] = useState<Reminder[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Función para obtener recordatorios asociados al perfil seleccionado
   const fetchData = async () => {
     const selectedProfileId = localStorage.getItem("selectedProfile");
-    if (!selectedProfileId) {
-      setError("No se encontró el perfil seleccionado.");
-      setLoading(false);
-      return;
-    }
+    if (!selectedProfileId) return;
 
     try {
       const response = await getReminders({ profileid: parseInt(selectedProfileId, 10) });
@@ -40,12 +33,10 @@ const useReminders = () => {
     }
   };
 
-  // Llamada inicial para obtener datos
   useEffect(() => {
     fetchData();
   }, []);
 
-  // Función para crear un nuevo recordatorio
   const createReminder = async (newReminder: Omit<Reminder, 'id' | 'created_at' | 'updated_at'>) => {
     setLoading(true);
     try {
@@ -58,20 +49,25 @@ const useReminders = () => {
     }
   };
 
-  // Función para modificar un recordatorio existente
-  const modifyReminder = async (id: number, updatedReminder: Partial<Omit<Reminder, 'id'>>) => {
-    setLoading(true);
-    try {
-      await updateReminder(id, updatedReminder);
-      await fetchData();
-    } catch (err: any) {
-      setError(err.message || "Error al actualizar el recordatorio.");
-    } finally {
-      setLoading(false);
-    }
-  };
+const toggleReminderStatus = async (id: number, currentStatus: string) => {
+  setLoading(true);
+  try {
+    const newStatus = currentStatus === 'complete' ? 'incomplete' : 'complete';
+    console.log(`Toggle Status: Reminder ID ${id}, New Status: ${newStatus}`); // Log para confirmar el cambio de estado
 
-  // Función para eliminar un recordatorio
+    const response = await updateReminder(id, { status: newStatus });
+    console.log('Server Response:', response); // Log para ver la respuesta del servidor
+
+    await fetchData();
+  } catch (err: any) {
+    console.error("Error updating reminder status:", err.message);
+    setError(err.message || "Error al actualizar el estado del recordatorio.");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
   const removeReminder = async (id: number) => {
     setLoading(true);
     try {
@@ -84,8 +80,7 @@ const useReminders = () => {
     }
   };
 
-  // Retorno de los estados y funciones para ser utilizados en el componente
-  return { data, loading, error, createReminder, modifyReminder, removeReminder };
+  return { data, loading, error, createReminder, toggleReminderStatus, removeReminder };
 };
 
 export default useReminders;
