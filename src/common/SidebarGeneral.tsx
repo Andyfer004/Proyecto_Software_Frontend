@@ -38,6 +38,7 @@ import EventNoteIcon from '@mui/icons-material/EventNote';
 import HomeIcon from '@mui/icons-material/Home';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
 import Badge from '@mui/material/Badge';
+import ServiceToken from './ServiceToken';
 
 const DrawerHeader = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -103,7 +104,10 @@ const SidebarGeneral = () => {
   };
 
   const confirmLogout = () => {
-    console.log("Logout");
+    ServiceToken.clearToken(); // Elimina el token guardado, si es necesario
+  
+    // Redirigir al usuario a la vista de login
+    navigateTo('login'); // Esto redirige a la ruta de login
     setDialogOpen(false);
     handleMenuClose();
   };
@@ -128,6 +132,8 @@ const SidebarGeneral = () => {
       nativeNavigation.navigate(route as never);
     }
   };
+
+  
 
   return (
     <>
@@ -220,49 +226,67 @@ const SidebarGeneral = () => {
       </Drawer>
 
       {/* Diálogo de confirmación de logout */}
-      <Dialog open={dialogOpen} onClose={cancelLogout} >
-  <DialogTitle sx={{ textAlign: 'center', fontWeight: 'bold', color: 'rgb(33, 33, 33)' }}>
-   
-    Confirm Logout
-  </DialogTitle>
-  <DialogContent>
-    <DialogContentText sx={{ textAlign: 'center', fontSize: '1.1rem', color: 'rgb(85, 85, 85)' }}>
-      ¿Está seguro de querer cerrar sesión?
+      <Dialog open={dialogOpen} onClose={cancelLogout}>
+  <DialogContent 
+    sx={{ 
+      textAlign: 'center', 
+      padding: '2rem', 
+      border: '1px solid #ccc', // Borde alrededor de la card
+      borderRadius: '8px', // Bordes redondeados
+      marginTop: '-1rem', // Mover la card más arriba
+    }}
+  >
+    {/* Ícono de logout */}
+    <ExitToAppIcon sx={{ fontSize: '3rem', color: 'rgb(34, 139, 34)', marginBottom: '1rem' }} />
+    
+    {/* Título */}
+    <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'rgb(33, 33, 33)', marginBottom: '1rem' }}>
+      Logout
+    </Typography>
+
+    {/* Mensaje */}
+    <DialogContentText sx={{ fontSize: '1rem', color: 'rgb(85, 85, 85)', marginBottom: '1.5rem' }}>
+      Are you sure you want to logout?
     </DialogContentText>
   </DialogContent>
-  <DialogActions sx={{ justifyContent: 'center', gap: 2 }}>
+
+  {/* Botones de acción */}
+  <DialogActions sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+    <Button 
+      onClick={confirmLogout} 
+      variant="contained" 
+      sx={{ 
+        backgroundColor: 'rgb(34, 139, 34)', // Verde
+        color: 'white',
+        borderRadius: '8px', 
+        fontWeight: 'bold',
+        '&:hover': {
+          backgroundColor: 'rgb(46, 160, 46)', // Verde más oscuro al hover
+        }
+      }}
+      fullWidth
+    >
+      Yes, Logout
+    </Button>
     <Button 
       onClick={cancelLogout} 
+      variant="outlined"
       sx={{ 
-        backgroundColor: 'rgb(169, 17, 1)', 
-        color: 'white', 
-        border: '10px', 
+        borderColor: 'rgb(34, 139, 34)', 
+        color: 'rgb(34, 139, 34)', 
+        borderRadius: '8px', 
+        fontWeight: 'bold',
         '&:hover': {
-          backgroundColor: 'rgb(200, 0, 0)', // Color más oscuro al pasar el mouse
-          borderColor: 'rgb(200, 0, 0)', // Borde que combina con el color de fondo
+          backgroundColor: 'rgba(34, 139, 34, 0.1)', // Verde translúcido al hover
         }
       }}
+      fullWidth
     >
-      Cancelar
-  </Button>
-
-  <Button 
-      onClick={confirmLogout} 
-      sx={{ 
-        backgroundColor: 'rgb(86, 130, 3)', 
-        color: 'white', 
-        border: '10px', 
-        '&:hover': {
-          backgroundColor: 'rgb(86, 104, 74)', // Color más oscuro al pasar el mouse
-          borderColor: 'rgb(86, 104, 74)', // Borde que combina con el color de fondo
-        }
-      }}
-    >
-      Aceptar
-  </Button>
-
+      Cancel
+    </Button>
   </DialogActions>
 </Dialog>
+
 
     </>
   );
