@@ -105,7 +105,7 @@ const SidebarGeneral = () => {
 
   const confirmLogout = () => {
     ServiceToken.clearToken(); // Elimina el token guardado, si es necesario
-  
+    localStorage.clear();
     // Redirigir al usuario a la vista de login
     navigateTo('login'); // Esto redirige a la ruta de login
     setDialogOpen(false);
