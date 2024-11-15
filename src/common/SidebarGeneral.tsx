@@ -73,7 +73,6 @@ const AppBar = styled(MuiAppBar, {
 const drawerWidth = 240;
 
 const drawerItems = [
-  { name: 'Login', icon: LoginIcon, route: 'login' },
   { name: 'Home', icon: HomeIcon, route: '' },
   { name: 'Notes', icon: EventNoteIcon, route: 'notes' },
   { name: 'Add', icon: AddCircle, route: 'add-profile' },

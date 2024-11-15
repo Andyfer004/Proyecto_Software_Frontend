@@ -16,6 +16,7 @@ import { getProfiles } from '../api/profileApi';
 import { getSettingByKey } from '../api/settingsApi';
 import { Divider } from '@mui/material';
 import useSettings from 'src/common/Hooks/useSettings';
+import { useTypewriter, Cursor } from 'react-simple-typewriter';
 
 const Login: React.FC = () => {
   const [value, setValue] = useState(0);
@@ -97,6 +98,12 @@ const Login: React.FC = () => {
     setValue(1);
   };
 
+  const [text] = useTypewriter({
+    words: ['Organiza tu tiempo', 'Aprovecha cada minuto', 'Simplifica tu vida','Planifica con propósito','Transforma tu día'],
+    loop: true,
+    delaySpeed: 1500,
+  });
+
   return (
       <Box sx={{ minHeight: "100vh", width:'100%'}} >
         <div className="custom-shape-divider-bottom-1730526750">
@@ -109,7 +116,6 @@ const Login: React.FC = () => {
         <Box className='d-flex m-0'>
           <Box className='m-3 col-md-6'> 
             <img src={'assets/logo1.png'} alt="Logo" className='img-fluid' style={{height:'60px'}}/> 
-            <br/><span style={{fontSize:'13px'}} className='fw-bold'>Haz que cada momento cuente con Now</span>
           </Box>
           <Box className='col-md-6 d-flex justify-content-end align-items-center' sx={{paddingRight:'4rem'}}>
             {value === 0 ? (
@@ -127,21 +133,19 @@ const Login: React.FC = () => {
                 </Button>
               </Box>
             )}
-
           </Box>
         </Box>
         <Divider/>
         <Box className='row justify-content-center align-items-center ' sx={{height:'80%', zIndex:999}}>
           {value === 0 ? (
-            <form  className='p-4' style={{borderRadius:'10%', background:'white', width: '40%', boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px' }}>
+            <form className='p-4' style={{borderRadius:'10%', background:'white', width: '40%', boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px' }}>
               <Box className='w-100 text-center mt-5'>
-                <h3>ORGANIZA TU DÍA, TRANSFORMA TU VIDA</h3>
+                <h3><span>{text}</span><Cursor /></h3>
               </Box>
               <Box sx={{ '& > :not(style)': { m: 1 }, mt: 2 }}>
                 <TextField fullWidth value={email} onChange={(e) => setEmail(e.target.value)} label="Email address" variant="standard" />
                 <TextField fullWidth value={password} onChange={(e) => setPassword(e.target.value)} label="Password" type="password" variant="standard" />
               </Box>
-
               <Button fullWidth variant="contained" sx={{ mt: 2, mb: 2, backgroundColor:'#c5bde8' }} onClick={handleLogin}>
                 LOGIN
               </Button>
@@ -149,7 +153,6 @@ const Login: React.FC = () => {
           ) : (
             <RegisterScreen />
           )}
-          
         </Box>
       </Box>
   );
