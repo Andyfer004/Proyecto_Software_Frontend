@@ -13,8 +13,14 @@ import {
   Typography,
   Menu,
   MenuItem,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from '@mui/material';
-import ExitToAppIcon from '@mui/icons-material/ExitToApp'; // Icono para logout
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { styled, useTheme } from '@mui/material/styles';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
@@ -74,6 +80,7 @@ const drawerItems = [
 const SidebarGeneral = () => {
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -92,20 +99,25 @@ const SidebarGeneral = () => {
   };
 
   const handleLogout = () => {
-    // Lógica para logout
+    setDialogOpen(true); // Abre el diálogo de confirmación
+  };
+
+  const confirmLogout = () => {
     console.log("Logout");
+    setDialogOpen(false);
     handleMenuClose();
   };
 
+  const cancelLogout = () => {
+    setDialogOpen(false); // Cierra el diálogo sin hacer logout
+  };
+
   const handleUpdateAccount = () => {
-    // Lógica para update account
     navigateTo("update-account");
     handleMenuClose();
   };
 
   const theme = useTheme();
-
-  // Mover el uso de hooks dentro del cuerpo del componente
   const webNavigation = Platform.OS === 'web' ? useWebNavigate() : null;
   const nativeNavigation = Platform.OS !== 'web' ? useNativeNavigation() : null;
 
@@ -134,7 +146,6 @@ const SidebarGeneral = () => {
             Navigation
           </Typography>
 
-          {/* Move Badge to the right, next to AccountCircle */}
           <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center' }}>
             <Badge
               badgeContent={34}
@@ -144,21 +155,11 @@ const SidebarGeneral = () => {
                 vertical: 'top',
                 horizontal: 'right',
               }}
-              sx={{ mr: 2 }} // Space between the badge and the AccountCircle icon
+              sx={{ mr: 2 }}
             >
-              <WhatshotIcon
-                sx={{
-                  color: "orange",
-                  fontSize: 40,
-                }}
-              />
+              <WhatshotIcon sx={{ color: "orange", fontSize: 40 }} />
             </Badge>
-
-            {/* AccountCircle with menu */}
-            <IconButton
-              color="inherit"
-              onClick={handleMenuClick}
-            >
+            <IconButton color="inherit" onClick={handleMenuClick}>
               <AccountCircle fontSize="large" />
             </IconButton>
           </Box>
@@ -172,7 +173,7 @@ const SidebarGeneral = () => {
               <ListItemIcon>
                 <ExitToAppIcon fontSize="small" />
               </ListItemIcon>
-              Logout
+              <Typography variant="inherit" >Logout</Typography>
             </MenuItem>
             <MenuItem onClick={handleUpdateAccount}>
               <ListItemIcon>
@@ -183,7 +184,6 @@ const SidebarGeneral = () => {
           </Menu>
         </Toolbar>
       </AppBar>
-
 
       <Drawer
         sx={{
@@ -218,6 +218,52 @@ const SidebarGeneral = () => {
           ))}
         </List>
       </Drawer>
+
+      {/* Diálogo de confirmación de logout */}
+      <Dialog open={dialogOpen} onClose={cancelLogout} >
+  <DialogTitle sx={{ textAlign: 'center', fontWeight: 'bold', color: 'rgb(33, 33, 33)' }}>
+   
+    Confirm Logout
+  </DialogTitle>
+  <DialogContent>
+    <DialogContentText sx={{ textAlign: 'center', fontSize: '1.1rem', color: 'rgb(85, 85, 85)' }}>
+      ¿Está seguro de querer cerrar sesión?
+    </DialogContentText>
+  </DialogContent>
+  <DialogActions sx={{ justifyContent: 'center', gap: 2 }}>
+    <Button 
+      onClick={cancelLogout} 
+      sx={{ 
+        backgroundColor: 'rgb(169, 17, 1)', 
+        color: 'white', 
+        border: '10px', 
+        '&:hover': {
+          backgroundColor: 'rgb(200, 0, 0)', // Color más oscuro al pasar el mouse
+          borderColor: 'rgb(200, 0, 0)', // Borde que combina con el color de fondo
+        }
+      }}
+    >
+      Cancelar
+  </Button>
+
+  <Button 
+      onClick={confirmLogout} 
+      sx={{ 
+        backgroundColor: 'rgb(86, 130, 3)', 
+        color: 'white', 
+        border: '10px', 
+        '&:hover': {
+          backgroundColor: 'rgb(86, 104, 74)', // Color más oscuro al pasar el mouse
+          borderColor: 'rgb(86, 104, 74)', // Borde que combina con el color de fondo
+        }
+      }}
+    >
+      Aceptar
+  </Button>
+
+  </DialogActions>
+</Dialog>
+
     </>
   );
 };
