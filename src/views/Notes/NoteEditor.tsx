@@ -16,7 +16,7 @@ import { useCreateNote } from '../../common/Hooks/useNotes';
 
 interface NoteEditorProps {
   onClose: () => void;
-  onSave: () => void; // Ahora no es opcional
+  onSave: () => void;
   initialTitle: string;
   initialContent: string;
 }
@@ -32,6 +32,8 @@ const NoteEditor: React.FC<NoteEditorProps> = ({ onClose, onSave, initialTitle, 
   const { title: extractedTitle, content: extractedContent } = extractTitleAndContent(initialTitle);
   const [title, setTitle] = useState<string>(extractedTitle);
   const [content, setContent] = useState<string>(extractedContent);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const { createNote, loading, error } = useCreateNote();
 
   useEffect(() => {
@@ -45,15 +47,32 @@ const NoteEditor: React.FC<NoteEditorProps> = ({ onClose, onSave, initialTitle, 
 
       await createNote({
         note: combinedContent,
-        image: 'image.jpg',
+        image: selectedImage ? selectedImage.name : 'image.jpg',
         profileid: 1,
       });
 
-      onSave(); // Refetch las notas
-      onClose(); // Cierra el editor después de guardar
+      onSave();
+      onClose();
     } else {
       alert('Please fill out both fields.');
     }
+  };
+
+  const handleAddImage = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (event) => {
+      const file = (event.target as HTMLInputElement).files?.[0];
+      if (file) {
+        setSelectedImage(file);
+        setImagePreview(URL.createObjectURL(file));
+        console.log('Selected image:', file.name);
+      } else {
+        console.log('No image selected');
+      }
+    };
+    input.click();
   };
 
   return (
@@ -83,10 +102,13 @@ const NoteEditor: React.FC<NoteEditorProps> = ({ onClose, onSave, initialTitle, 
           onChange={setContent}
           style={{ height: '350px', marginBottom: '50px' }}
         />
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
-          <Button variant="outlined" startIcon={<ImageIcon />}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
+          <Button variant="outlined" startIcon={<ImageIcon />} onClick={handleAddImage}>
             Add Image
           </Button>
+          {imagePreview && (
+            <img src={imagePreview} alt="Preview" style={{ width: '200px', height: 'auto', borderRadius: '8px' }} />
+          )}
         </Box>
         <Button variant="contained" color="primary" fullWidth onClick={handleSave} disabled={loading}>
           {loading ? 'Saving...' : 'Save Note'}
