@@ -18,7 +18,6 @@ const Notes = () => {
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
-  // Utiliza el hook para obtener las notas, asegúrate de que `data` sea un array vacío inicialmente
   const { data: notes = [], loading, error, refetch } = useFetchNotes();
   console.log("Fetched notes:", notes);
 
@@ -83,10 +82,17 @@ const Notes = () => {
                   onClick={() => handleSelectNote(note)}
                   sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
                 >
-                  <ListItemText primary={
+                  <Box component="img" 
+                       src={note.image ? `/images/${note.image}` : '/images/default-image.jpg'} 
+                       alt="Note Preview" 
+                       sx={{ width: 60, height: 60, marginRight: 2, borderRadius: '8px' }} 
+                  />
+                  <ListItemText 
+                    primary={
                       <div dangerouslySetInnerHTML={{ __html: note.note }} />
                     }
-                    secondary={note.created_at.split('T')[0]} />
+                    secondary={note.created_at.split('T')[0]} 
+                  />
                   {hoveredIndex === index && (
                     <IconButton
                       aria-label="delete"
