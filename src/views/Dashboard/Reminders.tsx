@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   List,
   ListItem,
@@ -52,6 +52,8 @@ const Reminders: React.FC = () => {
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editedText, setEditedText] = useState("");
+  const [completedReminders, setCompletedReminders] = useState<any[]>([]);
+  const [incompleteReminders, setIncompleteReminders] = useState<any[]>([]);
 
   const handleAddReminder = async () => {
     const selectedProfileId = localStorage.getItem("selectedProfile");
@@ -64,7 +66,8 @@ const Reminders: React.FC = () => {
       hourreminder: new Date().toISOString().split("T")[1].substring(0, 5),
       profileid: parseInt(selectedProfileId, 10),
       priorityid,
-      status: 'incomplete'
+      status: 'incomplete',
+      completed:1
     });
 
     setNewReminder("");
@@ -80,9 +83,19 @@ const Reminders: React.FC = () => {
     console.log(`Handle Toggle Status: Reminder ID ${id}, Current Status: ${currentStatus}`);
     await toggleReminderStatus(id, currentStatus);
   };
+  console.log(data);
+  
+  useEffect(() => {
+    // Actualiza las listas cuando `data` cambie
+    const completed:any[] = data.filter((reminder) => reminder.completed === 0);
+    const incomplete:any[] = data.filter((reminder) => reminder.completed === 1);
 
-  const completedReminders = data.filter((reminder) => reminder.status === 'complete');
-  const incompleteReminders = data.filter((reminder) => reminder.status === 'incomplete');
+    setCompletedReminders(completed);
+    setIncompleteReminders(incomplete);
+
+    console.log("reminders incomplete:",incompleteReminders)
+  }, [data]); // `data` como dependencia para actualizar cuando cambie
+
 
   // Calcula el progreso en base a los recordatorios completados
   const progress = data.length > 0 ? (completedReminders.length / data.length) * 100 : 0;

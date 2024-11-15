@@ -31,6 +31,7 @@ export const updateReminder = async (
     profileid?: number;
     priorityid?: number;
     status?: string;
+    completed:number;
   }
 ) => {
   const response = await api.put(`/reminders/${id}`, updatedFields);

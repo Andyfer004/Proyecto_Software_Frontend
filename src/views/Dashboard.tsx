@@ -33,17 +33,7 @@ const Dashboard = () => {
             <div className='w-100 justify-content-center row m-0'>
               <Reminders />
             </div>
-            <div className='w-100 justify-content-center row'>
-              <ReactCustomizableProgressbar
-                value={75}
-                valueMax={100}
-                startAngle={-110}
-                endAngle={110}
-                textSize={40}
-                height={200}
-                gaugeSx={{ color: 'indianred' }}
-              />
-            </div>
+
             <div className='w-100 text-center'>
               {/* Pasamos los perfiles y el perfil seleccionado como props */}
               <ModalNewTask

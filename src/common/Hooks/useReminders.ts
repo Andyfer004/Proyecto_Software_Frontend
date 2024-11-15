@@ -9,6 +9,7 @@ type Reminder = {
   hourreminder: string;
   profileid: number;
   priorityid: number;
+  completed:number;
   status: string;
   created_at: string;
   updated_at: string;
@@ -53,9 +54,8 @@ const toggleReminderStatus = async (id: number, currentStatus: string) => {
   setLoading(true);
   try {
     const newStatus = currentStatus === 'complete' ? 'incomplete' : 'complete';
-    console.log(`Toggle Status: Reminder ID ${id}, New Status: ${newStatus}`); // Log para confirmar el cambio de estado
 
-    const response = await updateReminder(id, { status: newStatus });
+    const response = await updateReminder(id, { completed: 0 });
     console.log('Server Response:', response); // Log para ver la respuesta del servidor
 
     await fetchData();
