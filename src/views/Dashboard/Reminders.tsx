@@ -61,9 +61,16 @@ const Reminders: React.FC = () => {
   const handleCheckboxToggle = async (id: number) => {
     const reminderToUpdate = reminders.find((reminder: any) => reminder.id === id);
     if (reminderToUpdate) {
-      await modifyReminder(id, { completed: !reminderToUpdate.completed });
+      // Si se completa, lo eliminamos
+      if (!reminderToUpdate.completed) {
+        await modifyReminder(id, { completed: true }); // Marcar como completado
+        await removeReminder(id); // Eliminar de la lista
+      } else {
+        await modifyReminder(id, { completed: false }); // Marcar como no completado
+      }
     }
   };
+  
 
   const handleAddReminder = async () => {
     if (newReminder.trim()) {
@@ -179,10 +186,12 @@ const Reminders: React.FC = () => {
         backgroundColor: "green",
         color: "white",
         borderRadius: "50%",
-        padding: 4,
+        padding: 2, // Reduce el padding
+        width: 24, // Ajusta el ancho del botón
+        height: 24, // Ajusta la altura del botón
       }}
     >
-      <CheckIcon />
+      <CheckIcon style={{ fontSize: 16 }} /> {/* Cambia el tamaño del ícono */}
     </IconButton>
   </Tooltip>
   <Tooltip title="Eliminar">
@@ -195,6 +204,7 @@ const Reminders: React.FC = () => {
     </IconButton>
   </Tooltip>
 </StyledListItem>
+
           ))
         ) : (
           <Typography>No hay recordatorios disponibles</Typography>
