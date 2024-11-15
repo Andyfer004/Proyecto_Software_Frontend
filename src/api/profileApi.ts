@@ -21,16 +21,21 @@ export const addProfile = async (profile: any) => {
   return response.data;
 };
 
-export const updateProfile = async (id: number, updatedFields: Partial<{ name: string, image: File }>) => {
+export const updateProfile = async (id: number, updatedFields: any) => {
   const formData = new FormData();
-  if (updatedFields.name) formData.append('name', updatedFields.name);
-  if (updatedFields.image) formData.append('image', updatedFields.image);
+  
+  // Append each field from updatedFields to FormData
+  Object.keys(updatedFields).forEach((key) => {
+    formData.append(key, updatedFields[key]);
+  });
 
+  // Perform the PUT request using FormData
   const response = await api.put(`/profiles/${id}`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
   });
+  
   return response.data;
 };
 
