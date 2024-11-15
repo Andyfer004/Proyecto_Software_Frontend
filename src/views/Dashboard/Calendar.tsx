@@ -25,6 +25,9 @@ import './Calendar.css';
 import useStatus from '../../common/Hooks/useStatus'; // Asegúrate de que la ruta sea correcta
 import usePriorities from '../../common/Hooks/usePriorities';
 import useTasks from '../../common/Hooks/useTasks';
+import useSettings from 'src/common/Hooks/useSettings';
+import { gapi } from 'gapi-script'; // Biblioteca para manejar la autenticación con Google
+import GoogleIcon from '@mui/icons-material/Google';
 
 interface Subtask {
   id: number;
@@ -61,6 +64,7 @@ const Calendar: React.FC<CalendarProps> = ({ selectedProfile }) => {
   const [statusId, setStatusId] = useState<number | string>('');
   const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [googleEvents, setGoogleEvents] = useState([]); // Estado para eventos de Google Calendar
   const [subtasks, setSubtasks] = useState<Subtask[]>([]);
   const [anchorElPriority, setAnchorElPriority] = useState<null | HTMLElement>(null);
   const [anchorElStatus, setAnchorElStatus] = useState<null | HTMLElement>(null);
@@ -68,7 +72,10 @@ const Calendar: React.FC<CalendarProps> = ({ selectedProfile }) => {
   const [newStatusName, setNewStatusName] = useState<string>('');
 
   const { data: tasksData, loading, error, createTask, modifyTask, removeTask, fetchTasksByProfile} = useTasks();
-
+ 
+  const [loadingSetting, setLoadingSetting] = useState(true);
+  const { fetchSettingByKey, createSetting } = useSettings();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const [priorities, setPriorities] = useState([
     { id: 1, name: 'Low' },
@@ -93,6 +100,60 @@ const Calendar: React.FC<CalendarProps> = ({ selectedProfile }) => {
     setOpenDialog(true);
   };
 
+
+  const calendarEvents = [
+    ...tasks.map((task) => ({
+      id: task.id.toString(),
+      title: task.taskName,
+      start: task.dueDate,
+      description: task.description,
+      extendedProps: {
+        statusId: task.statusId,
+      },
+    })),
+    ...googleEvents, // Agrega eventos de Google Calendar
+  ];
+
+
+
+  useEffect(() => {
+    const token = localStorage.getItem('access_token_google');
+    if (token) {
+      setIsAuthenticated(true);
+    }
+    console.log("false logueado google")
+    setLoadingSetting(false);
+  }, []);
+
+
+  useEffect(() => {
+    const initClient = () => {
+      gapi.load('client:auth2', () => {
+        gapi.client.init({
+          clientId: '85916301134-bo9muens74h0idca344gj0i3jq1tf5ep.apps.googleusercontent.com',
+          scope: 'https://www.googleapis.com/auth/calendar',
+        });
+      });
+    };
+    initClient();
+  }, []);
+
+
+  const handleGoogleLogin = async () => {
+    const authInstance = gapi.auth2.getAuthInstance();
+    try {
+      const user = await authInstance.signIn();
+      const token = user.getAuthResponse().access_token;
+
+      // Guardar el token en localStorage y en la base de datos
+      localStorage.setItem('access_token_google', token);
+      await createSetting({ key: 'access_token_google', value: token });
+
+      setIsAuthenticated(true);
+    } catch (error) {
+      console.error('Error during Google login:', error);
+    }
+  };
 
   const handleEventClick = (clickInfo: any) => {
     const clickedTask = tasks.find((task) => task.id === parseInt(clickInfo.event.id, 10));
@@ -263,15 +324,7 @@ const Calendar: React.FC<CalendarProps> = ({ selectedProfile }) => {
   };
   
 
-  const calendarEvents = tasks.map((task) => ({
-    id: task.id.toString(),
-    title: task.taskName,
-    start: task.dueDate,
-    description: task.description,
-    extendedProps: {
-      statusId: task.statusId,
-    },
-  }));
+
 
   const handleEventDrop = async (info: { event: any }) => {
     const { event } = info;
@@ -335,8 +388,72 @@ const Calendar: React.FC<CalendarProps> = ({ selectedProfile }) => {
 
 
 
+  const fetchGoogleCalendarEvents = async () => {
+    const token = localStorage.getItem('access_token_google');
+
+    if (!token) {
+      console.error('No access token found');
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        'https://www.googleapis.com/calendar/v3/calendars/primary/events',
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch events from Google Calendar');
+      }
+
+      const data = await response.json();
+
+      const mappedGoogleEvents = data.items.map((event: any) => ({
+        id: event.id,
+        title: event.summary || 'Unnamed Event',
+        start: event.start.dateTime || event.start.date,
+        description: event.description || '',
+        extendedProps: {
+          source: 'google',
+        },
+      }));
+
+      setGoogleEvents(mappedGoogleEvents); // Actualizar eventos de Google Calendar
+      // setEvents(mappedEvents);
+    } catch (error) {
+      console.error('Error fetching Google Calendar events:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchGoogleCalendarEvents();
+  }, []);
+
+  
+
+  
   return (
     <>
+
+      {!isAuthenticated ? 
+        (
+          <Button
+            className='m-5'
+            variant="contained"
+            startIcon={<GoogleIcon />}
+            onClick={handleGoogleLogin}
+          >
+            Conectar con Google
+          </Button>
+        ):(
+          <></>
+        )
+      }
+
       <FullCalendar
         plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin]}
         initialView="dayGridMonth"
@@ -346,6 +463,13 @@ const Calendar: React.FC<CalendarProps> = ({ selectedProfile }) => {
         editable={true} // Habilitar arrastrar y soltar
         droppable={true} // Habilitar soltar en otro día
         events={calendarEvents}
+        eventContent={(arg) => (
+          <div style={{ whiteSpace: 'normal', overflow: 'visible' }}>
+            <b>{arg.event.title}</b>
+            <p>{arg.event.extendedProps.description}</p>
+            <p>{arg.event.extendedProps.source}</p>
+          </div>
+        )}
         eventDrop={handleEventDrop}
         eventResize={handleEventResize}
         eventClassNames={(arg) => {

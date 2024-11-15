@@ -1,68 +1,56 @@
-import { useState } from 'react';
-import axios from 'axios';
+import { useState, useEffect } from 'react';
+import { getSettingByKey, addSetting } from '../../api/settingsApi'; // Ajusta la ruta según tu estructura
 
-interface Setting {
+type Setting = {
   key: string;
   value: string | null;
-}
+};
 
-export const useSettings = () => {
-  const [setting, setSetting] = useState<Setting | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+const useSettings = () => {
+  const [data, setData] = useState<Setting | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   /**
-   * Get a specific setting by its key.
-   * @param key - The key of the setting to retrieve.
+   * Función para obtener una configuración específica por su clave
+   * @param key - Clave de la configuración a obtener
    */
   const fetchSettingByKey = async (key: string) => {
     setLoading(true);
-    setError(null);
     try {
-      const response = await axios.get(`/api/settings/${key}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`, // Reemplaza esto si tienes otra forma de autenticación
-        },
-      });
-      setSetting(response.data);
-    } catch (err) {
-      setError('Error fetching the setting');
+      const setting = await getSettingByKey(key);
+      setData(setting);
+    } catch (err: any) {
+      setError(err.message);
     } finally {
       setLoading(false);
     }
   };
 
   /**
-   * Save or update a setting.
-   * @param key - The key of the setting to save or update.
-   * @param value - The value of the setting to save or update.
+   * Función para crear o actualizar una configuración
+   * @param setting - Objeto con la clave y valor de la configuración
    */
-  const saveSetting = async (key: string, value: string | null) => {
+  const createSetting = async (setting: Setting) => {
     setLoading(true);
-    setError(null);
     try {
-      const response = await axios.post(
-        '/api/settings',
-        { key, value },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        }
-      );
-      setSetting(response.data.setting);
-    } catch (err) {
-      setError('Error saving the setting');
+      await addSetting(setting);
+      await fetchSettingByKey(setting.key); // Refrescar la configuración recién agregada
+    } catch (err: any) {
+      setError(err.message);
     } finally {
       setLoading(false);
     }
   };
 
-  return {
-    setting,
-    loading,
-    error,
-    fetchSettingByKey,
-    saveSetting,
+  // Retornar los datos y funciones necesarias para el hook
+  return { 
+    data, 
+    loading, 
+    error, 
+    fetchSettingByKey, 
+    createSetting 
   };
 };
+
+export default useSettings;

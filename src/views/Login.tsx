@@ -13,15 +13,15 @@ import { Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useNavigate } from 'react-router-dom';
 import { getProfiles } from '../api/profileApi';
+import { getSettingByKey } from '../api/settingsApi';
 import { Divider } from '@mui/material';
-import { useSettings } from 'src/common/Hooks/useSettings';
+import useSettings from 'src/common/Hooks/useSettings';
 
 const Login: React.FC = () => {
   const [value, setValue] = useState(0);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loadingProfiles, setLoadingProfiles] = useState(false);
-  const { setting, loading, error, fetchSettingByKey } = useSettings();
   const [loadingSettings, setLoadingSettings] = useState(false);
 
   const navigation: any = Platform.OS === 'web' ? useNavigate() : useNavigation();
@@ -38,7 +38,6 @@ const Login: React.FC = () => {
 
         await handleFetchProfiles();
 
-        await handleFetchSettings();
 
         if (Platform.OS === 'web') {
           navigation('/home');
@@ -60,7 +59,11 @@ const Login: React.FC = () => {
       if (profiles && profiles.length > 0) {
         const firstProfile = profiles[0];
         localStorage.setItem('selectedProfile', firstProfile.id.toString());
+        
       }
+
+      await handleFetchSettings();
+
     } catch (error) {
       console.error('Error al obtener los perfiles:', error);
       NotificationService.error('Error al obtener los perfiles');
@@ -73,14 +76,14 @@ const Login: React.FC = () => {
   const handleFetchSettings = async () => {
     setLoadingSettings(true);
     try {
-       await fetchSettingByKey('access_token_google');
+      const settings =  await getSettingByKey('access_token_google');
 
-       if (setting && setting.key === 'access_token_google' && setting.value) {
-        localStorage.setItem('access_token_google', setting.value);
+      if(settings){
+        console.log(settings.value);
+        localStorage.setItem('access_token_google', settings.value);
       }
     } catch (error) {
       console.error('Error al obtener los settings:', error);
-      NotificationService.error('Error al obtener los settings');
     } finally {
       setLoadingSettings(false);
     }
