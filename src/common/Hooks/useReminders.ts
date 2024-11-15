@@ -8,24 +8,26 @@ type Reminder = {
   datereminder: string;
   hourreminder: string;
   profileid: number;
-  priorityid: number; // Agregar prioridad
-  completed: boolean; // Agregar el campo completed
+  priorityid: number;
+  status: string;
   created_at: string;
   updated_at: string;
 };
 
 const useReminders = () => {
-  const [data, setData] = useState<Reminder[]>([]); // Cambiar el tipo a Reminder[]
+  const [data, setData] = useState<Reminder[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchData = async () => {
-    setLoading(true);
+    const selectedProfileId = localStorage.getItem("selectedProfile");
+    if (!selectedProfileId) return;
+
     try {
-      const response = await getReminders(); // Asumimos que esto regresa un objeto
-      setData(response.reminders); // Accede a la propiedad 'reminders'
+      const response = await getReminders({ profileid: parseInt(selectedProfileId, 10) });
+      setData(response.reminders || []);
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message || "Error al obtener los recordatorios.");
     } finally {
       setLoading(false);
     }
@@ -39,39 +41,46 @@ const useReminders = () => {
     setLoading(true);
     try {
       await addReminder(newReminder);
-      await fetchData(); // Refrescar la lista de recordatorios
+      await fetchData();
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message || "Error al crear el recordatorio.");
     } finally {
       setLoading(false);
     }
   };
 
-  const modifyReminder = async (id: number, updatedReminder: Partial<Omit<Reminder, 'id'>>) => {
-    setLoading(true);
-    try {
-      await updateReminder(id, updatedReminder);
-      await fetchData(); // Refrescar la lista de recordatorios
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+const toggleReminderStatus = async (id: number, currentStatus: string) => {
+  setLoading(true);
+  try {
+    const newStatus = currentStatus === 'complete' ? 'incomplete' : 'complete';
+    console.log(`Toggle Status: Reminder ID ${id}, New Status: ${newStatus}`); // Log para confirmar el cambio de estado
+
+    const response = await updateReminder(id, { status: newStatus });
+    console.log('Server Response:', response); // Log para ver la respuesta del servidor
+
+    await fetchData();
+  } catch (err: any) {
+    console.error("Error updating reminder status:", err.message);
+    setError(err.message || "Error al actualizar el estado del recordatorio.");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const removeReminder = async (id: number) => {
     setLoading(true);
     try {
       await deleteReminder(id);
-      await fetchData(); // Refrescar la lista de recordatorios
+      await fetchData();
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message || "Error al eliminar el recordatorio.");
     } finally {
       setLoading(false);
     }
   };
 
-  return { data, loading, error, createReminder, modifyReminder, removeReminder };
+  return { data, loading, error, createReminder, toggleReminderStatus, removeReminder };
 };
 
 export default useReminders;

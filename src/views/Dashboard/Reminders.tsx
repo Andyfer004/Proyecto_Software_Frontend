@@ -21,13 +21,10 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import CircleIcon from "@mui/icons-material/Circle";
 import { styled } from "@mui/material/styles";
 import useReminders from "../../common/Hooks/useReminders";
-import CheckIcon from "@mui/icons-material/Check";
 
-
-const StyledListItem = styled(ListItem)<{ completed: boolean }>(({ theme, completed }) => ({
+const StyledListItem = styled(ListItem)(({ theme }) => ({
   padding: theme.spacing(1),
   borderBottom: `1px solid ${theme.palette.divider}`,
-  backgroundColor: completed ? theme.palette.action.disabledBackground : "inherit",
   transition: "background-color 0.3s ease, text-decoration 0.3s ease",
   "&:hover": {
     backgroundColor: theme.palette.action.hover,
@@ -35,7 +32,6 @@ const StyledListItem = styled(ListItem)<{ completed: boolean }>(({ theme, comple
   },
 }));
 
-// Función para obtener el color según la prioridad
 const getPriorityColor = (priorityid: number) => {
   switch (priorityid) {
     case 1:
@@ -50,146 +46,90 @@ const getPriorityColor = (priorityid: number) => {
 };
 
 const Reminders: React.FC = () => {
-  const { data, loading, error, createReminder, modifyReminder, removeReminder } = useReminders();
+  const { data, loading, error, createReminder, toggleReminderStatus, removeReminder } = useReminders();
   const [newReminder, setNewReminder] = useState("");
   const [priorityid, setPriorityid] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editedText, setEditedText] = useState("");
-  const [sortType, setSortType] = useState("today");
-  const reminders = data || [];
-
-  const handleCheckboxToggle = async (id: number) => {
-    const reminderToUpdate = reminders.find((reminder: any) => reminder.id === id);
-    if (reminderToUpdate) {
-      await modifyReminder(id, { completed: !reminderToUpdate.completed });
-    }
-  };
 
   const handleAddReminder = async () => {
-    if (newReminder.trim()) {
-      await createReminder({
-        description: newReminder,
-        alarm: false,
-        datereminder: new Date().toISOString().split("T")[0],
-        hourreminder: new Date().toISOString().split("T")[1].substring(0, 5),
-        profileid: 1,
-        priorityid,
-        completed: false,
-      });
-      setNewReminder("");
-      setPriorityid(1);
-      setIsAdding(false);
-    }
+    const selectedProfileId = localStorage.getItem("selectedProfile");
+    if (!newReminder.trim() || !selectedProfileId) return;
+
+    await createReminder({
+      description: newReminder,
+      alarm: false,
+      datereminder: new Date().toISOString().split("T")[0],
+      hourreminder: new Date().toISOString().split("T")[1].substring(0, 5),
+      profileid: parseInt(selectedProfileId, 10),
+      priorityid,
+      status: 'incomplete'
+    });
+
+    setNewReminder("");
+    setPriorityid(1);
+    setIsAdding(false);
   };
 
   const handleDeleteReminder = async (id: number) => {
     await removeReminder(id);
   };
 
-  const handleEditReminder = (id: number) => {
-    const reminderToEdit = reminders.find((reminder: any) => reminder.id === id);
-    if (reminderToEdit) {
-      setEditingId(id);
-      setEditedText(reminderToEdit.description);
-    }
+  const handleToggleStatus = async (id: number, currentStatus: string) => {
+    console.log(`Handle Toggle Status: Reminder ID ${id}, Current Status: ${currentStatus}`);
+    await toggleReminderStatus(id, currentStatus);
   };
 
-  const handleUpdateReminder = async (id: number) => {
-    if (editedText.trim() === "") return;
-    await modifyReminder(id, { description: editedText });
-    setEditingId(null);
-  };
+  const completedReminders = data.filter((reminder) => reminder.status === 'complete');
+  const incompleteReminders = data.filter((reminder) => reminder.status === 'incomplete');
 
-  const handleKeyDown = (e: React.KeyboardEvent, id: number) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      handleUpdateReminder(id);
-    }
-  };
-
-  const sortedReminders = [...reminders].sort((a, b) => {
-    if (sortType === "today") {
-      return new Date(a.datereminder).getTime() - new Date(b.datereminder).getTime();
-    } else if (sortType === "alphabetical") {
-      return a.description.localeCompare(b.description);
-    }
-    return 0;
-  });
-
-  if (loading) {
-    return <CircularProgress />;
-  }
+  // Calcula el progreso en base a los recordatorios completados
+  const progress = data.length > 0 ? (completedReminders.length / data.length) * 100 : 0;
 
   if (error) {
     return <Typography color="error">{error}</Typography>;
   }
 
   return (
-    <>
     <Box className='mt-4'>
       <Typography variant="h6">Reminders</Typography>
       <FormControl fullWidth variant="outlined" margin="dense">
         <InputLabel id="sort-label">Sort By</InputLabel>
-        <Select
-          labelId="sort-label"
-          value={sortType}
-          onChange={(e) => setSortType(e.target.value)}
-          label="Sort By"
-        >
+        <Select labelId="sort-label" value="today" label="Sort By">
           <MenuItem value="today">Today</MenuItem>
           <MenuItem value="alphabetical">Alphabetical</MenuItem>
         </Select>
       </FormControl>
 
+      {/* Barra de progreso de recordatorios completados */}
+      <Box display="flex" flexDirection="column" alignItems="center" mt={3} mb={3}>
+        <CircularProgress variant="determinate" value={progress} size={100} />
+        <Typography variant="caption" component="div" color="textSecondary" mt={1}>
+          {`${Math.round(progress)}% completado`}
+        </Typography>
+      </Box>
+
       <List>
-        {Array.isArray(sortedReminders) && sortedReminders.length > 0 ? (
-          sortedReminders.map((reminder: any) => (
-            <StyledListItem key={reminder.id} completed={reminder.completed}>
-  <Checkbox
-    checked={reminder.completed}
-    onChange={() => handleCheckboxToggle(reminder.id)}
-  />
-  <CircleIcon
-    style={{ color: getPriorityColor(reminder.priorityid), marginRight: 8 }}
-  />
-  {editingId === reminder.id ? (
-    <TextField
-      fullWidth
-      value={editedText}
-      onChange={(e) => setEditedText(e.target.value)}
-      onBlur={() => handleUpdateReminder(reminder.id)}
-      onKeyDown={(e) => handleKeyDown(e, reminder.id)}
-      autoFocus
-    />
-  ) : (
-    <ListItemText
-      primary={reminder.description}
-      style={{
-        textDecoration: reminder.completed ? "line-through" : "none",
-        color: reminder.completed ? "gray" : "inherit",
-      }}
-      onClick={() => handleEditReminder(reminder.id)}
-    />
-  )}
-  
-  <Tooltip title="Eliminar">
-    <IconButton
-      edge="end"
-      size="small"
-      onClick={() => handleDeleteReminder(reminder.id)}
-    >
-      <DeleteIcon color="error" />
-    </IconButton>
-  </Tooltip>
-</StyledListItem>
-          ))
-        ) : (
-          <Typography>No hay recordatorios disponibles</Typography>
-        )}
+        {incompleteReminders.map((reminder) => (
+          <StyledListItem key={reminder.id}>
+            <Checkbox
+              checked={reminder.status === 'complete'}
+              onChange={() => handleToggleStatus(reminder.id, reminder.status)}
+            />
+            <CircleIcon style={{ color: getPriorityColor(reminder.priorityid), marginRight: 8 }} />
+            <ListItemText primary={reminder.description} />
+            <Tooltip title="Eliminar">
+              <IconButton edge="end" size="small" onClick={() => handleDeleteReminder(reminder.id)}>
+                <DeleteIcon color="error" />
+              </IconButton>
+            </Tooltip>
+          </StyledListItem>
+        ))}
+      </List>
 
       {isAdding ? (
-        <StyledListItem completed={false}>
+        <StyledListItem>
           <TextField
             fullWidth
             placeholder="Nuevo recordatorio..."
@@ -215,7 +155,7 @@ const Reminders: React.FC = () => {
           </Button>
         </StyledListItem>
       ) : (
-        <StyledListItem completed={false} onClick={() => setIsAdding(true)}>
+        <StyledListItem onClick={() => setIsAdding(true)}>
           <IconButton edge="start">
             <AddIcon />
           </IconButton>
@@ -223,9 +163,26 @@ const Reminders: React.FC = () => {
         </StyledListItem>
       )}
 
-      </List>
+      {completedReminders.length > 0 && (
+        <Box mt={4}>
+          <Typography variant="h6">Reminders Completados</Typography>
+          <List>
+            {completedReminders.map((reminder) => (
+              <StyledListItem key={reminder.id}>
+                <Checkbox checked disabled />
+                <CircleIcon style={{ color: getPriorityColor(reminder.priorityid), marginRight: 8 }} />
+                <ListItemText primary={reminder.description} />
+                <Tooltip title="Eliminar">
+                  <IconButton edge="end" size="small" onClick={() => handleDeleteReminder(reminder.id)}>
+                    <DeleteIcon color="error" />
+                  </IconButton>
+                </Tooltip>
+              </StyledListItem>
+            ))}
+          </List>
+        </Box>
+      )}
     </Box>
-    </>
   );
 };
 

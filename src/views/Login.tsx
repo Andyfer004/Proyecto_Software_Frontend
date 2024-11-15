@@ -56,7 +56,7 @@ const Login: React.FC = () => {
     setLoadingProfiles(true);
     try {
       const profiles = await getProfiles();
-
+  
       if (profiles && profiles.length > 0) {
         const firstProfile = profiles[0];
         localStorage.setItem('selectedProfile', firstProfile.id.toString());
@@ -72,6 +72,7 @@ const Login: React.FC = () => {
       setLoadingProfiles(false);
     }
   };
+  
 
 
   const handleFetchSettings = async () => {
