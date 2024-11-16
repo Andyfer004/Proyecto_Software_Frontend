@@ -4,8 +4,8 @@ import axios, { AxiosInstance } from 'axios';
 
 // Crear una instancia de axios con configuración personalizada
 const api: AxiosInstance = axios.create({
-  //baseURL: 'https://nowback.programmerscrew.com/public/api',
-  baseURL: 'http://127.0.0.1:8000/api',
+  baseURL: 'https://nowback.programmerscrew.com/public/api',
+  //baseURL: 'http://127.0.0.1:8000/api',
   headers: {
     'Content-Type': 'application/json',
     // Agrega cualquier cabecera adicional que necesites
