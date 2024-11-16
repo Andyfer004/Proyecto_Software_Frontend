@@ -21,6 +21,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import CircleIcon from "@mui/icons-material/Circle";
 import { styled } from "@mui/material/styles";
 import useReminders from "../../common/Hooks/useReminders";
+import usePriorities from "src/common/Hooks/usePriorities";
 
 const StyledListItem = styled(ListItem)(({ theme }) => ({
   padding: theme.spacing(1),
@@ -47,6 +48,8 @@ const getPriorityColor = (priorityid: number) => {
 
 const Reminders: React.FC = () => {
   const { data, loading, error, createReminder, toggleReminderStatus, removeReminder } = useReminders();
+  const { data: prioritiesData, loading: prioritiesLoading, error: prioritiesError } = usePriorities();
+
   const [newReminder, setNewReminder] = useState("");
   const [priorityid, setPriorityid] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
@@ -54,6 +57,10 @@ const Reminders: React.FC = () => {
   const [editedText, setEditedText] = useState("");
   const [completedReminders, setCompletedReminders] = useState<any[]>([]);
   const [incompleteReminders, setIncompleteReminders] = useState<any[]>([]);
+
+
+  const priorities = prioritiesData || [];
+
 
   const handleAddReminder = async () => {
     const selectedProfileId = localStorage.getItem("selectedProfile");
@@ -151,17 +158,19 @@ const Reminders: React.FC = () => {
             autoFocus
           />
           <FormControl fullWidth>
-            <InputLabel id="priority-label">Prioridad</InputLabel>
-            <Select
-              labelId="priority-label"
-              value={priorityid}
-              onChange={(e) => setPriorityid(Number(e.target.value))}
-              label="Prioridad"
-            >
-              <MenuItem value={1}>Alta</MenuItem>
-              <MenuItem value={2}>Media</MenuItem>
-              <MenuItem value={3}>Baja</MenuItem>
-            </Select>
+                <InputLabel id="priority-label">Prioridad</InputLabel>
+                <Select
+                  labelId="priority-label"
+                  value={priorityid}
+                  onChange={(e) => setPriorityid(Number(e.target.value))}
+                  label="Prioridad"
+                >
+                  {priorities.map((priority) => (
+                    <MenuItem key={priority.id} value={priority.id}>
+                      {priority.namepriority}
+                    </MenuItem>
+                  ))}
+                </Select>
           </FormControl>
           <Button onClick={handleAddReminder} disabled={!newReminder.trim()}>
             Guardar

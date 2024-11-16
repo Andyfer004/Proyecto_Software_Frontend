@@ -1,7 +1,14 @@
 import api from './index';
 
-export const getReminders = async (params: { profileid: number }) => {
-  const response = await api.get('/reminders', { params });
+export const getReminders = async (profileId: number) => {
+  const response = await api.get('/reminders', { params: { profileid: profileId } });
+  return response.data;
+};
+
+
+
+export const getReminder = async (id: number) => {
+  const response = await api.get(`/reminders/${id}`);
   return response.data;
 };
 

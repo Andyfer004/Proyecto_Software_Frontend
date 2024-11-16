@@ -20,13 +20,24 @@ const useReminders = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Obtener el profileid del localStorage
+  const profileId = Number(localStorage.getItem('selectedProfile'));
+
   const fetchData = async () => {
     const selectedProfileId = localStorage.getItem("selectedProfile");
     if (!selectedProfileId) return;
-
-    try {
-      const response = await getReminders({ profileid: parseInt(selectedProfileId, 10) });
+      const response = await getReminders( parseInt(selectedProfileId, 10) );
       setData(response.reminders || []);
+    if (!profileId) {
+      setError("Profile ID no especificado en el localStorage");
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await getReminders(profileId); // Pasamos el profileId a la función getReminders
+      setData(response.reminders);
     } catch (err: any) {
       setError(err.message || "Error al obtener los recordatorios.");
     } finally {
@@ -36,12 +47,12 @@ const useReminders = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [profileId]);
 
   const createReminder = async (newReminder: Omit<Reminder, 'id' | 'created_at' | 'updated_at'>) => {
     setLoading(true);
     try {
-      await addReminder(newReminder);
+      await addReminder({ ...newReminder, profileid: profileId }); // Agregamos profileId al crear el recordatorio
       await fetchData();
     } catch (err: any) {
       setError(err.message || "Error al crear el recordatorio.");
@@ -82,5 +93,6 @@ const toggleReminderStatus = async (id: number, currentStatus: string) => {
 
   return { data, loading, error, createReminder, toggleReminderStatus, removeReminder };
 };
+{}
 
 export default useReminders;
