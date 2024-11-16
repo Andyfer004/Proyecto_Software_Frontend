@@ -70,11 +70,8 @@ const Calendar: React.FC<CalendarProps> = ({ selectedProfile }) => {
   const { data: tasksData, loading, error, createTask, modifyTask, removeTask, fetchTasksByProfile} = useTasks();
 
 
-  const [priorities, setPriorities] = useState([
-    { id: 1, name: 'Low' },
-    { id: 2, name: 'Medium' },
-    { id: 3, name: 'High' },
-  ]);
+  const { data: prioritiesData, loading: prioritiesLoading, error: prioritiesError } = usePriorities();
+
 
   const [statuses, setStatuses] = useState([
     { id: 1, name: 'To Do' },
@@ -390,38 +387,39 @@ const Calendar: React.FC<CalendarProps> = ({ selectedProfile }) => {
             </Grid>
             <Grid item xs={6}>
               <FormControl fullWidth margin="dense">
-                <Autocomplete
-                  freeSolo
-                  options={priorities}
-                  getOptionLabel={(option) => typeof option === 'object' ? option.name : ''}
-                  value={priorities.find(p => p.id === priorityId) || null}
-                  onChange={(event, newValue) => {
-                    if (typeof newValue === 'string') {
-                      setNewPriorityName(newValue);
-                    } else if (newValue && newValue.id) {
-                      setPriorityId(newValue.id);
-                    }
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Priority"
-                      value={newPriorityName}
-                      onChange={(e) => setNewPriorityName(e.target.value)}
-                      InputProps={{
-                        ...params.InputProps,
-                        endAdornment: (
-                          <>
-                            {params.InputProps.endAdornment}
-                            <IconButton onClick={handleAddNewPriority}>
-                              <AddCircleIcon />
-                            </IconButton>
-                          </>
-                        ),
-                      }}
-                    />
-                  )}
-                />
+              <Autocomplete
+  freeSolo
+  options={prioritiesData || []} // Usamos prioridades dinámicas
+  getOptionLabel={(option) => typeof option === 'object' ? option.namepriority : ''}
+  value={prioritiesData?.find(p => p.id === priorityId) || null}
+  onChange={(event, newValue) => {
+    if (typeof newValue === 'string') {
+      setNewPriorityName(newValue);
+    } else if (newValue && newValue.id) {
+      setPriorityId(newValue.id);
+    }
+  }}
+  renderInput={(params) => (
+    <TextField
+      {...params}
+      label="Priority"
+      value={newPriorityName}
+      onChange={(e) => setNewPriorityName(e.target.value)}
+      InputProps={{
+        ...params.InputProps,
+        endAdornment: (
+          <>
+            {params.InputProps.endAdornment}
+            <IconButton onClick={handleAddNewPriority}>
+              <AddCircleIcon />
+            </IconButton>
+          </>
+        ),
+      }}
+    />
+  )}
+/>
+
               </FormControl>
             </Grid>
             <Grid item xs={6}>
@@ -500,11 +498,13 @@ const Calendar: React.FC<CalendarProps> = ({ selectedProfile }) => {
                       onChange={(e) => handleSubtaskChange(index, 'priorityId', e.target.value)}
                       label="Priority"
                     >
-                      {priorities.map((priority) => (
-                        <MenuItem key={priority.id} value={priority.id}>
-                          {priority.name}
-                        </MenuItem>
-                      ))}
+                      {prioritiesData?.map((priority) => (
+  <MenuItem key={priority.id} value={priority.id}>
+    {priority.namepriority}
+  </MenuItem>
+))}
+
+
                     </Select>
                   </FormControl>
                 </Grid>

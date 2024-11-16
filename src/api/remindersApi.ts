@@ -1,9 +1,11 @@
 import api from './index'; // Importa tu instancia de Axios
 
-export const getReminders = async () => {
-  const response = await api.get('/reminders');
-  return response.data; // Axios devuelve los datos en la propiedad 'data'
+export const getReminders = async (profileId: number) => {
+  const response = await api.get('/reminders', { params: { profileid: profileId } });
+  return response.data;
 };
+
+
 
 export const getReminder = async (id: number) => {
   const response = await api.get(`/reminders/${id}`);

@@ -1,11 +1,11 @@
 import api from './index'; // Importa tu instancia de Axios
 
-// Obtener todas las prioridades
-export const getPriorities = async () => {
-  const response = await api.get('/priorities');
-  return response.data;
-};
 
+// Obtener todas las prioridades por userId en la URL
+export const getPriorities = async (userId: number) => {
+  const response = await api.get(`/priorities/user/${userId}`);
+  return response.data.priorities; // Suponiendo que la API devuelve las prioridades en la propiedad 'priorities'
+};
 // Obtener una prioridad por su ID
 export const getPriority = async (id: number) => {
   const response = await api.get(`/priorities/${id}`);

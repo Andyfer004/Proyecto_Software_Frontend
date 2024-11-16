@@ -13,10 +13,26 @@ const usePriorities = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Obtener el userId desde el objeto user en localStorage
+  const userId = (() => {
+    const userString = localStorage.getItem('user');
+    if (userString) {
+      const user = JSON.parse(userString);
+      return user.id;
+    }
+    return null;
+  })();
+
   const fetchData = async () => {
+    if (!userId) {
+      setError("User ID no especificado en el localStorage");
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     try {
-      const priorities = await getPriorities();
+      const priorities = await getPriorities(userId); // Pasamos userId a la función getPriorities
       setData(priorities);
     } catch (err: any) {
       setError(err.message);
@@ -27,7 +43,7 @@ const usePriorities = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [userId]);
 
   const createPriority = async (newPriority: Omit<Priority, 'id' | 'created_at' | 'updated_at'>) => {
     setLoading(true);
