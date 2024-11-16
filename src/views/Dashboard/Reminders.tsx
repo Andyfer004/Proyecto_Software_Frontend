@@ -74,7 +74,7 @@ const Reminders: React.FC = () => {
       profileid: parseInt(selectedProfileId, 10),
       priorityid,
       status: 'incomplete',
-      completed:1
+      completed:"1"
     });
 
     setNewReminder("");
@@ -94,8 +94,8 @@ const Reminders: React.FC = () => {
   
   useEffect(() => {
     // Actualiza las listas cuando `data` cambie
-    const completed:any[] = data.filter((reminder) => reminder.completed === 0);
-    const incomplete:any[] = data.filter((reminder) => reminder.completed === 1);
+    const completed:any[] = data.filter((reminder) => reminder.completed === "0");
+    const incomplete:any[] = data.filter((reminder) => reminder.completed === "1");
 
     setCompletedReminders(completed);
     setIncompleteReminders(incomplete);

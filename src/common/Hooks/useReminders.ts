@@ -9,7 +9,7 @@ type Reminder = {
   hourreminder: string;
   profileid: number;
   priorityid: number;
-  completed:number;
+  completed:string;
   status: string;
   created_at: string;
   updated_at: string;
